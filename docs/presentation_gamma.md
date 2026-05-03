@@ -104,6 +104,6 @@ WalkIn is infrastructure for the local economy.
 # Team & Vision
 
 - **George Tzimokas**
-- **Arsenis Tsn** 
+- **Arsenis Tsntsgoukian** 
 
 *"WalkIn turns 'where can I find it?' into 'I'm on my way.' — a decision to move."*
