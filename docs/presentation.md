@@ -1,231 +1,263 @@
 # WalkIn
 
-**Πλατφόρμα:** Mobile εφαρμογή (iOS & Android)
-**Ομάδα:** Walkin (George Tzimokas & Arsenis Tsn)
+**Platform:** Mobile app (iOS & Android)
+**Team:** Walkin (George Tzimokas & Arsenis Tsn)
 
 ---
 
-> "Ξέρεις ακριβώς τι θέλεις να αγοράσεις. Δεν ξέρεις αν υπάρχει κοντά σου. Αυτό λύνει το WalkIn."
+> "You know exactly what you want to buy. You just don't know if it's nearby. That's what WalkIn solves."
 
 ---
 
-## Το Πρόβλημα
+## The Problem
 
-Στην καθημερινότητα προκύπτουν συχνά ανάγκες άμεσης αγοράς:
+In everyday life, immediate purchasing needs arise constantly:
 
-- «Θέλω κάτι σήμερα»
-- «Δεν μπορώ να περιμένω να κάνω ηλεκτρονική παραγγελία»
-- «Δεν ξέρω αν αξίζει να πάω μέχρι εκεί»
+- "I need this today"
+- "I can't wait for an online order to arrive"
+- "I don't know if it's worth making the trip"
 
-Οι χρήστες:
+Users:
 
-- δεν γνωρίζουν αν ένα συγκεκριμένο προϊόν υπάρχει σε κοντινό κατάστημα
-- χάνουν χρόνο μετακινούμενοι χωρίς βεβαιότητα
-- καταλήγουν σε online αγορές από ανάγκη, όχι από επιλογή
+- don't know if a specific product is available at a nearby store
+- waste time traveling without certainty
+- end up buying online out of necessity, not choice
 
-Τα υπάρχοντα εργαλεία:
+Existing tools:
 
-- **Google Maps** → δείχνει καταστήματα, όχι προϊόντα
-- **Yelp / Foursquare** → εστίαση σε χώρους, όχι σε stock
-- **E-commerce** → δείχνει προϊόντα, αλλά όχι τοπική άμεση διαθεσιμότητα
+- **Google Maps** → shows stores, not products
+- **Yelp / Foursquare** → focused on venues, not stock
+- **E-commerce** → shows products, but not local real-time availability
 
-**Αποτέλεσμα:** Χαμένος χρόνος, περιττές μετακινήσεις και αποδυνάμωση της τοπικής αγοράς.
+**Result:** Wasted time, unnecessary trips, and the weakening of local retail.
 
 ---
 
 ## Product Vision
 
-Το WalkIn είναι μια mobile εφαρμογή που βοηθά τους χρήστες να παίρνουν άμεσες και σίγουρες αποφάσεις αγοράς για φυσικά προϊόντα που χρειάζονται σήμερα.
+WalkIn is a mobile app that helps users make immediate and confident purchasing decisions for physical products they need today.
 
-Δεν είναι εφαρμογή browsing. Δεν είναι e-commerce.
+It's not a browsing app. It's not e-commerce.
 
-Είναι ένα εργαλείο που απαντά γρήγορα και αξιόπιστα στην ερώτηση:
+It's a tool that answers quickly and reliably:
 
-> «Πού μπορώ να βρω αυτό το προϊόν κοντά μου, τώρα;»
+> "Where can I find this product near me, right now?"
 
 ---
 
-## Τι ΔΕΝ είναι το WalkIn
+## Why Now
 
-- Δεν είναι marketplace
-- Δεν υποστηρίζει online πληρωμές
-- Δεν προσφέρει delivery
-- Δεν έχει social features
-- Δεν αφορά αναλώσιμα προϊόντα
+- "Near me" mobile searches have surged in recent years — people search locally, but the tools haven't kept up
+- Local retail is under intense pressure from e-commerce — it needs digital visibility without having to build an e-shop
+- AI technology for natural language search is now mature and accessible
+- People are turning back to local — they want to buy nearby, if they know where to look
 
-**Η εστίαση είναι ξεκάθαρη: άμεση τοπική απόφαση αγοράς.**
+---
+
+## What WalkIn is NOT
+
+- Not a marketplace
+- No online payments
+- No delivery
+- No social features
+- Not for consumable products
+
+**The focus is clear: immediate local purchasing decisions.**
 
 ---
 
 ## Hero Use Case
 
-Ο χρήστης χρειάζεται ένα συγκεκριμένο μη αναλώσιμο προϊόν σήμερα και θέλει να γνωρίζει αν υπάρχει κοντά του πριν μετακινηθεί.
+The user needs a specific non-consumable product today and wants to know if it's nearby before making the trip.
 
-> "Ο Γιώργης χρειάζεται ένα Allen κατσαβίδι για επισκευή σήμερα. Ανοίγει WalkIn, γράφει «Allen κατσαβίδι M6», και σε 3 δευτερόλεπτα βλέπει ότι υπάρχει σε hardware store 400μ μακριά, διαθέσιμο τώρα."
+> "George needs an Allen key for a repair today. He opens WalkIn, types 'Allen key M6', and in 3 seconds sees it's available at a hardware store 400m away, in stock right now."
 
----
-
-## Core User Flow
-
-1. Ο χρήστης ανοίγει την εφαρμογή
-2. Εισάγει αναζήτηση με φυσική γλώσσα (text ή voice)
-3. Το WalkIn επιστρέφει κοντινά αποτελέσματα με διαθεσιμότητα
-4. Ο χρήστης βλέπει: απόσταση, χρόνο μετακίνησης, διαθεσιμότητα
-5. Παίρνει απόφαση: επίσκεψη ή κράτηση προϊόντος
-
----
-
-## Βασικές Λειτουργίες
-
-- Αναζήτηση με φυσική γλώσσα (text & voice)
-- Φίλτρα γεωγραφικής εγγύτητας (200μ, 1000μ, κοντά σε σταθμούς Μέσων Μαζικής Μεταφοράς)
-- Υβριδική προβολή (λίστα + χάρτης)
-- Κάρτες προϊόντων με: εικόνα, τιμή, απόσταση, status διαθεσιμότητας
-- Κράτηση προϊόντος για περιορισμένο χρόνο
-- Οδηγίες πλοήγησης μέσω Google Maps
-- Προτάσεις παρόμοιων προϊόντων
-
----
-
-## Moments of Delight
-
-- Μικρά feedback μηνύματα (π.χ. «Το βρήκες 350μ από εδώ»)
-- Badge "Available now"
-- Χρονική αίσθηση επείγοντος («κρατημένο για 2 ώρες»)
-
-Αυτά ενισχύουν την εμπιστοσύνη και τη σιγουριά απόφασης.
-
----
-
-## Ρόλος του AI (ορατός στον χρήστη)
-
-Το AI δεν λειτουργεί μόνο στο παρασκήνιο — λειτουργεί σαν **έξυπνος τοπικός πωλητής**.
-
-- Κατανοεί ελεύθερες περιγραφές προϊόντων
-- Προτείνει παρόμοιες λύσεις όταν δεν υπάρχει ακριβές ταίριασμα
-- Εξηγεί γιατί ένα αποτέλεσμα είναι σχετικό
-
-**Παραδείγματα εμπειρίας:**
-
-- «Δεν βρήκα ακριβώς αυτό, αλλά υπάρχει πολύ παρόμοιο προϊόν 300μ από εδώ»
-- «Αυτό το κατάστημα έχει επιβεβαιωμένη διαθεσιμότητα σήμερα»
-
----
-
-## Διαθεσιμότητα Προϊόντων
-
-Η έννοια της διαθεσιμότητας είναι κρίσιμη και ξεκάθαρη:
-
-- βασίζεται σε δεδομένα συνεργαζόμενων καταστημάτων
-- ενημερώνεται μέσω: manual update από το κατάστημα (dashboard) ή API integration με το ERP/POS τους
-- εμφανίζεται ως: **διαθέσιμο τώρα** ή **περιορισμένο stock**
-- υποστηρίζει προσωρινή κράτηση προϊόντος (π.χ. για 2 ώρες)
-
-Η αξιοπιστία της πληροφορίας είναι βασικός πυλώνας εμπιστοσύνης.
+> "Nick has run a small hardware store in the neighborhood for 15 years. He has everything you need — but nobody knows it. No e-shop, no SEO. WalkIn makes him visible exactly when someone is searching for what he has."
 
 ---
 
 ## Target Users
 
-**Κύριοι χρήστες**
+**Primary users**
 
-- Άτομα 20–45 ετών
-- Ζουν σε αστικό περιβάλλον
-- Θέλουν γρήγορες, ξεκάθαρες απαντήσεις
+- People aged 20–45
+- Living in urban areas
+- Want fast, clear answers
 
-**Δευτερεύοντες χρήστες**
+**Secondary users**
 
-- Επαγγελματίες (τεχνίτες, μηχανικοί, ηλεκτρολόγοι)
-- Νέοι κάτοικοι περιοχής ή τουρίστες
-- Χρήστες που αναζητούν σπάνια ή πολύ συγκεκριμένα αντικείμενα
+- Professionals (technicians, engineers, electricians)
+- New residents or tourists
+- Users searching for rare or very specific items
+
+---
+
+## Core User Flow
+
+1. User opens the app
+2. Enters a search in natural language (text or voice)
+3. WalkIn returns nearby results with availability
+4. User sees: distance, travel time, availability
+5. Makes a decision: visit the store or reserve the product
+
+---
+
+## Key Features
+
+- Natural language search (text & voice)
+- Proximity filters (200m, 1km, near public transport stations)
+- Hybrid view (list + map)
+- Product cards with: image, price, distance, availability status
+- Product reservation for a limited time
+- Navigation via Google Maps
+- Similar product suggestions
+
+---
+
+## Moments of Delight
+
+- Small feedback messages (e.g. "You found it 350m away")
+- "Available now" badge
+- Urgency cue ("reserved for 2 hours")
+
+These build trust and confidence in the decision.
+
+---
+
+## The Role of AI (visible to the user)
+
+The AI doesn't just work in the background — it acts as a **smart local salesperson**.
+
+- Understands free-form product descriptions
+- Suggests similar alternatives when there's no exact match
+- Explains why a result is relevant
+
+**Example responses:**
+
+- "I didn't find exactly that, but there's a very similar product 300m away"
+- "This store has confirmed availability today"
+
+---
+
+## Product Availability
+
+Availability is a critical and clearly defined concept:
+
+- based on data from partner stores
+- updated via: manual store update (dashboard) or API integration with their ERP/POS
+- displayed as: **available now** or **limited stock**
+- supports temporary product reservation (e.g. 2 hours)
+
+Reliability of information is a core pillar of trust.
+
+**Why stores are incentivized to keep data accurate:** every incorrect listing means a user who made a wasted trip — and won't come back. Accuracy isn't an obligation; it's in the store's direct interest.
+
+Every store earns a **Reliability Score** based on data accuracy. High-scoring stores display a **"Verified Stock"** badge — visible to users, rewarding reliability.
 
 ---
 
 ## Value Proposition
 
-Το WalkIn:
+WalkIn:
 
-- μειώνει δραστικά τον χρόνο αναζήτησης προϊόντων
-- αφαιρεί την αβεβαιότητα πριν την επίσκεψη σε κατάστημα
-- μετατρέπει την αναζήτηση σε ξεκάθαρη απόφαση μετακίνησης
-- ενισχύει την ορατότητα των τοπικών επιχειρήσεων
-- κατευθύνει πραγματική, στοχευμένη ζήτηση offline
+- drastically reduces the time spent searching for products
+- removes uncertainty before visiting a store
+- turns search into a clear decision to move
+- increases visibility for local businesses
+- drives real, targeted offline demand
 
 ---
 
-## Tech Stack
+## Social Impact
+
+WalkIn is more than a search tool — it's infrastructure for the local economy.
+
+- Gives digital visibility to small businesses with no e-shop or online presence
+- Keeps money and purchasing power in the local market, instead of flowing to Amazon or global platforms
+- Bridges the digital gap for merchants struggling to compete with e-commerce
+- Reduces unnecessary trips, saving time and lowering environmental footprint
+
+For this reason, our strategy begins with the support of the **ESCE (National Confederation of Greek Commerce)** — a body representing the interests of Greek retail that shares our vision for strengthening the local market.
+
+**Every successful search is a sale for a local merchant that would otherwise have been lost.**
+
+---
+
+## The Technology
 
 - **Frontend:** React Native (iOS & Android)
 - **Backend:** Node.js — product search & availability API
-- **AI layer:** LLM για natural language query parsing & προτάσεις παρόμοιων προϊόντων
+- **AI layer:** Fine-tuned LLM trained on the language of retail. Understands how people actually talk about the things they need.
 - **Maps & Navigation:** Google Maps API (Places, Directions, Distance Matrix)
 
 ---
 
 ## Market
 
-**Φάση 1 — Ελλάδα**
+**Phase 1 — Greece**
 
-- ~200.000 ενεργά τοπικά καταστήματα
-- Αστικά κέντρα (Αθήνα, Θεσσαλονίκη) ως πιλότος
-- Χαμηλός ανταγωνισμός στο συγκεκριμένο use case
+- ~200,000 active local stores
+- Urban centers (Athens, Thessaloniki) as pilot
+- Low competition in this specific use case
 
-**Φάση 2 — Διεθνής επέκταση**
+**Phase 2 — International expansion**
 
-- ~6 εκατομμύρια τοπικά καταστήματα στην ΕΕ χωρίς real-time product visibility online
-- Ίδια πλατφόρμα, τοπικά store partnerships
+- ~6 million local stores across the EU with no real-time product visibility online
+- Same platform, local store partnerships
 
 ---
 
-## Επιχειρηματικό Μοντέλο
+## Business Model
 
-Η εφαρμογή είναι **δωρεάν για τους χρήστες**.
+The app is **free for users**.
 
-Τα καταστήματα συμμετέχουν μέσω συνδρομητικών πακέτων:
+Stores participate through subscription packages:
 
-- **Starter** — Βασική παρουσία σε περιορισμένη ακτίνα. Για μικρές επιχειρήσεις που θέλουν να γίνουν ορατές.
-- **Dreamer** — Αυξημένη ορατότητα & AI προτάσεις. Για μικρομεσαίες επιχειρήσεις που θέλουν να αναπτύξουν πελατολόγιο.
-- **Wander** — Προτεραιότητα εμφάνισης & recommended αποτελέσματα. Για μεγάλες εταιρείες ή ταχύτερη ανάπτυξη.
+- **Starter** — Basic visibility within a limited radius. For small businesses that want to be discovered.
+- **Dreamer** — Increased visibility & AI recommendations + **Demand Intelligence**: the store sees what users in their area are searching for but not finding. For growing businesses.
+- **Wander** — Priority placement & recommended results + full Demand Intelligence analytics. For large businesses or accelerated growth.
 
-Τα πακέτα επηρεάζουν την εμπειρία του χρήστη, όχι απλώς τη λίστα καταστημάτων.
+Packages affect the user's experience, not just the store listing.
+
+> Demand Intelligence transforms WalkIn from a discovery tool into a **business intelligence platform**: merchants learn what to stock, based on real local demand.
 
 ---
 
 ## Go-to-Market
 
-**Στρατηγική supply-first:**
+**Supply-first strategy with institutional backing:**
 
-- Στρατολογούμε χειροκίνητα 20–30 καταστήματα σε μία γειτονιά / περιοχή πιλότο
-- Προσφέρουμε δωρεάν onboarding και το Starter πακέτο για τους πρώτους 3 μήνες
-- Μόλις υπάρχει αρκετό stock coverage, ανοίγουμε στους χρήστες της περιοχής
-- Επαναλαμβάνουμε per neighborhood — όχι city-wide από την αρχή
+- Partnership with **ESCE** for access to the local merchant network — their endorsement drastically reduces onboarding friction
+- ESCE has every reason to participate: WalkIn actively strengthens the retail sector it represents
+- We onboard 20–30 stores in one pilot neighborhood with a free Starter package for the first 3 months
+- Once there's enough stock coverage, we open to users in that area
+- We repeat per neighborhood — not city-wide from day one
 
 ---
 
 ## Validation & Traction
 
-- Πραγματοποιήσαμε συνεντεύξεις με χρήστες και τοπικούς εμπόρους
-- Οι έμποροι χάνουν πελάτες γιατί δεν είναι "findable" online για συγκεκριμένα προϊόντα
-- Οι χρήστες έχουν εγκαταλείψει επίσκεψη σε κατάστημα επειδή δεν ήξεραν αν θα βρουν αυτό που ψάχνουν
+- Merchants lose customers because they're not "findable" online for specific products
+- Users have abandoned a store visit because they didn't know if they'd find what they were looking for
 
 ---
 
 ## Next Steps / Roadmap
 
-**Άμεσα (post-hackathon)**
+**Immediate (post-hackathon)**
 
-- Πιλότος σε μία γειτονιά της Αθήνας με 20–30 καταστήματα
-- Store dashboard για manual stock updates
+- Pilot in one Athens neighborhood with 20–30 stores
+- Store dashboard for manual stock updates
 
-**Μεσοπρόθεσμα**
+**Mid-term**
 
-- POS/ERP integrations για αυτόματη ενημέρωση διαθεσιμότητας
-- Επέκταση σε Θεσσαλονίκη
+- POS/ERP integrations for automatic availability updates
+- Expansion to Thessaloniki
 
-**Μακροπρόθεσμα**
+**Long-term**
 
-- Διεθνής επέκταση σε ευρωπαϊκές αγορές
-- B2B API: παροχή local product availability data σε τρίτες πλατφόρμες
+- International expansion across European markets
+- B2B API: providing local product availability data to third-party platforms
 
 ---
 
@@ -233,3 +265,7 @@
 
 - **George Tzimokas** —
 - **Arsenis Tsn** —
+
+---
+
+> *"WalkIn turns 'where can I find it?' into 'I'm on my way.' — a decision to move."*
