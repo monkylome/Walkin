@@ -88,14 +88,17 @@ The interface for stores to manage their items and stock.
 
 | Layer | Choice | Why |
 |---|---|---|
-| Frontend | React + Vite | Fast setup, both apps in one repo |
+| Framework | Next.js (two apps) | Full-stack in one framework — API routes replace a separate Express server, one deployment per app, no CORS setup |
 | Styling | Tailwind CSS | No time for custom CSS |
-| Backend | Node.js + Express | Familiar, fast to write |
 | Database | PostgreSQL | Simple queries, good geo support |
 | Maps | Google Maps JS API | Directions handoff, pins |
 | AI | Claude API (claude-haiku-4-5) | Fast + cheap for query parsing |
 | Auth | JWT (simple, stateless) | No session management overhead |
-| Hosting | Local / localhost | It's a demo |
+| Hosting | Vercel | One-command deploy for Next.js, free tier, instant |
+
+**Repo structure:** Two separate Next.js apps — `consumer` and `store-dashboard`. Each has its own API routes. Shared database, separate deployments.
+
+The consumer app benefits from SSR — search results are fast on first load and indexable. The store dashboard is a logged-in tool, SSR doesn't matter there, but keeping the same stack means no context switching during the build.
 
 ---
 
@@ -157,4 +160,6 @@ That's the demo. Seven steps, proves everything.
 - Which Google Maps API key are we using?
 - Which AI API key — Claude or OpenAI?
 - Do we seed real Athens store names and addresses, or invent them?
-- One repo (monorepo) or two separate repos?
+- Which Google Maps API key are we using?
+- Which AI API key — Claude or OpenAI?
+- Do we seed real Athens store names and addresses, or invent them?
