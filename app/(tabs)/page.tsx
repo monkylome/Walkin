@@ -12,39 +12,21 @@ const categories = ["Tools", "Electronics", "Hardware", "Apparel", "Other"];
 const featuredItems = [
   { name: "DeWalt 20V Drill Kit", store: "ProBuild Supplies", distance: "1.2 km", category: "Tools", accent: "bg-orange-100 text-orange-600" },
   { name: "HDMI Cable 2m", store: "TechStop Kolonaki", distance: "0.7 km", category: "Electronics", accent: "bg-blue-100 text-blue-600" },
-  { name: "Allen Key Set", store: "Papageorgiou Hardware", distance: "0.3 km", category: "Hardware", accent: "bg-zinc-100 text-zinc-600" },
+  { name: "Allen Key Set", store: "Papageorgiou Hardware", distance: "0.3 km", category: "Hardware", accent: "bg-surface text-muted" },
   { name: "Work Gloves L", store: "ProBuild Supplies", distance: "1.2 km", category: "Apparel", accent: "bg-green-100 text-green-600" },
 ];
 
 const stores = [
-  {
-    name: "Papageorgiou Hardware",
-    category: "Hardware",
-    distance: "0.3 km",
-    walkTime: "4 min",
-    itemCount: 8,
-  },
-  {
-    name: "TechStop Kolonaki",
-    category: "Electronics",
-    distance: "0.7 km",
-    walkTime: "9 min",
-    itemCount: 24,
-  },
-  {
-    name: "ProBuild Supplies",
-    category: "Tools",
-    distance: "1.2 km",
-    walkTime: "15 min",
-    itemCount: 15,
-  },
+  { name: "Papageorgiou Hardware", category: "Hardware", distance: "0.3 km", walkTime: "4 min",  itemCount: 8  },
+  { name: "TechStop Kolonaki",     category: "Electronics", distance: "0.7 km", walkTime: "9 min",  itemCount: 24 },
+  { name: "ProBuild Supplies",     category: "Tools",    distance: "1.2 km", walkTime: "15 min", itemCount: 15 },
 ];
 
 export default function HomePage() {
   const greeting = getGreeting();
 
   return (
-    <div className="flex flex-col min-h-full bg-white pb-28">
+    <div className="flex flex-col min-h-full bg-background pb-28">
 
       {/* Header */}
       <div className="px-5 pt-14 pb-5">
@@ -60,20 +42,15 @@ export default function HomePage() {
               {greeting}
             </h1>
           </div>
-          <div className="w-9 h-9 rounded-full bg-zinc-100 flex items-center justify-center text-[13px] font-semibold text-muted select-none">
+          <div className="w-9 h-9 rounded-full bg-surface border border-border flex items-center justify-center text-[13px] font-semibold text-muted select-none">
             A
           </div>
         </div>
 
-        {/* Search CTA → /map */}
+        {/* Search CTA */}
         <Link href="/map">
-          <div className="flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-zinc-50 border border-border active:bg-zinc-100 transition-colors">
-            <svg
-              width="17" height="17" viewBox="0 0 24 24"
-              fill="none" stroke="currentColor" strokeWidth="2"
-              strokeLinecap="round" strokeLinejoin="round"
-              className="text-muted shrink-0"
-            >
+          <div className="flex items-center gap-3 px-4 py-3.5 rounded-2xl bg-surface border border-border active:opacity-80 transition-opacity">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted shrink-0">
               <circle cx="11" cy="11" r="7" />
               <path d="m21 21-4.35-4.35" />
             </svg>
@@ -89,7 +66,7 @@ export default function HomePage() {
 
       {/* Categories */}
       <div className="pb-6">
-        <div className="flex items-center justify-between px-5 mb-3">
+        <div className="px-5 mb-3">
           <span className="text-[11px] font-semibold uppercase tracking-widest text-muted">Browse</span>
         </div>
         <div className="flex gap-2 px-5 overflow-x-auto pb-0.5" style={{ scrollbarWidth: "none" }}>
@@ -99,7 +76,7 @@ export default function HomePage() {
               className={`shrink-0 px-4 py-2 rounded-full text-[13px] font-medium whitespace-nowrap transition-colors border ${
                 i === 0
                   ? "bg-primary text-white border-primary"
-                  : "bg-white text-foreground border-border"
+                  : "bg-background text-foreground border-border"
               }`}
             >
               {label}
@@ -116,10 +93,7 @@ export default function HomePage() {
         </div>
         <div className="flex gap-3 px-5 overflow-x-auto pb-0.5" style={{ scrollbarWidth: "none" }}>
           {featuredItems.map((item) => (
-            <div
-              key={item.name}
-              className="shrink-0 w-44 p-3.5 rounded-2xl border border-border bg-white active:bg-zinc-50 transition-colors"
-            >
+            <div key={item.name} className="shrink-0 w-44 p-3.5 rounded-2xl border border-border bg-surface active:opacity-80 transition-opacity">
               <span className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full mb-2.5 ${item.accent}`}>
                 {item.category}
               </span>
@@ -137,14 +111,10 @@ export default function HomePage() {
           <span className="text-[11px] font-semibold uppercase tracking-widest text-muted">Near you</span>
           <button className="text-[13px] font-medium text-primary">See all</button>
         </div>
-
         <div className="flex flex-col gap-3">
           {stores.map((store) => (
-            <div
-              key={store.name}
-              className="flex items-center gap-3.5 p-4 rounded-2xl border border-border bg-white active:bg-zinc-50 transition-colors"
-            >
-              <div className="w-11 h-11 rounded-xl bg-zinc-50 border border-border flex items-center justify-center shrink-0">
+            <div key={store.name} className="flex items-center gap-3.5 p-4 rounded-2xl border border-border bg-surface active:opacity-80 transition-opacity">
+              <div className="w-11 h-11 rounded-xl bg-background border border-border flex items-center justify-center shrink-0">
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-muted">
                   <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
                   <polyline points="9 22 9 12 15 12 15 22" />

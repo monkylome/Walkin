@@ -1,16 +1,128 @@
 @import "tailwindcss";
 
-@theme {
-  --color-primary: #2563eb;
-  --color-foreground: #111111;
-  --color-muted: #71717a;
-  --color-border: #e4e4e7;
+@theme inline {
+  --color-primary: var(--app-primary);
+  --color-foreground: var(--app-foreground);
+  --color-muted: var(--app-muted);
+  --color-border: var(--app-border);
+  --color-background: var(--app-bg);
+  --color-surface: var(--app-surface);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
 }
 
+/* ── Theme B Light (default) ─────────────────────── */
+:root {
+  --app-bg:         #ffffff;
+  --app-surface:    #f0fdfa;
+  --app-primary:    #0d9488;
+  --app-foreground: #111111;
+  --app-muted:      #71717a;
+  --app-border:     #e4e4e7;
+  --nav-bg:         #111111;
+  --nav-active-bg:  #ffffff;
+  --nav-active-color:   #111111;
+  --nav-inactive-color: #9ca3af;
+}
+
+/* ── Theme A ─────────────────────────────────────── */
+[data-theme="a"] {
+  --app-bg:         #ffffff;
+  --app-surface:    #f8fafc;
+  --app-primary:    #f59e0b;
+  --app-foreground: #0f172a;
+  --app-muted:      #64748b;
+  --app-border:     #e2e8f0;
+  --nav-bg:         #0f172a;
+  --nav-active-bg:  #f59e0b;
+  --nav-active-color:   #0f172a;
+  --nav-inactive-color: #64748b;
+}
+
+/* ── Theme B ─────────────────────────────────────── */
+[data-theme="b"] {
+  --app-bg:         #ffffff;
+  --app-surface:    #f0fdfa;
+  --app-primary:    #0d9488;
+  --app-foreground: #111111;
+  --app-muted:      #71717a;
+  --app-border:     #e4e4e7;
+  --nav-bg:         #111111;
+  --nav-active-bg:  #ffffff;
+  --nav-active-color:   #111111;
+  --nav-inactive-color: #9ca3af;
+}
+
+/* ── Theme C ─────────────────────────────────────── */
+[data-theme="c"] {
+  --app-bg:         #fafaf9;
+  --app-surface:    #f5f5f4;
+  --app-primary:    #16a34a;
+  --app-foreground: #1c1917;
+  --app-muted:      #78716c;
+  --app-border:     #e7e5e4;
+  --nav-bg:         #292524;
+  --nav-active-bg:  #fafaf9;
+  --nav-active-color:   #1c1917;
+  --nav-inactive-color: #a8a29e;
+}
+
+/* ── Dark mode ───────────────────────────────────── */
+[data-mode="dark"] {
+  --app-bg:         #0a0a0a;
+  --app-surface:    #141414;
+  --app-primary:    #14b8a6;
+  --app-foreground: #f5f5f5;
+  --app-muted:      #a1a1aa;
+  --app-border:     #27272a;
+  --nav-bg:         #0a0a0a;
+  --nav-active-bg:  #1f1f1f;
+  --nav-active-color:   #f5f5f5;
+  --nav-inactive-color: #52525b;
+}
+
+[data-theme="a"][data-mode="dark"] {
+  --app-bg:         #0a0e1a;
+  --app-surface:    #0f172a;
+  --app-primary:    #fbbf24;
+  --app-foreground: #f1f5f9;
+  --app-muted:      #94a3b8;
+  --app-border:     #1e293b;
+  --nav-bg:         #020817;
+  --nav-active-bg:  #fbbf24;
+  --nav-active-color:   #0f172a;
+  --nav-inactive-color: #475569;
+}
+
+[data-theme="b"][data-mode="dark"] {
+  --app-bg:         #0a0a0a;
+  --app-surface:    #141414;
+  --app-primary:    #14b8a6;
+  --app-foreground: #f5f5f5;
+  --app-muted:      #a1a1aa;
+  --app-border:     #27272a;
+  --nav-bg:         #0a0a0a;
+  --nav-active-bg:  #1f1f1f;
+  --nav-active-color:   #f5f5f5;
+  --nav-inactive-color: #52525b;
+}
+
+[data-theme="c"][data-mode="dark"] {
+  --app-bg:         #0c0a09;
+  --app-surface:    #1c1917;
+  --app-primary:    #22c55e;
+  --app-foreground: #fafaf9;
+  --app-muted:      #a8a29e;
+  --app-border:     #292524;
+  --nav-bg:         #0c0a09;
+  --nav-active-bg:  #292524;
+  --nav-active-color:   #fafaf9;
+  --nav-inactive-color: #57534e;
+}
+
 body {
-  color: #111111;
+  background-color: var(--app-bg);
+  color: var(--app-foreground);
   font-family: var(--font-geist-sans), system-ui, sans-serif;
   -webkit-tap-highlight-color: transparent;
 }
@@ -19,7 +131,6 @@ body {
   from { transform: translateX(24px); opacity: 0; }
   to   { transform: translateX(0);    opacity: 1; }
 }
-
 @keyframes tabSlideRight {
   from { transform: translateX(-24px); opacity: 0; }
   to   { transform: translateX(0);     opacity: 1; }

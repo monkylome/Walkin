@@ -1,32 +1,142 @@
 "use client";
 
-import { APIProvider, Map, AdvancedMarker } from "@vis.gl/react-google-maps";
+import { useState } from "react";
+import { APIProvider, Map, AdvancedMarker, useMap } from "@vis.gl/react-google-maps";
+import { LocateFixed, LoaderCircle, MapPin } from "lucide-react";
+import BottomSheet, { SheetStore } from "@/app/components/bottom-sheet";
 
 const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!;
 
-const stores = [
-  { id: 1, name: "Papageorgiou Hardware", lat: 37.9792, lng: 23.7404 },
-  { id: 2, name: "TechStop Kolonaki", lat: 37.9768, lng: 23.7432 },
-  { id: 3, name: "ProBuild Supplies", lat: 37.9751, lng: 23.7368 },
+type UserLocation = {
+  position: { lat: number; lng: number };
+};
+
+const stores: SheetStore[] = [
+  {
+    id: 1,
+    name: "Papageorgiou Hardware",
+    category: "Hardware",
+    distance: "0.3 km",
+    walkTime: "4 min",
+    itemCount: 8,
+    items: [
+      { name: "Allen Key Set",     stock: 5 },
+      { name: "Work Gloves L",     stock: 2 },
+      { name: "Masking Tape 50mm", stock: 11 },
+    ],
+  },
+  {
+    id: 2,
+    name: "TechStop Kolonaki",
+    category: "Electronics",
+    distance: "0.7 km",
+    walkTime: "9 min",
+    itemCount: 24,
+    items: [
+      { name: "HDMI Cable 2m",   stock: 7 },
+      { name: "USB-C Hub",        stock: 3 },
+      { name: "Phone Stand",      stock: 1 },
+    ],
+  },
+  {
+    id: 3,
+    name: "ProBuild Supplies",
+    category: "Tools",
+    distance: "1.2 km",
+    walkTime: "15 min",
+    itemCount: 15,
+    items: [
+      { name: "DeWalt 20V Drill",  stock: 3 },
+      { name: "Bosch Circular Saw", stock: 1 },
+      { name: "Safety Goggles",    stock: 8 },
+    ],
+  },
 ];
 
-function StorePin() {
+const positions: Record<number, { lat: number; lng: number }> = {
+  1: { lat: 37.9792, lng: 23.7404 },
+  2: { lat: 37.9768, lng: 23.7432 },
+  3: { lat: 37.9751, lng: 23.7368 },
+};
+
+function StorePin({ active }: { active: boolean }) {
   return (
-    <svg width="32" height="42" viewBox="-3 -3 34 42" fill="none" xmlns="http://www.w3.org/2000/svg">
-      <path
-        d="M14 0C6.268 0 0 6.268 0 14c0 9.333 14 22 14 22S28 23.333 28 14C28 6.268 21.732 0 14 0z"
-        fill="white"
-        stroke="#2563eb"
-        strokeWidth="2"
-      />
-      <circle cx="14" cy="14" r="4" fill="#2563eb" />
-    </svg>
+    <MapPin
+      size={40}
+      fill="white"
+      color={active ? "#1d4ed8" : "#2563eb"}
+      strokeWidth={active ? 2.2 : 1.8}
+      style={{
+        filter: "drop-shadow(0 4px 8px rgb(0 0 0 / 0.25))",
+        transition: "transform 0.15s ease",
+        transform: active ? "scale(1.2)" : "scale(1)",
+      }}
+    />
+  );
+}
+
+function CurrentLocationDot() {
+  return (
+    <div className="h-4 w-4 rounded-full border-2 border-white bg-blue-600 shadow-md" />
+  );
+}
+
+function LocateButton({ onLocated }: { onLocated: (location: UserLocation) => void }) {
+  const map = useMap();
+  const [locating, setLocating] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const centerOnUser = () => {
+    if (!map || locating) return;
+
+    if (!navigator.geolocation) {
+      setError("Location is not available in this browser.");
+      return;
+    }
+
+    setError(null);
+    setLocating(true);
+    navigator.geolocation.getCurrentPosition(
+      ({ coords }) => {
+        const center = { lat: coords.latitude, lng: coords.longitude };
+        onLocated({ position: center });
+        map.panTo(center);
+        map.setZoom(16);
+        setLocating(false);
+      },
+      () => {
+        setError("Location permission was denied.");
+        setLocating(false);
+      },
+      { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 },
+    );
+  };
+
+  return (
+    <button
+      type="button"
+      aria-label="Center map on your location"
+      title={error ?? "Center map on your location"}
+      disabled={!map || locating}
+      onClick={centerOnUser}
+      className="absolute right-4 z-20 flex h-12 w-12 items-center justify-center rounded-full border border-border bg-surface text-primary shadow-lg transition hover:bg-background disabled:cursor-not-allowed disabled:opacity-60"
+      style={{ bottom: "calc(6.75rem + env(safe-area-inset-bottom, 0px))" }}
+    >
+      {locating ? (
+        <LoaderCircle size={21} className="animate-spin" />
+      ) : (
+        <LocateFixed size={21} strokeWidth={2.1} />
+      )}
+    </button>
   );
 }
 
 export default function MapPage() {
+  const [selected, setSelected] = useState<SheetStore | null>(null);
+  const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
+
   return (
-    <div className="h-full w-full">
+    <div className="h-full w-full relative">
       <APIProvider apiKey={API_KEY}>
         <Map
           defaultCenter={{ lat: 37.9775, lng: 23.7400 }}
@@ -34,17 +144,27 @@ export default function MapPage() {
           mapId="walkin-map"
           disableDefaultUI
           style={{ width: "100%", height: "100%" }}
+          onClick={() => setSelected(null)}
         >
+          {userLocation && (
+            <AdvancedMarker position={userLocation.position}>
+              <CurrentLocationDot />
+            </AdvancedMarker>
+          )}
           {stores.map((store) => (
             <AdvancedMarker
               key={store.id}
-              position={{ lat: store.lat, lng: store.lng }}
+              position={positions[store.id]}
+              onClick={() => setSelected(store)}
             >
-              <StorePin />
+              <StorePin active={selected?.id === store.id} />
             </AdvancedMarker>
           ))}
         </Map>
+        <LocateButton onLocated={setUserLocation} />
       </APIProvider>
+
+      <BottomSheet store={selected} onClose={() => setSelected(null)} />
     </div>
   );
 }

@@ -1,38 +1,24 @@
 "use client";
 
+import { Home, MapPin, UserRound, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const tabs = [
+const tabs: { href: string; label: string; Icon: LucideIcon }[] = [
   {
     href: "/",
     label: "Home",
-    icon: (active: boolean) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? "currentColor" : "none"} stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M3 9.5L12 3l9 6.5V20a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V9.5Z" />
-        <path d="M9 21V12h6v9" />
-      </svg>
-    ),
+    Icon: Home,
   },
   {
     href: "/map",
     label: "Map",
-    icon: (active: boolean) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
-        <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z" />
-        <circle cx="12" cy="10" r="2.5" />
-      </svg>
-    ),
+    Icon: MapPin,
   },
   {
     href: "/profile",
     label: "Profile",
-    icon: (active: boolean) => (
-      <svg width="22" height="22" viewBox="0 0 24 24" fill={active ? "currentColor" : "none"} stroke="currentColor" strokeWidth={active ? 2.2 : 1.8} strokeLinecap="round" strokeLinejoin="round">
-        <circle cx="12" cy="8" r="4" />
-        <path d="M4 20c0-4 3.6-7 8-7s8 3 8 7" />
-      </svg>
-    ),
+    Icon: UserRound,
   },
 ];
 
@@ -48,31 +34,41 @@ export default function BottomNav() {
       className="flex justify-center pt-2"
       style={{ paddingBottom: `calc(1.5rem + env(safe-area-inset-bottom, 0px))` }}
     >
-      <nav className="relative flex items-center bg-zinc-900 rounded-full p-2 shadow-lg" style={{ gap: GAP }}>
-        {/* Sliding white indicator */}
+      <nav
+        className="relative flex items-center rounded-full p-2 shadow-lg"
+        style={{ gap: GAP, backgroundColor: "var(--nav-bg)" }}
+      >
+        {/* Sliding indicator */}
         <div
-          className="absolute rounded-full bg-white"
+          className="absolute rounded-full"
           style={{
             width: TAB_W,
             height: TAB_W - 10,
             top: "50%",
+            backgroundColor: "var(--nav-active-bg)",
             transform: `translateY(-50%) translateX(${activeIndex * (TAB_W + GAP)}px)`,
             transition: "transform 0.25s cubic-bezier(0.4, 0, 0.2, 1)",
           }}
         />
-        {tabs.map(({ href, label, icon }) => {
+        {tabs.map(({ href, label, Icon }) => {
           const active = pathname === href;
           return (
             <Link
               key={href}
               href={href}
               aria-label={label}
-              className={`relative z-10 flex items-center justify-center rounded-full transition-colors ${
-                active ? "text-zinc-900" : "text-zinc-400 hover:text-zinc-200"
-              }`}
-              style={{ width: TAB_W, height: TAB_W - 10 }}
+              className="relative z-10 flex items-center justify-center rounded-full transition-colors"
+              style={{
+                width: TAB_W,
+                height: TAB_W - 10,
+                color: active ? "var(--nav-active-color)" : "var(--nav-inactive-color)",
+              }}
             >
-              {icon(active)}
+              <Icon
+                size={22}
+                fill="none"
+                strokeWidth={2}
+              />
             </Link>
           );
         })}
