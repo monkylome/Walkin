@@ -4,6 +4,7 @@ import { useState } from "react";
 import { APIProvider, Map, AdvancedMarker, useMap } from "@vis.gl/react-google-maps";
 import { LocateFixed, LoaderCircle, MapPin } from "lucide-react";
 import BottomSheet, { SheetStore } from "@/app/components/bottom-sheet";
+import { useTheme, themes } from "@/app/components/theme-provider";
 
 const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!;
 
@@ -59,12 +60,12 @@ const positions: Record<number, { lat: number; lng: number }> = {
   3: { lat: 37.9751, lng: 23.7368 },
 };
 
-function StorePin({ active }: { active: boolean }) {
+function StorePin({ active, color }: { active: boolean; color: string }) {
   return (
     <MapPin
       size={40}
       fill="white"
-      color={active ? "#1d4ed8" : "#2563eb"}
+      color={color}
       strokeWidth={active ? 2.2 : 1.8}
       style={{
         filter: "drop-shadow(0 4px 8px rgb(0 0 0 / 0.25))",
@@ -77,7 +78,7 @@ function StorePin({ active }: { active: boolean }) {
 
 function CurrentLocationDot() {
   return (
-    <div className="h-4 w-4 rounded-full border-2 border-white bg-blue-600 shadow-md" />
+    <div className="h-4 w-4 rounded-full border-2 border-white bg-primary shadow-md" />
   );
 }
 
@@ -134,6 +135,8 @@ function LocateButton({ onLocated }: { onLocated: (location: UserLocation) => vo
 export default function MapPage() {
   const [selected, setSelected] = useState<SheetStore | null>(null);
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
+  const { theme } = useTheme();
+  const pinColor = themes[theme].accent;
 
   return (
     <div className="h-full w-full relative">
@@ -157,7 +160,7 @@ export default function MapPage() {
               position={positions[store.id]}
               onClick={() => setSelected(store)}
             >
-              <StorePin active={selected?.id === store.id} />
+              <StorePin active={selected?.id === store.id} color={pinColor} />
             </AdvancedMarker>
           ))}
         </Map>

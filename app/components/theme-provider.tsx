@@ -1,64 +1,76 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useContext, useEffect, useSyncExternalStore } from "react";
 
-export type ThemeId = "a" | "b" | "c";
+export type ThemeId = "a" | "b" | "c" | "d" | "e";
 export type ModeId  = "light" | "dark";
 
 export const themes: Record<ThemeId, { name: string; accent: string }> = {
-  a: { name: "Sharp & Urban",       accent: "#f59e0b" },
-  b: { name: "Clean & Confident",   accent: "#0d9488" },
-  c: { name: "Warm & Approachable", accent: "#16a34a" },
+  a: { name: "Midnight",  accent: "#1d4ed8" },
+  b: { name: "Ocean",     accent: "#0369a1" },
+  c: { name: "Sky",       accent: "#0ea5e9" },
+  d: { name: "Cyan",      accent: "#06b6d4" },
+  e: { name: "Mint",      accent: "#0d9488" },
 };
 
-const ThemeContext = createContext<{
-  theme: ThemeId;
-  mode:  ModeId;
-  setTheme: (t: ThemeId) => void;
-  setMode:  (m: ModeId)  => void;
-}>({ theme: "b", mode: "light", setTheme: () => {}, setMode: () => {} });
-
-export function useTheme() {
-  return useContext(ThemeContext);
-}
+const DEFAULT_THEME: ThemeId = "b";
+const DEFAULT_MODE: ModeId   = "light";
 
 function applyToDOM(theme: ThemeId, mode: ModeId) {
   document.documentElement.setAttribute("data-theme", theme);
   document.documentElement.setAttribute("data-mode",  mode);
 }
 
-function getStoredTheme(): ThemeId {
-  if (typeof window === "undefined") return "b";
+function createStorageStore<T extends string>(key: string, fallback: T, valid: (v: string | null) => v is T) {
+  const listeners = new Set<() => void>();
 
-  const stored = localStorage.getItem("theme");
-  return stored === "a" || stored === "b" || stored === "c" ? stored : "b";
+  return {
+    subscribe(cb: () => void) {
+      listeners.add(cb);
+      return () => listeners.delete(cb);
+    },
+    getSnapshot(): T {
+      const v = localStorage.getItem(key);
+      return valid(v) ? v : fallback;
+    },
+    setValue(v: T) {
+      localStorage.setItem(key, v);
+      listeners.forEach(cb => cb());
+    },
+  };
 }
 
-function getStoredMode(): ModeId {
-  if (typeof window === "undefined") return "light";
+function isThemeId(v: string | null): v is ThemeId { return v === "a" || v === "b" || v === "c" || v === "d" || v === "e"; }
+function isModeId(v: string | null): v is ModeId   { return v === "light" || v === "dark"; }
 
-  return localStorage.getItem("mode") === "dark" ? "dark" : "light";
+const themeStore = createStorageStore("theme", DEFAULT_THEME, isThemeId);
+const modeStore  = createStorageStore("mode",  DEFAULT_MODE,  isModeId);
+
+const ThemeContext = createContext<{
+  theme: ThemeId;
+  mode:  ModeId;
+  setTheme: (t: ThemeId) => void;
+  setMode:  (m: ModeId)  => void;
+}>({ theme: DEFAULT_THEME, mode: DEFAULT_MODE, setTheme: () => {}, setMode: () => {} });
+
+export function useTheme() {
+  return useContext(ThemeContext);
 }
 
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setThemeState] = useState<ThemeId>(getStoredTheme);
-  const [mode,  setModeState]  = useState<ModeId>(getStoredMode);
+  const theme = useSyncExternalStore(themeStore.subscribe, themeStore.getSnapshot, () => DEFAULT_THEME);
+  const mode  = useSyncExternalStore(modeStore.subscribe,  modeStore.getSnapshot,  () => DEFAULT_MODE);
 
   useEffect(() => {
-    localStorage.setItem("theme", theme);
     applyToDOM(theme, mode);
   }, [theme, mode]);
 
-  useEffect(() => {
-    localStorage.setItem("mode", mode);
-  }, [mode]);
-
   function setTheme(t: ThemeId) {
-    setThemeState(t);
+    themeStore.setValue(t);
   }
 
   function setMode(m: ModeId) {
-    setModeState(m);
+    modeStore.setValue(m);
   }
 
   return (
