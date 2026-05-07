@@ -192,3 +192,9 @@ body {
 
 .tab-slide-left  { animation: tabSlideLeft  0.22s cubic-bezier(0.4, 0, 0.2, 1); }
 .tab-slide-right { animation: tabSlideRight 0.22s cubic-bezier(0.4, 0, 0.2, 1); }
+
+@keyframes searchSlideUp {
+  from { transform: translateY(32px); opacity: 0; }
+  to   { transform: translateY(0);    opacity: 1; }
+}
+.search-slide-up { animation: searchSlideUp 0.28s cubic-bezier(0.32, 0.72, 0, 1); }

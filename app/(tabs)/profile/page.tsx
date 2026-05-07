@@ -1,7 +1,19 @@
+import Link from "next/link";
+import { Hammer, Zap, Wrench, Shirt, Package, type LucideIcon } from "lucide-react";
+import { toSlug } from "@/app/lib/items";
+
+const categoryIcon: Record<string, LucideIcon> = {
+  Tools:       Hammer,
+  Electronics: Zap,
+  Hardware:    Wrench,
+  Apparel:     Shirt,
+  Other:       Package,
+};
+
 const savedItems = [
-  { name: "DeWalt 20V Drill Kit", store: "ProBuild Supplies", distance: "1.2 km", category: "Tools", accent: "bg-blue-100 text-blue-600" },
-  { name: "HDMI Cable 2m", store: "TechStop Kolonaki", distance: "0.7 km", category: "Electronics", accent: "bg-sky-100 text-sky-600" },
-  { name: "Allen Key Set", store: "Papageorgiou Hardware", distance: "0.3 km", category: "Hardware", accent: "bg-surface text-muted" },
+  { name: "DeWalt 20V Drill",  store: "ProBuild Supplies",     distance: "1.2 km", category: "Tools",       accent: "bg-blue-100 text-blue-700"  },
+  { name: "HDMI Cable 2m",     store: "TechStop Kolonaki",     distance: "0.7 km", category: "Electronics", accent: "bg-sky-100 text-sky-700"     },
+  { name: "Allen Key Set",     store: "Papageorgiou Hardware", distance: "0.3 km", category: "Hardware",    accent: "bg-slate-100 text-slate-600" },
 ];
 
 const activity = [
@@ -103,16 +115,22 @@ export default function ProfilePage() {
           <button className="text-[13px] font-medium text-primary">See all</button>
         </div>
         <div className="flex gap-3 px-5 overflow-x-auto pb-0.5" style={{ scrollbarWidth: "none" }}>
-          {savedItems.map((item) => (
-            <div key={item.name} className="shrink-0 w-44 p-3.5 rounded-2xl border border-border bg-surface active:opacity-80 transition-opacity">
+          {savedItems.map((item) => {
+            const Icon = categoryIcon[item.category] ?? Package;
+            return (
+            <Link key={item.name} href={`/item/${toSlug(item.name)}`} className="shrink-0 w-44 p-3.5 rounded-2xl border border-border bg-surface active:opacity-80 transition-opacity block">
+              <div className="w-full h-24 rounded-xl bg-background border border-border flex items-center justify-center mb-3 text-muted">
+                <Icon size={28} strokeWidth={1.5} />
+              </div>
               <span className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full mb-2.5 ${item.accent}`}>
                 {item.category}
               </span>
               <p className="text-[14px] font-semibold text-foreground leading-snug mb-1">{item.name}</p>
               <p className="text-[12px] text-muted truncate">{item.store}</p>
               <p className="text-[12px] font-medium text-primary mt-1">{item.distance}</p>
-            </div>
-          ))}
+            </Link>
+            );
+          })}
         </div>
       </div>
 
