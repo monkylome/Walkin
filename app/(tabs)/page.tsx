@@ -3,7 +3,7 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { Hammer, Zap, Wrench, Shirt, Package, type LucideIcon } from "lucide-react";
-import { allItems, toSlug, type Item } from "@/app/lib/items";
+import { allItems, toSlug, stockStatus, type Item } from "@/app/lib/items";
 
 const categoryIcon: Record<string, LucideIcon> = {
   Tools:       Hammer,
@@ -54,10 +54,19 @@ function ItemRow({ item }: { item: Item }) {
           {nearest.name} · {nearest.distance}
           {extra > 0 && <span className="text-primary"> +{extra} store{extra > 1 ? "s" : ""}</span>}
         </p>
+        {stockStatus(nearest.stock) === "low_stock" && (
+          <p className="text-[11px] font-medium text-amber-600 mt-0.5">Low stock</p>
+        )}
+        {stockStatus(nearest.stock) === "out_of_stock" && (
+          <p className="text-[11px] font-medium text-amber-600 mt-0.5">Not available at nearest</p>
+        )}
       </div>
-      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full shrink-0 ${categoryAccent[item.category] ?? categoryAccent.Other}`}>
-        {item.category}
-      </span>
+      <div className="flex flex-col items-end gap-1 shrink-0">
+        <p className="text-[15px] font-bold text-foreground">€{Math.min(...item.stores.map(s => s.price)).toFixed(2)}</p>
+        <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${categoryAccent[item.category] ?? categoryAccent.Other}`}>
+          {item.category}
+        </span>
+      </div>
     </Link>
   );
 }
