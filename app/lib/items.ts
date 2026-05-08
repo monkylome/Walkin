@@ -1,6 +1,15 @@
 export type StockStatus = "in_stock" | "low_stock" | "out_of_stock";
 export type StoreAvailability = { name: string; distance: string; distanceKm: number; walkTime: string; stock: number; verified: boolean; price: number };
 export type Item = { name: string; category: string; stores: StoreAvailability[] };
+export type StoreSummary = { name: string; category: string; distance: string; distanceKm: number; walkTime: string; inventory: { item: Item; stock: number; price: number }[] };
+
+export const storeMeta: Record<string, { initials: string; color: string; category: string }> = {
+  "Papageorgiou Hardware": { initials: "PH", color: "bg-slate-600",  category: "Hardware"         },
+  "TechStop Kolonaki":     { initials: "TS", color: "bg-sky-600",    category: "Electronics"      },
+  "ProBuild Supplies":     { initials: "PS", color: "bg-blue-700",   category: "Tools"            },
+  "ElectroCity Syntagma":  { initials: "EC", color: "bg-cyan-600",   category: "Electronics"      },
+  "CityBuild Center":      { initials: "CB", color: "bg-indigo-600", category: "Hardware & Tools" },
+};
 
 export function stockStatus(stock: number): StockStatus {
   if (stock === 0) return "out_of_stock";
@@ -54,4 +63,31 @@ export function toSlug(name: string) {
 
 export function itemBySlug(slug: string) {
   return allItems.find((item) => toSlug(item.name) === slug) ?? null;
+}
+
+export function toStoreSlug(name: string) {
+  return name.toLowerCase().replace(/\s+/g, "-").replace(/[^a-z0-9-]/g, "");
+}
+
+export function storeBySlug(slug: string): StoreSummary | null {
+  const name = Object.keys(storeMeta).find((n) => toStoreSlug(n) === slug);
+  if (!name) return null;
+
+  const meta = storeMeta[name];
+  const inventory: StoreSummary["inventory"] = [];
+  let distance = "";
+  let distanceKm = 0;
+  let walkTime = "";
+
+  for (const item of allItems) {
+    const entry = item.stores.find((s) => s.name === name);
+    if (entry) {
+      inventory.push({ item, stock: entry.stock, price: entry.price });
+      distance = entry.distance;
+      distanceKm = entry.distanceKm;
+      walkTime = entry.walkTime;
+    }
+  }
+
+  return { name, category: meta.category, distance, distanceKm, walkTime, inventory };
 }

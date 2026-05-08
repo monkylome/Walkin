@@ -7,6 +7,8 @@ import {
   type PointerEvent as ReactPointerEvent,
   type TouchEvent as ReactTouchEvent,
 } from "react";
+import Link from "next/link";
+import { toStoreSlug } from "@/app/lib/items";
 
 export type SheetStore = {
   id: number;
@@ -296,10 +298,18 @@ export default function BottomSheet({ store, onClose }: Props) {
             </div>
           </div>
 
-          {/* CTA */}
-          <button className="w-full py-3.5 rounded-2xl bg-primary text-white font-semibold text-[15px] active:opacity-80 transition-opacity">
-            Get directions
-          </button>
+          {/* CTAs */}
+          <div className="flex gap-3">
+            <Link
+              href={`/store/${toStoreSlug(store.name)}`}
+              className="flex-1 py-3.5 rounded-2xl border border-border bg-surface text-foreground font-semibold text-[15px] text-center active:opacity-70 transition-opacity"
+            >
+              View store
+            </Link>
+            <button className="flex-1 py-3.5 rounded-2xl bg-primary text-white font-semibold text-[15px] active:opacity-80 transition-opacity">
+              Get directions
+            </button>
+          </div>
         </div>
       </div>
     </>

@@ -4,7 +4,7 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { Hammer, Zap, Wrench, Shirt, Package, type LucideIcon } from "lucide-react";
-import { itemBySlug, stockStatus, stockLabel, stockDot } from "@/app/lib/items";
+import { itemBySlug, storeMeta, toStoreSlug, stockStatus, stockLabel, stockDot } from "@/app/lib/items";
 
 const categoryIcon: Record<string, LucideIcon> = {
   Tools:       Hammer,
@@ -20,14 +20,6 @@ const categoryAccent: Record<string, string> = {
   Hardware:    "bg-slate-100 text-slate-600",
   Apparel:     "bg-violet-100 text-violet-600",
   Other:       "bg-gray-100 text-gray-600",
-};
-
-const storeMeta: Record<string, { initials: string; color: string }> = {
-  "Papageorgiou Hardware": { initials: "PH", color: "bg-slate-600"  },
-  "TechStop Kolonaki":     { initials: "TS", color: "bg-sky-600"    },
-  "ProBuild Supplies":     { initials: "PS", color: "bg-blue-700"   },
-  "ElectroCity Syntagma":  { initials: "EC", color: "bg-cyan-600"   },
-  "CityBuild Center":      { initials: "CB", color: "bg-indigo-600" },
 };
 
 function StoreLogo({ name }: { name: string }) {
@@ -133,7 +125,9 @@ export default function ItemPage() {
                 <div className="flex items-center gap-3">
                   <StoreLogo name={store.name} />
                   <div className="flex-1 min-w-0">
-                    <p className="text-[15px] font-semibold text-foreground truncate leading-tight">{store.name}</p>
+                    <Link href={`/store/${toStoreSlug(store.name)}`} className="text-[15px] font-semibold text-foreground truncate leading-tight block hover:text-primary transition-colors active:opacity-70">
+                      {store.name}
+                    </Link>
                     <p className="text-[12px] text-muted mt-0.5">{store.walkTime} walk · {store.distance}</p>
                   </div>
                   <p className="text-[20px] font-bold text-foreground shrink-0">
