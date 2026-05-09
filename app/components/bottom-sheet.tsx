@@ -7,7 +7,7 @@ import {
   type PointerEvent as ReactPointerEvent,
   type TouchEvent as ReactTouchEvent,
 } from "react";
-import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { toStoreSlug } from "@/app/lib/items";
 
 export type SheetStore = {
@@ -35,6 +35,7 @@ type DragSample = {
 };
 
 export default function BottomSheet({ store, onClose }: Props) {
+  const router    = useRouter();
   const [dragY,   setDragY]   = useState(0);
   const [visible, setVisible] = useState(false);
   const [isDragging, setIsDragging] = useState(false);
@@ -300,12 +301,16 @@ export default function BottomSheet({ store, onClose }: Props) {
 
           {/* CTAs */}
           <div className="flex gap-3">
-            <Link
-              href={`/store/${toStoreSlug(store.name)}`}
-              className="flex-1 py-3.5 rounded-2xl border border-border bg-surface text-foreground font-semibold text-[15px] text-center active:opacity-70 transition-opacity"
+            <button
+              onClick={() => {
+                const slug = toStoreSlug(store.name);
+                dismiss();
+                setTimeout(() => router.push(`/store/${slug}`), 320);
+              }}
+              className="flex-1 py-3.5 rounded-2xl border border-border bg-surface text-foreground font-semibold text-[15px] active:opacity-70 transition-opacity"
             >
               View store
-            </Link>
+            </button>
             <button className="flex-1 py-3.5 rounded-2xl bg-primary text-white font-semibold text-[15px] active:opacity-80 transition-opacity">
               Get directions
             </button>

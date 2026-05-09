@@ -47,7 +47,7 @@ export default function SearchPage() {
     <div className="flex flex-col h-dvh bg-background search-slide-up">
 
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 pt-14 pb-3 shrink-0">
+      <div className="flex items-center gap-3 px-4 pt-safe pb-3 shrink-0">
         <button
           onClick={() => router.back()}
           className="w-9 h-9 flex items-center justify-center rounded-full bg-surface border border-border text-foreground shrink-0 active:opacity-60 transition-opacity"

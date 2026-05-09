@@ -102,7 +102,7 @@ export default function HomePage() {
       <div className="flex flex-col h-full bg-background">
 
         {/* Search bar */}
-        <div className="flex items-center gap-3 px-4 pt-14 pb-3 shrink-0">
+        <div className="flex items-center gap-3 px-4 pt-safe pb-3 shrink-0">
           <button
             onClick={closeSearch}
             className="w-9 h-9 flex items-center justify-center rounded-full bg-surface border border-border text-foreground shrink-0 active:opacity-60 transition-opacity"
@@ -187,7 +187,7 @@ export default function HomePage() {
     <div className="flex flex-col min-h-full bg-background pb-28">
 
       {/* Header */}
-      <div className="px-5 pt-14 pb-5">
+      <div className="px-5 pt-safe pb-5">
         <div className="flex items-center justify-between mb-6">
           <div>
             <div className="flex items-center gap-1.5 mb-1">

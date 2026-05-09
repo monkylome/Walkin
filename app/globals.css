@@ -181,6 +181,12 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Top padding for the topmost element on a screen.
+   24px in normal browser tabs; auto-expands by env(safe-area-inset-top) on PWAs with a notch. */
+.pt-safe {
+  padding-top: calc(1.5rem + env(safe-area-inset-top, 0px));
+}
+
 @keyframes tabSlideLeft {
   from { transform: translateX(24px); opacity: 0; }
   to   { transform: translateX(0);    opacity: 1; }

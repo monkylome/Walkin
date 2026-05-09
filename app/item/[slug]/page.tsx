@@ -4,7 +4,8 @@ import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
 import { Hammer, Zap, Wrench, Shirt, Package, type LucideIcon } from "lucide-react";
-import { itemBySlug, storeMeta, toStoreSlug, stockStatus, stockLabel, stockDot } from "@/app/lib/items";
+import { itemBySlug, storeMeta, toStoreSlug, toSlug, stockStatus, stockLabel, stockDot } from "@/app/lib/items";
+import { useSavedItems } from "@/app/lib/saved-items";
 
 const categoryIcon: Record<string, LucideIcon> = {
   Tools:       Hammer,
@@ -55,8 +56,10 @@ export default function ItemPage() {
   const { slug } = useParams<{ slug: string }>();
   const router   = useRouter();
   const [sortBy, setSortBy] = useState<"distance" | "price">("distance");
+  const { toggle, isSaved } = useSavedItems();
   const item     = itemBySlug(slug);
   const Icon     = item ? (categoryIcon[item.category] ?? Package) : Package;
+  const saved    = item ? isSaved(toSlug(item.name)) : false;
 
   if (!item) {
     return (
@@ -74,7 +77,7 @@ export default function ItemPage() {
     <div className="flex flex-col min-h-dvh bg-background pb-12">
 
       {/* Header */}
-      <div className="flex items-center gap-3 px-4 pt-14 pb-4 shrink-0">
+      <div className="flex items-center justify-between px-4 pt-safe pb-4 shrink-0">
         <button
           onClick={() => router.back()}
           className="w-9 h-9 flex items-center justify-center rounded-full bg-surface border border-border text-foreground shrink-0 active:opacity-60 transition-opacity"
@@ -82,6 +85,15 @@ export default function ItemPage() {
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
             <path d="m15 18-6-6 6-6" />
+          </svg>
+        </button>
+        <button
+          onClick={() => toggle(toSlug(item.name))}
+          className="w-9 h-9 flex items-center justify-center rounded-full bg-surface border border-border shrink-0 active:opacity-60 transition-opacity"
+          aria-label={saved ? "Unsave item" : "Save item"}
+        >
+          <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className={saved ? "text-primary" : "text-foreground"}>
+            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
           </svg>
         </button>
       </div>
