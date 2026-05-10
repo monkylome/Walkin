@@ -3,34 +3,29 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
-import { Hammer, Zap, Wrench, Shirt, Package, type LucideIcon } from "lucide-react";
-import { itemBySlug, storeMeta, toStoreSlug, toSlug, stockStatus, stockLabel, stockDot } from "@/app/lib/items";
+import { Map as MapIcon, List, Package } from "lucide-react";
+import {
+  itemBySlug,
+  storeMeta,
+  toStoreSlug,
+  toSlug,
+  stockStatus,
+  stockLabel,
+  stockDot,
+  directionsUrl,
+  storeLocations,
+} from "@/app/lib/items";
+import { categoryIcon, accentFor } from "@/app/lib/categories";
 import { useSavedItems } from "@/app/lib/saved-items";
-
-const categoryIcon: Record<string, LucideIcon> = {
-  Tools:       Hammer,
-  Electronics: Zap,
-  Hardware:    Wrench,
-  Apparel:     Shirt,
-  Other:       Package,
-};
-
-const categoryAccent: Record<string, string> = {
-  Tools:       "bg-blue-100 text-blue-700",
-  Electronics: "bg-sky-100 text-sky-700",
-  Hardware:    "bg-slate-100 text-slate-600",
-  Apparel:     "bg-violet-100 text-violet-600",
-  Other:       "bg-gray-100 text-gray-600",
-};
-
-function StoreLogo({ name }: { name: string }) {
-  const meta = storeMeta[name] ?? { initials: name.slice(0, 2).toUpperCase(), color: "bg-muted" };
-  return (
-    <div className={`w-10 h-10 rounded-xl ${meta.color} flex items-center justify-center shrink-0`}>
-      <span className="text-[11px] font-bold text-white tracking-wide">{meta.initials}</span>
-    </div>
-  );
-}
+import MapView, { type MapPoint } from "@/app/components/map-view";
+import BottomSheet, { type SheetStore } from "@/app/components/bottom-sheet";
+import { useTheme } from "@/app/components/theme-provider";
+import StoreLogo from "@/app/components/store-logo";
+import {
+  ChevronLeftIcon,
+  BookmarkIcon,
+  MapPinFilledIcon,
+} from "@/app/components/icons";
 
 function LiveBadge({ verified }: { verified: boolean }) {
   if (verified) {
@@ -52,14 +47,52 @@ function LiveBadge({ verified }: { verified: boolean }) {
   );
 }
 
+type ViewMode = "list" | "map";
+
 export default function ItemPage() {
   const { slug } = useParams<{ slug: string }>();
   const router   = useRouter();
   const [sortBy, setSortBy] = useState<"distance" | "price">("distance");
+  const [viewMode, setViewMode] = useState<ViewMode>("list");
+  const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
   const { toggle, isSaved } = useSavedItems();
+  const { togglePicker } = useTheme();
   const item     = itemBySlug(slug);
   const Icon     = item ? (categoryIcon[item.category] ?? Package) : Package;
   const saved    = item ? isSaved(toSlug(item.name)) : false;
+
+  const sortedStores = item
+    ? [...item.stores].sort((a, b) =>
+        sortBy === "price" ? a.price - b.price : a.distanceKm - b.distanceKm
+      )
+    : [];
+
+  const mapPoints: MapPoint[] = item
+    ? item.stores.map((s) => ({
+        kind: "price" as const,
+        id: s.name,
+        position: storeLocations[s.name] ?? { lat: 37.9775, lng: 23.7400 },
+        price: s.price,
+        outOfStock: s.stock === 0,
+      }))
+    : [];
+
+  let selectedSheet: SheetStore | null = null;
+  if (item && selectedStoreId) {
+    const s = item.stores.find((x) => x.name === selectedStoreId);
+    if (s) {
+      const meta = storeMeta[s.name];
+      selectedSheet = {
+        id: 0,
+        name: s.name,
+        category: meta?.category ?? "",
+        distance: s.distance,
+        walkTime: s.walkTime,
+        itemCount: 1,
+        items: [{ name: `${item.name} · €${s.price.toFixed(2)}`, stock: s.stock }],
+      };
+    }
+  }
 
   if (!item) {
     return (
@@ -69,12 +102,12 @@ export default function ItemPage() {
       </div>
     );
   }
-  const sortedStores = [...item.stores].sort((a, b) =>
-    sortBy === "price" ? a.price - b.price : a.distanceKm - b.distanceKm
-  );
+
+  const minPrice = Math.min(...item.stores.map(s => s.price));
+  const maxPrice = Math.max(...item.stores.map(s => s.price));
 
   return (
-    <div className="flex flex-col min-h-dvh bg-background pb-12">
+    <div className="flex flex-col h-dvh bg-background">
 
       {/* Header */}
       <div className="flex items-center justify-between px-4 pt-safe pb-4 shrink-0">
@@ -83,96 +116,149 @@ export default function ItemPage() {
           className="w-9 h-9 flex items-center justify-center rounded-full bg-surface border border-border text-foreground shrink-0 active:opacity-60 transition-opacity"
           aria-label="Go back"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="m15 18-6-6 6-6" />
-          </svg>
+          <ChevronLeftIcon />
         </button>
         <button
           onClick={() => toggle(toSlug(item.name))}
           className="w-9 h-9 flex items-center justify-center rounded-full bg-surface border border-border shrink-0 active:opacity-60 transition-opacity"
           aria-label={saved ? "Unsave item" : "Save item"}
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill={saved ? "currentColor" : "none"} stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" className={saved ? "text-primary" : "text-foreground"}>
-            <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-          </svg>
+          <BookmarkIcon
+            size={16}
+            strokeWidth={2.2}
+            filled={saved}
+            className={saved ? "text-primary" : "text-foreground"}
+          />
         </button>
       </div>
 
-      {/* Hero */}
-      <div className="mx-5 mb-6 h-52 rounded-2xl bg-surface border border-border flex items-center justify-center text-muted">
-        <Icon size={56} strokeWidth={1.2} />
-      </div>
+      {/* Body */}
+      {viewMode === "list" ? (
+        <div className="flex-1 overflow-y-auto pb-24">
+          {/* Hero */}
+          <div className="mx-5 mb-6 h-52 rounded-2xl bg-surface border border-border flex items-center justify-center text-muted">
+            <Icon size={56} strokeWidth={1.2} />
+          </div>
 
-      {/* Item identity */}
-      <div className="px-5 pb-7">
-        <span className={`inline-block text-[11px] font-semibold px-2.5 py-1 rounded-full mb-3 ${categoryAccent[item.category] ?? categoryAccent.Other}`}>
-          {item.category}
-        </span>
-        <h1 className="text-[26px] font-bold tracking-tight text-foreground leading-tight mb-1">
-          {item.name}
-        </h1>
-        <p className="text-[14px] text-muted">
-          Available at {item.stores.length} {item.stores.length === 1 ? "store" : "stores"}
-        </p>
-      </div>
+          {/* Item identity */}
+          <div className="px-5 pb-7">
+            <span className={`inline-block text-[11px] font-semibold px-2.5 py-1 rounded-full mb-3 ${accentFor(item.category)}`}>
+              {item.category}
+            </span>
+            <h1 onClick={togglePicker} className="text-[26px] font-bold tracking-tight text-foreground leading-tight mb-1 select-none">
+              {item.name}
+            </h1>
+            <p className="text-[14px] text-muted">
+              Available at {item.stores.length} {item.stores.length === 1 ? "store" : "stores"}
+            </p>
+          </div>
 
-      {/* Store list */}
-      <div className="px-5">
-        <div className="flex items-center justify-between mb-3">
-          <p className="text-[11px] font-semibold uppercase tracking-widest text-muted">Where to get it</p>
-          <button
-            onClick={() => setSortBy(s => s === "distance" ? "price" : "distance")}
-            className="px-3 py-1.5 rounded-full text-[12px] font-medium bg-foreground text-background transition-opacity active:opacity-70"
-          >
-            {sortBy === "price" ? "Sort by distance" : "Sort by price"}
-          </button>
-        </div>
-        <div className="flex flex-col gap-3">
-          {sortedStores.map((store) => {
-            const status = stockStatus(store.stock);
-            return (
-              <div key={store.name} className="p-4 rounded-2xl border border-border bg-surface">
+          {/* Store list */}
+          <div className="px-5">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-muted">Where to get it</p>
+              <button
+                onClick={() => setSortBy(s => s === "distance" ? "price" : "distance")}
+                className="px-3 py-1.5 rounded-full text-[12px] font-medium bg-foreground text-background transition-opacity active:opacity-70"
+              >
+                {sortBy === "price" ? "Sort by distance" : "Sort by price"}
+              </button>
+            </div>
+            <div className="flex flex-col gap-3">
+              {sortedStores.map((store) => {
+                const status = stockStatus(store.stock);
+                return (
+                  <div key={store.name} className="p-4 rounded-2xl border border-border bg-surface">
+                    <div className="flex items-center gap-3">
+                      <StoreLogo name={store.name} />
+                      <div className="flex-1 min-w-0">
+                        <Link href={`/store/${toStoreSlug(store.name)}`} className="text-[15px] font-semibold text-foreground truncate leading-tight block hover:text-primary transition-colors active:opacity-70">
+                          {store.name}
+                        </Link>
+                        <p className="text-[12px] text-muted mt-0.5">{store.walkTime} walk · {store.distance}</p>
+                      </div>
+                      <p className="text-[20px] font-bold text-foreground shrink-0">
+                        €{store.price.toFixed(2)}
+                      </p>
+                    </div>
 
-                {/* Row 1: logo + store info + price */}
-                <div className="flex items-center gap-3">
-                  <StoreLogo name={store.name} />
-                  <div className="flex-1 min-w-0">
-                    <Link href={`/store/${toStoreSlug(store.name)}`} className="text-[15px] font-semibold text-foreground truncate leading-tight block hover:text-primary transition-colors active:opacity-70">
-                      {store.name}
-                    </Link>
-                    <p className="text-[12px] text-muted mt-0.5">{store.walkTime} walk · {store.distance}</p>
-                  </div>
-                  <p className="text-[20px] font-bold text-foreground shrink-0">
-                    €{store.price.toFixed(2)}
-                  </p>
-                </div>
-
-                {/* Row 2: live badge + stock + map */}
-                <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
-                  <div className="flex items-center gap-3">
-                    <LiveBadge verified={store.verified} />
-                    <div className="flex items-center gap-1.5">
-                      <div className={`w-2 h-2 rounded-full ${stockDot[status]}`} />
-                      <span className="text-[12px] text-muted">{stockLabel[status]}</span>
+                    <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
+                      <div className="flex items-center gap-3">
+                        <LiveBadge verified={store.verified} />
+                        <div className="flex items-center gap-1.5">
+                          <div className={`w-2 h-2 rounded-full ${stockDot[status]}`} />
+                          <span className="text-[12px] text-muted">{stockLabel[status]}</span>
+                        </div>
+                      </div>
+                      <a
+                        href={directionsUrl(store.name)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary text-white text-[13px] font-semibold active:opacity-80 transition-opacity shrink-0"
+                      >
+                        <MapPinFilledIcon />
+                        Directions
+                      </a>
                     </div>
                   </div>
-                  <Link
-                    href="/map"
-                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary text-white text-[13px] font-semibold active:opacity-80 transition-opacity shrink-0"
-                  >
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                      <circle cx="12" cy="10" r="3" />
-                    </svg>
-                    Map
-                  </Link>
-                </div>
-
-              </div>
-            );
-          })}
+                );
+              })}
+            </div>
+          </div>
         </div>
-      </div>
+      ) : (
+        <>
+          {/* Slim item context strip */}
+          <div className="px-5 pb-3 shrink-0">
+            <div className="flex items-center gap-3 p-3 rounded-2xl bg-surface border border-border">
+              <div className="w-10 h-10 rounded-xl bg-background border border-border flex items-center justify-center shrink-0 text-muted">
+                <Icon size={18} strokeWidth={1.5} />
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[14px] font-semibold text-foreground truncate leading-tight">{item.name}</p>
+                <p className="text-[12px] text-muted mt-0.5">
+                  {item.stores.length} stores · {minPrice === maxPrice ? `€${minPrice.toFixed(2)}` : `€${minPrice.toFixed(2)}–€${maxPrice.toFixed(2)}`}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Map */}
+          <div className="flex-1 relative overflow-hidden">
+            <MapView
+              points={mapPoints}
+              selectedId={selectedStoreId}
+              onSelect={setSelectedStoreId}
+              onMapClick={() => setSelectedStoreId(null)}
+            />
+            <BottomSheet store={selectedSheet} onClose={() => setSelectedStoreId(null)} />
+          </div>
+        </>
+      )}
+
+      {/* Floating list↔map toggle */}
+      {!selectedStoreId && (
+        <button
+          onClick={() => {
+            setViewMode(v => v === "list" ? "map" : "list");
+            setSelectedStoreId(null);
+          }}
+          className="fixed left-1/2 -translate-x-1/2 z-30 px-4 py-2.5 rounded-full bg-foreground text-background font-semibold text-[13px] shadow-xl flex items-center gap-2 active:opacity-80 transition-opacity"
+          style={{ bottom: "calc(1.25rem + env(safe-area-inset-bottom, 0px))" }}
+        >
+          {viewMode === "list" ? (
+            <>
+              <MapIcon size={15} strokeWidth={2.4} />
+              Map
+            </>
+          ) : (
+            <>
+              <List size={15} strokeWidth={2.4} />
+              List
+            </>
+          )}
+        </button>
+      )}
 
     </div>
   );

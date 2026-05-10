@@ -1,6 +1,6 @@
 "use client";
 
-import { Home, MapPin, UserRound, type LucideIcon } from "lucide-react";
+import { Home, Store, UserRound, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -11,9 +11,9 @@ const tabs: { href: string; label: string; Icon: LucideIcon }[] = [
     Icon: Home,
   },
   {
-    href: "/map",
-    label: "Map",
-    Icon: MapPin,
+    href: "/stores",
+    label: "Stores",
+    Icon: Store,
   },
   {
     href: "/profile",

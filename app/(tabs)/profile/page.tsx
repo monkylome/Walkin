@@ -1,26 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { Hammer, Zap, Wrench, Shirt, Package, type LucideIcon } from "lucide-react";
 import { allItems, toSlug, toStoreSlug } from "@/app/lib/items";
+import { iconFor, accentFor } from "@/app/lib/categories";
 import { useSavedItems } from "@/app/lib/saved-items";
 import { useAuth } from "@/app/lib/auth";
-
-const categoryIcon: Record<string, LucideIcon> = {
-  Tools:       Hammer,
-  Electronics: Zap,
-  Hardware:    Wrench,
-  Apparel:     Shirt,
-  Other:       Package,
-};
-
-const categoryAccent: Record<string, string> = {
-  Tools:       "bg-blue-100 text-blue-700",
-  Electronics: "bg-sky-100 text-sky-700",
-  Hardware:    "bg-slate-100 text-slate-600",
-  Apparel:     "bg-violet-100 text-violet-600",
-  Other:       "bg-gray-100 text-gray-600",
-};
+import { useTheme } from "@/app/components/theme-provider";
+import {
+  SearchIcon,
+  StoreBuildingIcon,
+  BookmarkIcon,
+  ChevronRightIcon,
+  MapPinSmallIcon,
+} from "@/app/components/icons";
 
 const activity = [
   { icon: "search",   label: 'Searched for "cordless drill"', time: "2h ago"    },
@@ -34,12 +26,11 @@ const stats = [
   { value: "8.3 km", label: "Walked"        },
 ];
 
-function SearchIcon()   { return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="7" /><path d="m21 21-4.35-4.35" /></svg>; }
-function StoreIcon()    { return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" /><polyline points="9 22 9 12 15 12 15 22" /></svg>; }
-function BookmarkIcon() { return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" /></svg>; }
-function ChevronRight() { return <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-muted"><path d="m9 18 6-6-6-6" /></svg>; }
-
-const activityIcon = { search: SearchIcon, store: StoreIcon, bookmark: BookmarkIcon } as const;
+const activityIcon = {
+  search:   () => <SearchIcon size={16} />,
+  store:    () => <StoreBuildingIcon size={16} strokeWidth={2} />,
+  bookmark: () => <BookmarkIcon size={16} />,
+} as const;
 
 const settingsRows = [
   { label: "Notifications", danger: false },
@@ -51,6 +42,7 @@ const settingsRows = [
 export default function ProfilePage() {
   const { saved, toggle } = useSavedItems();
   const { user, signOut } = useAuth();
+  const { togglePicker } = useTheme();
 
   const initials = user?.name
     ? user.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
@@ -64,7 +56,7 @@ export default function ProfilePage() {
       {/* Header */}
       <div className="px-5 pt-safe pb-6">
         <div className="flex items-center justify-between mb-6">
-          <h1 className="text-[22px] font-semibold tracking-tight text-foreground">Profile</h1>
+          <h1 onClick={togglePicker} className="text-[22px] font-semibold tracking-tight text-foreground select-none">Profile</h1>
           <button className="text-[13px] font-medium text-primary">Edit</button>
         </div>
 
@@ -76,9 +68,7 @@ export default function ProfilePage() {
             <p className="text-[18px] font-semibold text-foreground leading-tight">{user?.name ?? ""}</p>
             <p className="text-[12px] text-muted mt-0.5">{user?.email ?? user?.phone ?? ""}</p>
             <div className="flex items-center gap-1.5 mt-1">
-              <svg width="11" height="13" viewBox="0 0 11 13" fill="none" className="text-muted">
-                <path d="M5.5 0C2.46 0 0 2.46 0 5.5c0 3.85 5.5 7.5 5.5 7.5S11 9.35 11 5.5C11 2.46 8.54 0 5.5 0zm0 7.5a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" fill="currentColor" />
-              </svg>
+              <MapPinSmallIcon className="text-muted" />
               <span className="text-[13px] text-muted font-medium">Kolonaki, Athens</span>
             </div>
           </div>
@@ -107,16 +97,14 @@ export default function ProfilePage() {
 
         {savedItems.length === 0 ? (
           <div className="mx-5 py-8 rounded-2xl border border-border bg-surface flex flex-col items-center gap-2">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="text-border">
-              <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-            </svg>
+            <BookmarkIcon size={28} strokeWidth={1.5} className="text-border" />
             <p className="text-[13px] text-muted">No saved items yet</p>
             <p className="text-[12px] text-muted opacity-70">Tap the bookmark on any item to save it</p>
           </div>
         ) : (
           <div className="flex gap-3 px-5 overflow-x-auto pb-0.5" style={{ scrollbarWidth: "none" }}>
             {savedItems.map((item) => {
-              const Icon    = categoryIcon[item.category] ?? Package;
+              const Icon    = iconFor(item.category);
               const nearest = item.stores[0];
               const slug    = toSlug(item.name);
               return (
@@ -125,7 +113,7 @@ export default function ProfilePage() {
                     <div className="w-full h-24 rounded-xl bg-background border border-border flex items-center justify-center mb-3 text-muted">
                       <Icon size={28} strokeWidth={1.5} />
                     </div>
-                    <span className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full mb-2.5 ${categoryAccent[item.category] ?? categoryAccent.Other}`}>
+                    <span className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full mb-2.5 ${accentFor(item.category)}`}>
                       {item.category}
                     </span>
                     <p className="text-[14px] font-semibold text-foreground leading-snug mb-1 pr-6">{item.name}</p>
@@ -139,9 +127,7 @@ export default function ProfilePage() {
                     className="absolute top-3 right-3 w-7 h-7 flex items-center justify-center rounded-full bg-background border border-border text-primary active:opacity-60 transition-opacity"
                     aria-label="Unsave item"
                   >
-                    <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                      <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z" />
-                    </svg>
+                    <BookmarkIcon size={13} filled className="text-primary" />
                   </button>
                 </div>
               );
@@ -186,7 +172,7 @@ export default function ProfilePage() {
               <span className={`text-[15px] font-medium ${danger ? "text-red-500" : "text-foreground"}`}>
                 {label}
               </span>
-              {!danger && <ChevronRight />}
+              {!danger && <ChevronRightIcon className="text-muted" />}
             </button>
           ))}
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useEffect, useSyncExternalStore } from "react";
+import { createContext, useContext, useEffect, useState, useSyncExternalStore } from "react";
 
 export type ThemeId = "a" | "b" | "c" | "d" | "e";
 export type ModeId  = "light" | "dark";
@@ -51,7 +51,10 @@ const ThemeContext = createContext<{
   mode:  ModeId;
   setTheme: (t: ThemeId) => void;
   setMode:  (m: ModeId)  => void;
-}>({ theme: DEFAULT_THEME, mode: DEFAULT_MODE, setTheme: () => {}, setMode: () => {} });
+  pickerOpen: boolean;
+  togglePicker: () => void;
+  closePicker: () => void;
+}>({ theme: DEFAULT_THEME, mode: DEFAULT_MODE, setTheme: () => {}, setMode: () => {}, pickerOpen: false, togglePicker: () => {}, closePicker: () => {} });
 
 export function useTheme() {
   return useContext(ThemeContext);
@@ -60,6 +63,7 @@ export function useTheme() {
 export default function ThemeProvider({ children }: { children: React.ReactNode }) {
   const theme = useSyncExternalStore(themeStore.subscribe, themeStore.getSnapshot, () => DEFAULT_THEME);
   const mode  = useSyncExternalStore(modeStore.subscribe,  modeStore.getSnapshot,  () => DEFAULT_MODE);
+  const [pickerOpen, setPickerOpen] = useState(false);
 
   useEffect(() => {
     applyToDOM(theme, mode);
@@ -73,8 +77,16 @@ export default function ThemeProvider({ children }: { children: React.ReactNode 
     modeStore.setValue(m);
   }
 
+  function togglePicker() {
+    setPickerOpen((v) => !v);
+  }
+
+  function closePicker() {
+    setPickerOpen(false);
+  }
+
   return (
-    <ThemeContext.Provider value={{ theme, mode, setTheme, setMode }}>
+    <ThemeContext.Provider value={{ theme, mode, setTheme, setMode, pickerOpen, togglePicker, closePicker }}>
       {children}
     </ThemeContext.Provider>
   );

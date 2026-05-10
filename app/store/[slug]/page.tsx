@@ -2,7 +2,6 @@
 
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import { Hammer, Zap, Wrench, Shirt, Package, type LucideIcon } from "lucide-react";
 import {
   storeBySlug,
   storeMeta,
@@ -10,20 +9,21 @@ import {
   stockStatus,
   stockLabel,
   stockDot,
+  directionsUrl,
 } from "@/app/lib/items";
-
-const categoryIcon: Record<string, LucideIcon> = {
-  Tools:       Hammer,
-  Electronics: Zap,
-  Hardware:    Wrench,
-  Apparel:     Shirt,
-  Other:       Package,
-};
+import { iconFor } from "@/app/lib/categories";
+import { useTheme } from "@/app/components/theme-provider";
+import DistanceChips from "@/app/components/distance-chips";
+import {
+  ChevronLeftIcon,
+  MapPinFilledIcon,
+} from "@/app/components/icons";
 
 export default function StorePage() {
   const { slug } = useParams<{ slug: string }>();
   const router   = useRouter();
   const store    = storeBySlug(slug);
+  const { togglePicker } = useTheme();
 
   if (!store) {
     return (
@@ -47,9 +47,7 @@ export default function StorePage() {
           className="w-9 h-9 flex items-center justify-center rounded-full bg-surface border border-border text-foreground shrink-0 active:opacity-60 transition-opacity"
           aria-label="Go back"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="m15 18-6-6 6-6" />
-          </svg>
+          <ChevronLeftIcon />
         </button>
       </div>
 
@@ -65,33 +63,11 @@ export default function StorePage() {
         <span className="inline-block text-[11px] font-semibold px-2.5 py-1 rounded-full mb-3 bg-surface border border-border text-muted">
           {store.category}
         </span>
-        <h1 className="text-[26px] font-bold tracking-tight text-foreground leading-tight mb-4">
+        <h1 onClick={togglePicker} className="text-[26px] font-bold tracking-tight text-foreground leading-tight mb-4 select-none">
           {store.name}
         </h1>
 
-        {/* Distance chips */}
-        <div className="flex gap-3">
-          <div className="flex-1 flex items-center gap-2.5 p-3 rounded-2xl bg-surface border border-border">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-primary shrink-0">
-              <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z" />
-              <circle cx="12" cy="10" r="2.5" />
-            </svg>
-            <div>
-              <p className="text-[13px] font-semibold text-foreground">{store.distance}</p>
-              <p className="text-[11px] text-muted">away</p>
-            </div>
-          </div>
-          <div className="flex-1 flex items-center gap-2.5 p-3 rounded-2xl bg-surface border border-border">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" className="text-primary shrink-0">
-              <circle cx="12" cy="12" r="10" />
-              <polyline points="12 6 12 12 16 14" />
-            </svg>
-            <div>
-              <p className="text-[13px] font-semibold text-foreground">{store.walkTime}</p>
-              <p className="text-[11px] text-muted">walk</p>
-            </div>
-          </div>
-        </div>
+        <DistanceChips distance={store.distance} walkTime={store.walkTime} />
       </div>
 
       {/* Inventory */}
@@ -102,7 +78,7 @@ export default function StorePage() {
         <div className="flex flex-col gap-3">
           {store.inventory.map(({ item, stock, price }) => {
             const status = stockStatus(stock);
-            const Icon   = categoryIcon[item.category] ?? Package;
+            const Icon   = iconFor(item.category);
             return (
               <Link
                 key={item.name}
@@ -128,16 +104,15 @@ export default function StorePage() {
 
       {/* Get directions */}
       <div className="px-5 pt-6">
-        <Link
-          href="/map"
+        <a
+          href={directionsUrl(store.name)}
+          target="_blank"
+          rel="noopener noreferrer"
           className="flex items-center justify-center gap-2 w-full py-3.5 rounded-2xl bg-primary text-white font-semibold text-[15px] active:opacity-80 transition-opacity"
         >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-            <circle cx="12" cy="10" r="3" />
-          </svg>
+          <MapPinFilledIcon size={16} />
           Get directions
-        </Link>
+        </a>
       </div>
 
     </div>

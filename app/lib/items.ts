@@ -11,6 +11,20 @@ export const storeMeta: Record<string, { initials: string; color: string; catego
   "CityBuild Center":      { initials: "CB", color: "bg-indigo-600", category: "Hardware & Tools" },
 };
 
+export const storeLocations: Record<string, { lat: number; lng: number }> = {
+  "Papageorgiou Hardware": { lat: 37.9792, lng: 23.7404 },
+  "TechStop Kolonaki":     { lat: 37.9768, lng: 23.7432 },
+  "ProBuild Supplies":     { lat: 37.9751, lng: 23.7368 },
+  "ElectroCity Syntagma":  { lat: 37.9755, lng: 23.7348 },
+  "CityBuild Center":      { lat: 37.9780, lng: 23.7385 },
+};
+
+export function directionsUrl(storeName: string) {
+  const loc = storeLocations[storeName];
+  const q = loc ? `${loc.lat},${loc.lng}` : encodeURIComponent(`${storeName}, Athens`);
+  return `https://www.google.com/maps/dir/?api=1&destination=${q}`;
+}
+
 export function stockStatus(stock: number): StockStatus {
   if (stock === 0) return "out_of_stock";
   if (stock <= 3)  return "low_stock";
