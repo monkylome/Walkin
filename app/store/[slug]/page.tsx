@@ -14,6 +14,7 @@ import {
 import { iconFor } from "@/app/lib/categories";
 import { useTheme } from "@/app/components/theme-provider";
 import DistanceChips from "@/app/components/distance-chips";
+import { LiveBadge, FeaturedBadge, VerifiedTick } from "@/app/components/store-badges";
 import {
   ChevronLeftIcon,
   MapPinFilledIcon,
@@ -34,7 +35,7 @@ export default function StorePage() {
     );
   }
 
-  const meta        = storeMeta[store.name] ?? { initials: store.name.slice(0, 2).toUpperCase(), color: "bg-muted", category: "" };
+  const meta        = storeMeta[store.name] ?? { initials: store.name.slice(0, 2).toUpperCase(), color: "bg-muted", category: "", verified: false, featured: false };
   const inStockCount = store.inventory.filter((e) => e.stock > 0).length;
 
   return (
@@ -60,12 +61,19 @@ export default function StorePage() {
 
       {/* Store identity */}
       <div className="px-5 pb-6">
-        <span className="inline-block text-[11px] font-semibold px-2.5 py-1 rounded-full mb-3 bg-surface border border-border text-muted">
-          {store.category}
-        </span>
-        <h1 onClick={togglePicker} className="text-[26px] font-bold tracking-tight text-foreground leading-tight mb-4 select-none">
-          {store.name}
-        </h1>
+        <div className="flex flex-wrap items-center gap-2 mb-3">
+          <span className="inline-block text-[11px] font-semibold px-2.5 py-1 rounded-full bg-surface border border-border text-muted">
+            {store.category}
+          </span>
+          {meta.featured && <FeaturedBadge />}
+          {meta.verified && <LiveBadge />}
+        </div>
+        <div className="mb-4 flex min-w-0 items-center gap-2">
+          <h1 onClick={togglePicker} className="text-[26px] font-bold tracking-tight text-foreground leading-tight select-none">
+            {store.name}
+          </h1>
+          {meta.verified && <VerifiedTick />}
+        </div>
 
         <DistanceChips distance={store.distance} walkTime={store.walkTime} />
       </div>

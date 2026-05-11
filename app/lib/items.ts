@@ -1,14 +1,16 @@
 export type StockStatus = "in_stock" | "low_stock" | "out_of_stock";
-export type StoreAvailability = { name: string; distance: string; distanceKm: number; walkTime: string; stock: number; verified: boolean; price: number };
+export type StoreAvailability = { name: string; distance: string; distanceKm: number; walkTime: string; stock: number; price: number };
 export type Item = { name: string; category: string; stores: StoreAvailability[] };
 export type StoreSummary = { name: string; category: string; distance: string; distanceKm: number; walkTime: string; inventory: { item: Item; stock: number; price: number }[] };
 
-export const storeMeta: Record<string, { initials: string; color: string; category: string }> = {
-  "Papageorgiou Hardware": { initials: "PH", color: "bg-slate-600",  category: "Hardware"         },
-  "TechStop Kolonaki":     { initials: "TS", color: "bg-sky-600",    category: "Electronics"      },
-  "ProBuild Supplies":     { initials: "PS", color: "bg-blue-700",   category: "Tools"            },
-  "ElectroCity Syntagma":  { initials: "EC", color: "bg-cyan-600",   category: "Electronics"      },
-  "CityBuild Center":      { initials: "CB", color: "bg-indigo-600", category: "Hardware & Tools" },
+export type StoreMeta = { initials: string; color: string; category: string; verified: boolean; featured: boolean };
+
+export const storeMeta: Record<string, StoreMeta> = {
+  "Papageorgiou Hardware": { initials: "PH", color: "bg-slate-600",  category: "Hardware",         verified: true,  featured: false },
+  "TechStop Kolonaki":     { initials: "TS", color: "bg-sky-600",    category: "Electronics",      verified: true,  featured: true  },
+  "ProBuild Supplies":     { initials: "PS", color: "bg-blue-700",   category: "Tools",            verified: false, featured: false },
+  "ElectroCity Syntagma":  { initials: "EC", color: "bg-cyan-600",   category: "Electronics",      verified: true,  featured: false },
+  "CityBuild Center":      { initials: "CB", color: "bg-indigo-600", category: "Hardware & Tools", verified: false, featured: false },
 };
 
 export const storeLocations: Record<string, { lat: number; lng: number }> = {
@@ -43,11 +45,11 @@ export const stockDot: Record<StockStatus, string> = {
   out_of_stock: "bg-amber-400",
 };
 
-const PH = (stock: number, price: number, verified = true)  => ({ name: "Papageorgiou Hardware", distance: "0.3 km", distanceKm: 0.3, walkTime: "4 min",  stock, verified, price });
-const TS = (stock: number, price: number, verified = true)  => ({ name: "TechStop Kolonaki",     distance: "0.7 km", distanceKm: 0.7, walkTime: "9 min",  stock, verified, price });
-const EC = (stock: number, price: number, verified = true)  => ({ name: "ElectroCity Syntagma",  distance: "0.5 km", distanceKm: 0.5, walkTime: "6 min",  stock, verified, price });
-const CB = (stock: number, price: number, verified = false) => ({ name: "CityBuild Center",      distance: "0.9 km", distanceKm: 0.9, walkTime: "11 min", stock, verified, price });
-const PS = (stock: number, price: number, verified = false) => ({ name: "ProBuild Supplies",     distance: "1.2 km", distanceKm: 1.2, walkTime: "15 min", stock, verified, price });
+const PH = (stock: number, price: number) => ({ name: "Papageorgiou Hardware", distance: "0.3 km", distanceKm: 0.3, walkTime: "4 min",  stock, price });
+const TS = (stock: number, price: number) => ({ name: "TechStop Kolonaki",     distance: "0.7 km", distanceKm: 0.7, walkTime: "9 min",  stock, price });
+const EC = (stock: number, price: number) => ({ name: "ElectroCity Syntagma",  distance: "0.5 km", distanceKm: 0.5, walkTime: "6 min",  stock, price });
+const CB = (stock: number, price: number) => ({ name: "CityBuild Center",      distance: "0.9 km", distanceKm: 0.9, walkTime: "11 min", stock, price });
+const PS = (stock: number, price: number) => ({ name: "ProBuild Supplies",     distance: "1.2 km", distanceKm: 1.2, walkTime: "15 min", stock, price });
 
 export const allItems: Item[] = [
   { name: "Allen Key Set",      category: "Hardware",    stores: [PH(5, 8.50), CB(3, 9.20)] },

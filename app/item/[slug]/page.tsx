@@ -21,31 +21,12 @@ import MapView, { type MapPoint } from "@/app/components/map-view";
 import BottomSheet, { type SheetStore } from "@/app/components/bottom-sheet";
 import { useTheme } from "@/app/components/theme-provider";
 import StoreLogo from "@/app/components/store-logo";
+import { VerifiedTick } from "@/app/components/store-badges";
 import {
   ChevronLeftIcon,
   BookmarkIcon,
   MapPinFilledIcon,
 } from "@/app/components/icons";
-
-function LiveBadge({ verified }: { verified: boolean }) {
-  if (verified) {
-    return (
-      <span className="flex items-center gap-1.5">
-        <span className="relative flex h-2 w-2">
-          <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-          <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
-        </span>
-        <span className="text-[12px] font-medium text-emerald-600">Live inventory</span>
-      </span>
-    );
-  }
-  return (
-    <span className="flex items-center gap-1.5">
-      <span className="w-2 h-2 rounded-full bg-border" />
-      <span className="text-[12px] text-muted">Standard</span>
-    </span>
-  );
-}
 
 type ViewMode = "list" | "map";
 
@@ -74,6 +55,7 @@ export default function ItemPage() {
         position: storeLocations[s.name] ?? { lat: 37.9775, lng: 23.7400 },
         price: s.price,
         outOfStock: s.stock === 0,
+        featured: storeMeta[s.name]?.featured ?? false,
       }))
     : [];
 
@@ -88,8 +70,8 @@ export default function ItemPage() {
         category: meta?.category ?? "",
         distance: s.distance,
         walkTime: s.walkTime,
-        itemCount: 1,
-        items: [{ name: `${item.name} · €${s.price.toFixed(2)}`, stock: s.stock }],
+        caption: `€${s.price.toFixed(2)} · ${s.stock > 0 ? `${s.stock} left` : "Out of stock"}`,
+        verified: meta?.verified ?? false,
       };
     }
   }
@@ -172,9 +154,12 @@ export default function ItemPage() {
                     <div className="flex items-center gap-3">
                       <StoreLogo name={store.name} />
                       <div className="flex-1 min-w-0">
-                        <Link href={`/store/${toStoreSlug(store.name)}`} className="text-[15px] font-semibold text-foreground truncate leading-tight block hover:text-primary transition-colors active:opacity-70">
-                          {store.name}
-                        </Link>
+                        <div className="flex min-w-0 items-center gap-1.5">
+                          <Link href={`/store/${toStoreSlug(store.name)}`} className="text-[15px] font-semibold text-foreground truncate leading-tight hover:text-primary transition-colors active:opacity-70">
+                            {store.name}
+                          </Link>
+                          {storeMeta[store.name]?.verified && <VerifiedTick />}
+                        </div>
                         <p className="text-[12px] text-muted mt-0.5">{store.walkTime} walk · {store.distance}</p>
                       </div>
                       <p className="text-[20px] font-bold text-foreground shrink-0">
@@ -183,12 +168,9 @@ export default function ItemPage() {
                     </div>
 
                     <div className="flex items-center justify-between mt-3 pt-3 border-t border-border">
-                      <div className="flex items-center gap-3">
-                        <LiveBadge verified={store.verified} />
-                        <div className="flex items-center gap-1.5">
-                          <div className={`w-2 h-2 rounded-full ${stockDot[status]}`} />
-                          <span className="text-[12px] text-muted">{stockLabel[status]}</span>
-                        </div>
+                      <div className="flex items-center gap-1.5">
+                        <div className={`w-2 h-2 rounded-full ${stockDot[status]}`} />
+                        <span className="text-[12px] text-muted">{stockLabel[status]}</span>
                       </div>
                       <a
                         href={directionsUrl(store.name)}

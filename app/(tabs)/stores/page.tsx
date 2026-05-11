@@ -79,6 +79,7 @@ export default function StoresPage() {
     position: storeLocations[s.name] ?? { lat: 37.9775, lng: 23.7400 },
     initials: s.initials,
     accentClass: s.accentClass,
+    featured: storeMeta[s.name]?.featured ?? false,
   }));
 
   let selectedSheet: SheetStore | null = null;
@@ -91,8 +92,8 @@ export default function StoresPage() {
         category: s.category,
         distance: s.distance,
         walkTime: s.walkTime,
-        itemCount: s.items.length,
-        items: s.items,
+        caption: `${s.items.length} item${s.items.length !== 1 ? "s" : ""} listed`,
+        verified: storeMeta[s.name]?.verified ?? false,
       };
     }
   }
