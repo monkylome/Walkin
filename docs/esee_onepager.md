@@ -41,12 +41,11 @@
 - Institutional backing που μειώνει το friction του onboarding
 - Κοινή ανακοίνωση προς τα μέλη της ΕΣΕΕ
 
-**Ό,τι κερδίζει ο έμπορος, κερδίζει η τοπική αγορά.**
+**Το WalkIn μετατρέπει το 'πού θα το βρω;' σε 'πάω να το πάρω.' — απόφαση κίνησης.**
 
 ---
 
 ## Ομάδα
 
-**George Tzimokas & Arsen Tsntsgoukian**  
-📧 georgetzimokas@gmail.com
+**George Tzimokas & Arsen Tsntsgoukian**
 
