@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { allItems } from "@/app/lib/items";
 import EmptyState from "@/app/components/empty-state";
 import ItemCard from "@/app/components/item-card";
@@ -34,10 +34,22 @@ function removeFromHistory(term: string) {
 const categories = ["All", "Medicine", "Tools", "Electronics", "Hardware"];
 
 export default function SearchPage() {
+  return (
+    <Suspense>
+      <SearchContent />
+    </Suspense>
+  );
+}
+
+function SearchContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
-  const [activeCategory, setActiveCategory] = useState("All");
+  const paramCat = searchParams.get("category");
+  const [activeCategory, setActiveCategory] = useState(
+    paramCat && categories.includes(paramCat) ? paramCat : "All"
+  );
   const [history, setHistory] = useState<string[]>(getHistory);
 
   useEffect(() => {
@@ -47,11 +59,12 @@ export default function SearchPage() {
 
   const q = query.trim().toLowerCase();
   const hasQuery = q.length > 0;
+  const hasCategoryFilter = activeCategory !== "All";
 
-  const filteredItems = hasQuery
+  const filteredItems = (hasQuery || hasCategoryFilter)
     ? allItems.filter((item) => {
         const matchesCat = activeCategory === "All" || item.category === activeCategory;
-        const matchesQuery = item.name.toLowerCase().includes(q) ||
+        const matchesQuery = !hasQuery || item.name.toLowerCase().includes(q) ||
           item.stores.some(s => s.name.toLowerCase().includes(q));
         return matchesCat && matchesQuery;
       })
@@ -109,7 +122,7 @@ export default function SearchPage() {
 
       {/* Results / History */}
       <div className="flex-1 overflow-y-auto">
-        {!hasQuery ? (
+        {!hasQuery && !hasCategoryFilter ? (
           history.length === 0 ? (
             <EmptyState
               icon={<SearchIcon size={40} strokeWidth={1.4} />}

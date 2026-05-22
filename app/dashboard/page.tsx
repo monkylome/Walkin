@@ -29,11 +29,11 @@ const metrics = [
 ];
 
 const inventory = [
-  { name: "DeWalt 20V Drill", category: "Tools", stock: 2, price: "€179.00", status: "Low stock" },
-  { name: "USB-C Hub", category: "Electronics", stock: 3, price: "€24.99", status: "Low stock" },
-  { name: "Allen Key Set", category: "Hardware", stock: 5, price: "€8.50", status: "Live" },
-  { name: "Safety Goggles", category: "Tools", stock: 0, price: "€9.99", status: "Out" },
-  { name: "Masking Tape 50mm", category: "Hardware", stock: 11, price: "€3.20", status: "Live" },
+  { name: "Anker USB-C Charger 20W", category: "Electronics", stock: 8, price: "€14.99", status: "Live" },
+  { name: "Xiaomi Power Bank 10000mAh", category: "Electronics", stock: 3, price: "€24.99", status: "Low stock" },
+  { name: "JBL Tune 110 Earbuds", category: "Electronics", stock: 7, price: "€11.50", status: "Live" },
+  { name: "UGREEN HDMI Cable 2m", category: "Electronics", stock: 9, price: "€12.99", status: "Live" },
+  { name: "Energizer AA Batteries 4pcs", category: "Electronics", stock: 15, price: "€6.20", status: "Live" },
 ];
 
 const activity = [

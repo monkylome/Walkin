@@ -5,7 +5,7 @@ export const storeMeta: Record<string, StoreMeta> = {
   "TechStop Kolonaki":     { initials: "TS", color: "bg-sky-600",    category: "Electronics",      verified: true,  featured: true  },
   "ProBuild Supplies":     { initials: "PS", color: "bg-blue-700",   category: "Tools",            verified: false, featured: false },
   "ElectroCity Syntagma":  { initials: "EC", color: "bg-cyan-600",   category: "Electronics",      verified: true,  featured: false },
-  "CityBuild Center":      { initials: "CB", color: "bg-indigo-600", category: "Hardware & Tools", verified: false, featured: false },
+  "CityBuild Center":      { initials: "CB", color: "bg-indigo-600", category: "Hardware",       verified: false, featured: false },
   "Farmakeio Kolonaki":    { initials: "FK", color: "bg-emerald-600", category: "Medicine",        verified: true,  featured: true  },
   "YgeiaCare Pharmacy":    { initials: "YC", color: "bg-teal-600",   category: "Medicine",         verified: true,  featured: false },
 };
