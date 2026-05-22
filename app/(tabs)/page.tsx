@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
-import { allItems, toSlug, toStoreSlug } from "@/app/lib/items";
+import Image from "next/image";
+import { allItems, storeMeta, toSlug, toStoreSlug } from "@/app/lib/items";
 import { iconFor, accentFor } from "@/app/lib/categories";
 import { useTheme } from "@/app/components/theme-provider";
 import StoreLogo from "@/app/components/store-logo";
@@ -14,16 +16,24 @@ function getGreeting() {
   return "Good evening";
 }
 
-const featuredItems = allItems.slice(0, 4);
+const categories = ["Medicine", "Tools", "Electronics", "Hardware", "Other"];
 
-const nearbyStores = [
-  { name: "Papageorgiou Hardware", category: "Hardware",    distance: "0.3 km", walkTime: "4 min",  itemCount: 8  },
-  { name: "TechStop Kolonaki",     category: "Electronics", distance: "0.7 km", walkTime: "9 min",  itemCount: 24 },
-  { name: "ProBuild Supplies",     category: "Tools",       distance: "1.2 km", walkTime: "15 min", itemCount: 15 },
-];
+const nearbyStores = Object.entries(storeMeta).map(([name, meta]) => {
+  const storeItems = allItems.filter(i => i.stores.some(s => s.name === name));
+  const first = storeItems.flatMap(i => i.stores).find(s => s.name === name);
+  return {
+    name,
+    category: meta.category,
+    distance: first?.distance ?? "",
+    walkTime: first?.walkTime ?? "",
+    itemCount: storeItems.length,
+  };
+}).sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
 
 export default function HomePage() {
   const { togglePicker } = useTheme();
+  const [activeCat, setActiveCat] = useState("Medicine");
+  const featuredItems = allItems.filter(i => i.category === activeCat).slice(0, 6);
   return (
     <div className="flex flex-col min-h-full bg-background pb-28">
 
@@ -59,11 +69,12 @@ export default function HomePage() {
           <span className="text-[11px] font-semibold uppercase tracking-widest text-muted">Browse</span>
         </div>
         <div className="flex gap-2 px-5 overflow-x-auto pb-0.5" style={{ scrollbarWidth: "none" }}>
-          {["Tools", "Electronics", "Hardware", "Apparel", "Other"].map((label, i) => (
+          {categories.map((label) => (
             <button
               key={label}
+              onClick={() => setActiveCat(label)}
               className={`shrink-0 px-4 py-2 rounded-full text-[13px] font-medium whitespace-nowrap transition-colors border ${
-                i === 0
+                activeCat === label
                   ? "bg-primary text-white border-primary"
                   : "bg-background text-foreground border-border"
               }`}
@@ -87,8 +98,12 @@ export default function HomePage() {
             const Icon = iconFor(item.category);
             return (
               <Link key={item.name} href={`/item/${toSlug(item.name)}`} className="shrink-0 w-44 p-3.5 rounded-2xl border border-border bg-surface active:opacity-80 transition-opacity block">
-                <div className="w-full h-24 rounded-xl bg-background border border-border flex items-center justify-center mb-3 text-muted">
-                  <Icon size={28} strokeWidth={1.5} />
+                <div className="w-full aspect-square rounded-xl bg-background border border-border flex items-center justify-center mb-3 text-muted overflow-hidden">
+                  {item.image ? (
+                    <Image src={item.image} alt={item.name} width={176} height={176} className="w-full h-full object-contain" />
+                  ) : (
+                    <Icon size={28} strokeWidth={1.5} />
+                  )}
                 </div>
                 <span className={`inline-block text-[11px] font-semibold px-2 py-0.5 rounded-full mb-2.5 ${accentFor(item.category)}`}>
                   {item.category}
@@ -113,7 +128,7 @@ export default function HomePage() {
         </div>
         <div className="flex flex-col gap-3">
           {nearbyStores.map((store) => (
-            <Link key={store.name} href={`/store/${toStoreSlug(store.name)}`} className="flex items-center gap-3.5 p-4 rounded-2xl border border-border bg-surface active:opacity-80 transition-opacity block">
+            <Link key={store.name} href={`/store/${toStoreSlug(store.name)}`} className="flex items-center gap-3.5 p-4 rounded-2xl border border-border bg-surface active:opacity-80 transition-opacity">
               <StoreLogo name={store.name} size="md" />
               <div className="flex-1 min-w-0">
                 <p className="text-[15px] font-semibold text-foreground truncate leading-tight">{store.name}</p>

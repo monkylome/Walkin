@@ -91,16 +91,16 @@ const invoices = [
 
 export default function PricingSettingsPage() {
   return (
-    <div className="min-h-screen bg-zinc-100 text-zinc-950">
+    <div className="min-h-screen bg-background text-foreground">
       <div className="flex min-h-screen">
-        <aside className="w-64 shrink-0 border-r border-zinc-200 bg-white">
-          <div className="flex h-16 items-center gap-3 border-b border-zinc-200 px-5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-950 text-white">
+        <aside className="w-64 shrink-0 border-r border-border bg-surface">
+          <div className="flex h-16 items-center gap-3 border-b border-border px-5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-foreground text-background">
               <Store size={18} />
             </div>
             <div>
               <p className="text-sm font-semibold leading-tight">WalkIn Store</p>
-              <p className="text-xs text-zinc-500">TechStop Kolonaki</p>
+              <p className="text-xs text-muted">TechStop Kolonaki</p>
             </div>
           </div>
 
@@ -111,8 +111,8 @@ export default function PricingSettingsPage() {
                 href={href}
                 className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium ${
                   active
-                    ? "bg-zinc-950 text-white"
-                    : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
+                    ? "bg-foreground text-background"
+                    : "text-muted hover:bg-background hover:text-foreground"
                 }`}
               >
                 <Icon size={17} />
@@ -121,37 +121,37 @@ export default function PricingSettingsPage() {
             ))}
           </nav>
 
-          <div className="mx-3 mt-4 rounded-lg border border-zinc-200 bg-zinc-50 p-3">
-            <p className="text-xs font-semibold uppercase tracking-wide text-zinc-500">Settings</p>
+          <div className="mx-3 mt-4 rounded-lg border border-border bg-background p-3">
+            <p className="text-xs font-semibold uppercase tracking-wide text-muted">Settings</p>
             <div className="mt-3 space-y-1">
-              <a href="#" className="block rounded-md px-2 py-1.5 text-sm text-zinc-600">Store profile</a>
-              <a href="/dashboard/settings/pricing" className="block rounded-md bg-white px-2 py-1.5 text-sm font-medium text-zinc-950 shadow-sm">
+              <a href="#" className="block rounded-md px-2 py-1.5 text-sm text-muted">Store profile</a>
+              <a href="/dashboard/settings/pricing" className="block rounded-md bg-surface px-2 py-1.5 text-sm font-medium text-foreground shadow-sm">
                 Pricing & billing
               </a>
-              <a href="#" className="block rounded-md px-2 py-1.5 text-sm text-zinc-600">Team access</a>
+              <a href="#" className="block rounded-md px-2 py-1.5 text-sm text-muted">Team access</a>
             </div>
           </div>
         </aside>
 
         <main className="flex-1">
-          <header className="flex h-16 items-center justify-between border-b border-zinc-200 bg-white px-8">
+          <header className="flex h-16 items-center justify-between border-b border-border bg-surface px-8">
             <div>
               <h1 className="text-lg font-semibold tracking-tight">Pricing & billing</h1>
-              <p className="text-xs text-zinc-500">Manage your subscription and store visibility plan.</p>
+              <p className="text-xs text-muted">Manage your subscription and store visibility plan.</p>
             </div>
-            <button className="flex h-9 items-center gap-2 rounded-md border border-zinc-200 bg-white px-3 text-sm font-medium text-zinc-700">
+            <button className="flex h-9 items-center gap-2 rounded-md border border-border bg-surface px-3 text-sm font-medium text-foreground">
               <Receipt size={16} />
               Download invoices
             </button>
           </header>
 
           <div className="space-y-6 p-8">
-            <section className="rounded-lg border border-zinc-200 bg-white p-5">
+            <section className="rounded-lg border border-border bg-surface p-5">
               <div className="flex items-start justify-between">
                 <div>
                   <p className="text-sm font-semibold">Current plan</p>
                   <h2 className="mt-2 text-3xl font-semibold tracking-tight">Growth</h2>
-                  <p className="mt-1 text-sm text-zinc-500">Renews on June 1, 2026. Card ending in 4242.</p>
+                  <p className="mt-1 text-sm text-muted">Renews on June 1, 2026. Card ending in 4242.</p>
                 </div>
                 <div className="rounded-full bg-emerald-50 px-3 py-1 text-xs font-medium text-emerald-700">
                   Active
@@ -159,22 +159,22 @@ export default function PricingSettingsPage() {
               </div>
 
               <div className="mt-5 grid grid-cols-3 gap-4">
-                <div className="rounded-lg border border-zinc-200 p-4">
-                  <div className="flex items-center gap-2 text-sm font-medium text-zinc-600">
+                <div className="rounded-lg border border-border p-4">
+                  <div className="flex items-center gap-2 text-sm font-medium text-muted">
                     <CreditCard size={16} />
                     Monthly spend
                   </div>
                   <p className="mt-2 text-2xl font-semibold">€49</p>
                 </div>
-                <div className="rounded-lg border border-zinc-200 p-4">
-                  <div className="flex items-center gap-2 text-sm font-medium text-zinc-600">
+                <div className="rounded-lg border border-border p-4">
+                  <div className="flex items-center gap-2 text-sm font-medium text-muted">
                     <Zap size={16} />
                     Visibility boost
                   </div>
                   <p className="mt-2 text-2xl font-semibold">2.4x</p>
                 </div>
-                <div className="rounded-lg border border-zinc-200 p-4">
-                  <div className="flex items-center gap-2 text-sm font-medium text-zinc-600">
+                <div className="rounded-lg border border-border p-4">
+                  <div className="flex items-center gap-2 text-sm font-medium text-muted">
                     <Star size={16} />
                     Featured items
                   </div>
@@ -187,9 +187,9 @@ export default function PricingSettingsPage() {
               <div className="mb-4 flex items-end justify-between">
                 <div>
                   <h2 className="text-sm font-semibold">Plans</h2>
-                  <p className="text-xs text-zinc-500">Mock pricing tiers for store operators.</p>
+                  <p className="text-xs text-muted">Mock pricing tiers for store operators.</p>
                 </div>
-                <div className="rounded-md border border-zinc-200 bg-white px-3 py-1.5 text-xs font-medium text-zinc-600">
+                <div className="rounded-md border border-border bg-surface px-3 py-1.5 text-xs font-medium text-muted">
                   Monthly billing
                 </div>
               </div>
@@ -198,34 +198,34 @@ export default function PricingSettingsPage() {
                 {plans.map((plan) => (
                   <div
                     key={plan.name}
-                    className={`rounded-lg border bg-white p-5 ${
-                      plan.featured ? "border-zinc-950 shadow-sm" : "border-zinc-200"
+                    className={`rounded-lg border bg-surface p-5 ${
+                      plan.featured ? "border-foreground shadow-sm" : "border-border"
                     }`}
                   >
                     <div className="flex items-center justify-between">
                       <h3 className="text-sm font-semibold">{plan.name}</h3>
                       {plan.featured && (
-                        <span className="rounded-full bg-zinc-950 px-2 py-1 text-xs font-medium text-white">
+                        <span className="rounded-full bg-foreground px-2 py-1 text-xs font-medium text-background">
                           Current
                         </span>
                       )}
                     </div>
                     <p className="mt-3 text-3xl font-semibold tracking-tight">
-                      {plan.price}<span className="text-sm font-normal text-zinc-500">/mo</span>
+                      {plan.price}<span className="text-sm font-normal text-muted">/mo</span>
                     </p>
-                    <p className="mt-2 min-h-10 text-sm leading-5 text-zinc-500">{plan.description}</p>
+                    <p className="mt-2 min-h-10 text-sm leading-5 text-muted">{plan.description}</p>
                     <button
                       className={`mt-5 h-9 w-full rounded-md text-sm font-medium ${
                         plan.featured
-                          ? "bg-zinc-950 text-white"
-                          : "border border-zinc-200 text-zinc-700"
+                          ? "bg-foreground text-background"
+                          : "border border-border text-foreground"
                       }`}
                     >
                       {plan.featured ? "Manage plan" : "Switch plan"}
                     </button>
                     <div className="mt-5 space-y-3">
                       {plan.features.map((feature) => (
-                        <div key={feature} className="flex items-center gap-2 text-sm text-zinc-600">
+                        <div key={feature} className="flex items-center gap-2 text-sm text-muted">
                           <Check size={15} className="text-emerald-600" />
                           {feature}
                         </div>
@@ -236,16 +236,16 @@ export default function PricingSettingsPage() {
               </div>
             </section>
 
-            <section className="rounded-lg border border-zinc-200 bg-white">
-              <div className="border-b border-zinc-200 px-5 py-4">
+            <section className="rounded-lg border border-border bg-surface">
+              <div className="border-b border-border px-5 py-4">
                 <h2 className="text-sm font-semibold">Recent invoices</h2>
               </div>
-              <div className="divide-y divide-zinc-100">
+              <div className="divide-y divide-border">
                 {invoices.map((invoice) => (
                   <div key={invoice.date} className="flex items-center justify-between px-5 py-4 text-sm">
                     <div>
                       <p className="font-medium">{invoice.date}</p>
-                  <p className="text-xs text-zinc-500">Local plan subscription</p>
+                      <p className="text-xs text-muted">Local plan subscription</p>
                     </div>
                     <div className="flex items-center gap-4">
                       <span className="tabular-nums">{invoice.amount}</span>

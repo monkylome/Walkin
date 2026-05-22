@@ -45,16 +45,16 @@ const activity = [
 
 export default function DashboardPage() {
   return (
-    <div className="min-h-screen bg-zinc-100 text-zinc-950">
+    <div className="min-h-screen bg-background text-foreground">
       <div className="flex min-h-screen">
-        <aside className="w-64 shrink-0 border-r border-zinc-200 bg-white">
-          <div className="flex h-16 items-center gap-3 border-b border-zinc-200 px-5">
-            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-zinc-950 text-white">
+        <aside className="w-64 shrink-0 border-r border-border bg-surface">
+          <div className="flex h-16 items-center gap-3 border-b border-border px-5">
+            <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-foreground text-background">
               <Store size={18} />
             </div>
             <div>
               <p className="text-sm font-semibold leading-tight">WalkIn Store</p>
-              <p className="text-xs text-zinc-500">TechStop Kolonaki</p>
+              <p className="text-xs text-muted">TechStop Kolonaki</p>
             </div>
           </div>
 
@@ -65,8 +65,8 @@ export default function DashboardPage() {
                 href={href}
                 className={`flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium ${
                   active
-                    ? "bg-zinc-950 text-white"
-                    : "text-zinc-600 hover:bg-zinc-100 hover:text-zinc-950"
+                    ? "bg-foreground text-background"
+                    : "text-muted hover:bg-background hover:text-foreground"
                 }`}
               >
                 <Icon size={17} />
@@ -87,17 +87,17 @@ export default function DashboardPage() {
         </aside>
 
         <main className="flex-1">
-          <header className="flex h-16 items-center justify-between border-b border-zinc-200 bg-white px-8">
+          <header className="flex h-16 items-center justify-between border-b border-border bg-surface px-8">
             <div>
               <h1 className="text-lg font-semibold tracking-tight">Store dashboard</h1>
-              <p className="text-xs text-zinc-500">Manage inventory, visibility, and walk-in demand.</p>
+              <p className="text-xs text-muted">Manage inventory, visibility, and walk-in demand.</p>
             </div>
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-72 items-center gap-2 rounded-md border border-zinc-200 bg-zinc-50 px-3 text-sm text-zinc-500">
+              <div className="flex h-9 w-72 items-center gap-2 rounded-md border border-border bg-background px-3 text-sm text-muted">
                 <Search size={16} />
                 Search inventory
               </div>
-              <button className="flex h-9 items-center gap-2 rounded-md bg-zinc-950 px-3 text-sm font-medium text-white">
+              <button className="flex h-9 items-center gap-2 rounded-md bg-foreground px-3 text-sm font-medium text-background">
                 <PackagePlus size={16} />
                 Add item
               </button>
@@ -107,31 +107,31 @@ export default function DashboardPage() {
           <div className="space-y-6 p-8">
             <section className="grid grid-cols-4 gap-4">
               {metrics.map(({ label, value, hint, icon: Icon }) => (
-                <div key={label} className="rounded-lg border border-zinc-200 bg-white p-4">
+                <div key={label} className="rounded-lg border border-border bg-surface p-4">
                   <div className="flex items-center justify-between">
-                    <p className="text-sm font-medium text-zinc-600">{label}</p>
-                    <Icon size={18} className="text-zinc-400" />
+                    <p className="text-sm font-medium text-muted">{label}</p>
+                    <Icon size={18} className="text-muted" />
                   </div>
                   <p className="mt-3 text-2xl font-semibold tracking-tight">{value}</p>
-                  <p className="mt-1 text-xs text-zinc-500">{hint}</p>
+                  <p className="mt-1 text-xs text-muted">{hint}</p>
                 </div>
               ))}
             </section>
 
             <section className="grid grid-cols-[1fr_320px] gap-6">
-              <div className="rounded-lg border border-zinc-200 bg-white">
-                <div className="flex items-center justify-between border-b border-zinc-200 px-5 py-4">
+              <div className="rounded-lg border border-border bg-surface">
+                <div className="flex items-center justify-between border-b border-border px-5 py-4">
                   <div>
                     <h2 className="text-sm font-semibold">Inventory snapshot</h2>
-                    <p className="text-xs text-zinc-500">Live listings visible to nearby customers</p>
+                    <p className="text-xs text-muted">Live listings visible to nearby customers</p>
                   </div>
-                  <button className="rounded-md border border-zinc-200 px-3 py-1.5 text-xs font-medium text-zinc-700">
+                  <button className="rounded-md border border-border px-3 py-1.5 text-xs font-medium text-foreground">
                     View all
                   </button>
                 </div>
 
                 <table className="w-full text-left text-sm">
-                  <thead className="border-b border-zinc-200 text-xs uppercase tracking-wide text-zinc-500">
+                  <thead className="border-b border-border text-xs uppercase tracking-wide text-muted">
                     <tr>
                       <th className="px-5 py-3 font-medium">Item</th>
                       <th className="px-5 py-3 font-medium">Category</th>
@@ -140,11 +140,11 @@ export default function DashboardPage() {
                       <th className="px-5 py-3 font-medium">Status</th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-zinc-100">
+                  <tbody className="divide-y divide-border">
                     {inventory.map((item) => (
                       <tr key={item.name}>
                         <td className="px-5 py-4 font-medium">{item.name}</td>
-                        <td className="px-5 py-4 text-zinc-600">{item.category}</td>
+                        <td className="px-5 py-4 text-muted">{item.category}</td>
                         <td className="px-5 py-4 tabular-nums">{item.stock}</td>
                         <td className="px-5 py-4 tabular-nums">{item.price}</td>
                         <td className="px-5 py-4">
@@ -167,26 +167,26 @@ export default function DashboardPage() {
               </div>
 
               <div className="space-y-6">
-                <div className="rounded-lg border border-zinc-200 bg-white p-5">
+                <div className="rounded-lg border border-border bg-surface p-5">
                   <div className="flex items-center gap-2">
-                    <Clock3 size={17} className="text-zinc-400" />
+                    <Clock3 size={17} className="text-muted" />
                     <h2 className="text-sm font-semibold">Recent activity</h2>
                   </div>
                   <div className="mt-4 space-y-3">
                     {activity.map((entry) => (
-                      <div key={entry} className="border-l-2 border-zinc-200 pl-3 text-sm text-zinc-600">
+                      <div key={entry} className="border-l-2 border-border pl-3 text-sm text-muted">
                         {entry}
                       </div>
                     ))}
                   </div>
                 </div>
 
-                <div className="rounded-lg border border-zinc-200 bg-white p-5">
+                <div className="rounded-lg border border-border bg-surface p-5">
                   <h2 className="text-sm font-semibold">Map visibility</h2>
                   <p className="mt-2 text-3xl font-semibold">94%</p>
-                  <p className="mt-1 text-sm text-zinc-500">of nearby searches show at least one of your items.</p>
-                  <div className="mt-4 h-2 rounded-full bg-zinc-100">
-                    <div className="h-2 w-[94%] rounded-full bg-zinc-950" />
+                  <p className="mt-1 text-sm text-muted">of nearby searches show at least one of your items.</p>
+                  <div className="mt-4 h-2 rounded-full bg-background">
+                    <div className="h-2 w-[94%] rounded-full bg-foreground" />
                   </div>
                 </div>
               </div>

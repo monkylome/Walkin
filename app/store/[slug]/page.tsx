@@ -1,18 +1,13 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import Link from "next/link";
 import {
   storeBySlug,
   storeMeta,
-  toSlug,
-  stockStatus,
-  stockLabel,
-  stockDot,
   directionsUrl,
 } from "@/app/lib/items";
-import { iconFor } from "@/app/lib/categories";
 import { useTheme } from "@/app/components/theme-provider";
+import ItemCard from "@/app/components/item-card";
 import DistanceChips from "@/app/components/distance-chips";
 import { LiveBadge, FeaturedBadge, VerifiedTick } from "@/app/components/store-badges";
 import {
@@ -84,29 +79,15 @@ export default function StorePage() {
           Inventory · {inStockCount} of {store.inventory.length} in stock
         </p>
         <div className="flex flex-col gap-3">
-          {store.inventory.map(({ item, stock, price }) => {
-            const status = stockStatus(stock);
-            const Icon   = iconFor(item.category);
-            return (
-              <Link
-                key={item.name}
-                href={`/item/${toSlug(item.name)}`}
-                className="flex items-center gap-3 p-4 rounded-2xl border border-border bg-surface active:opacity-70 transition-opacity"
-              >
-                <div className="w-10 h-10 rounded-xl bg-background border border-border flex items-center justify-center shrink-0 text-muted">
-                  <Icon size={18} strokeWidth={1.5} />
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-[15px] font-semibold text-foreground truncate leading-tight">{item.name}</p>
-                  <div className="flex items-center gap-1.5 mt-0.5">
-                    <div className={`w-2 h-2 rounded-full ${stockDot[status]}`} />
-                    <span className="text-[12px] text-muted">{stockLabel[status]}{stock > 0 ? ` · ${stock} left` : ""}</span>
-                  </div>
-                </div>
-                <p className="text-[17px] font-bold text-foreground shrink-0">€{price.toFixed(2)}</p>
-              </Link>
-            );
-          })}
+          {store.inventory.map(({ item, stock, price }) => (
+            <ItemCard
+              key={item.name}
+              item={item}
+              subtitle={`${stock > 0 ? `${stock} left` : "Out of stock"}`}
+              price={price}
+              stock={stock}
+            />
+          ))}
         </div>
       </div>
 

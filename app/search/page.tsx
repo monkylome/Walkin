@@ -2,23 +2,43 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { allItems, toSlug, stockStatus } from "@/app/lib/items";
-import { iconFor, accentFor } from "@/app/lib/categories";
+import { allItems } from "@/app/lib/items";
 import EmptyState from "@/app/components/empty-state";
+import ItemCard from "@/app/components/item-card";
 import {
   SearchIcon,
   XCircleIcon,
   ChevronLeftIcon,
+  ClockIcon,
 } from "@/app/components/icons";
 
-const categories = ["All", "Tools", "Electronics", "Hardware", "Apparel"];
+const HISTORY_KEY = "search_history";
+const MAX_HISTORY = 8;
+
+function getHistory(): string[] {
+  if (typeof window === "undefined") return [];
+  try { return JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]"); }
+  catch { return []; }
+}
+
+function addToHistory(term: string) {
+  const h = getHistory().filter(t => t !== term);
+  h.unshift(term);
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(h.slice(0, MAX_HISTORY)));
+}
+
+function removeFromHistory(term: string) {
+  localStorage.setItem(HISTORY_KEY, JSON.stringify(getHistory().filter(t => t !== term)));
+}
+
+const categories = ["All", "Medicine", "Tools", "Electronics", "Hardware"];
 
 export default function SearchPage() {
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [query, setQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState("All");
+  const [history, setHistory] = useState<string[]>(getHistory);
 
   useEffect(() => {
     const id = setTimeout(() => inputRef.current?.focus(), 80);
@@ -26,12 +46,16 @@ export default function SearchPage() {
   }, []);
 
   const q = query.trim().toLowerCase();
-  const filteredItems = allItems.filter((item) => {
-    const matchesCat   = activeCategory === "All" || item.category === activeCategory;
-    const matchesQuery = q === "" || item.name.toLowerCase().includes(q) ||
-      item.stores.some(s => s.name.toLowerCase().includes(q));
-    return matchesCat && matchesQuery;
-  });
+  const hasQuery = q.length > 0;
+
+  const filteredItems = hasQuery
+    ? allItems.filter((item) => {
+        const matchesCat = activeCategory === "All" || item.category === activeCategory;
+        const matchesQuery = item.name.toLowerCase().includes(q) ||
+          item.stores.some(s => s.name.toLowerCase().includes(q));
+        return matchesCat && matchesQuery;
+      })
+    : [];
 
   return (
     <div className="flex flex-col h-dvh bg-background search-slide-up">
@@ -83,9 +107,41 @@ export default function SearchPage() {
 
       <div className="h-px bg-border mx-5 shrink-0" />
 
-      {/* Results */}
+      {/* Results / History */}
       <div className="flex-1 overflow-y-auto">
-        {filteredItems.length === 0 ? (
+        {!hasQuery ? (
+          history.length === 0 ? (
+            <EmptyState
+              icon={<SearchIcon size={40} strokeWidth={1.4} />}
+              title="Search for items"
+              subtitle="Find products across nearby stores"
+            />
+          ) : (
+            <div className="px-5 pt-4 pb-10">
+              <p className="text-[11px] font-semibold uppercase tracking-widest text-muted mb-3">Recent searches</p>
+              <div className="flex flex-col gap-1">
+                {history.map((term) => (
+                  <div key={term} className="flex items-center gap-3">
+                    <button
+                      onClick={() => setQuery(term)}
+                      className="flex-1 flex items-center gap-3 py-2.5 active:opacity-60 transition-opacity text-left min-w-0"
+                    >
+                      <ClockIcon size={16} className="text-muted shrink-0" />
+                      <span className="text-[15px] text-foreground truncate">{term}</span>
+                    </button>
+                    <button
+                      onClick={() => { removeFromHistory(term); setHistory(getHistory()); }}
+                      className="text-muted active:text-foreground p-1 shrink-0"
+                      aria-label={`Remove ${term}`}
+                    >
+                      <XCircleIcon size={16} />
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )
+        ) : filteredItems.length === 0 ? (
           <EmptyState
             icon={<SearchIcon size={40} strokeWidth={1.4} />}
             title="No results"
@@ -96,36 +152,21 @@ export default function SearchPage() {
             <p className="text-[11px] font-semibold uppercase tracking-widest text-muted mb-3">
               {filteredItems.length} item{filteredItems.length !== 1 ? "s" : ""} found
             </p>
-            <div className="flex flex-col rounded-2xl border border-border bg-surface overflow-hidden divide-y divide-border">
+            <div className="flex flex-col gap-3">
               {filteredItems.map((item) => {
                 const nearest = item.stores[0];
-                const extra   = item.stores.length - 1;
-                const Icon = iconFor(item.category);
+                const extra = item.stores.length - 1;
+                const sub = `${nearest.name} · ${nearest.distance}${extra > 0 ? ` +${extra} more` : ""}`;
                 return (
-                  <Link key={item.name} href={`/item/${toSlug(item.name)}`} className="flex items-center gap-3 px-4 py-3.5 active:opacity-70 transition-opacity">
-                    <div className="w-11 h-11 rounded-xl bg-background border border-border flex items-center justify-center shrink-0 text-muted">
-                      <Icon size={18} strokeWidth={1.5} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <p className="text-[15px] font-semibold text-foreground truncate leading-tight">{item.name}</p>
-                      <p className="text-[12px] text-muted mt-0.5 truncate">
-                        {nearest.name} · {nearest.distance}
-                        {extra > 0 && <span className="text-primary"> +{extra} store{extra > 1 ? "s" : ""}</span>}
-                      </p>
-                      {stockStatus(nearest.stock) === "low_stock" && (
-                        <p className="text-[11px] font-medium text-amber-600 mt-0.5">Low stock</p>
-                      )}
-                      {stockStatus(nearest.stock) === "out_of_stock" && (
-                        <p className="text-[11px] font-medium text-amber-600 mt-0.5">Not available at nearest</p>
-                      )}
-                    </div>
-                    <div className="flex flex-col items-end gap-1 shrink-0">
-                      <p className="text-[15px] font-bold text-foreground">€{Math.min(...item.stores.map(s => s.price)).toFixed(2)}</p>
-                      <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${accentFor(item.category)}`}>
-                        {item.category}
-                      </span>
-                    </div>
-                  </Link>
+                  <ItemCard
+                    key={item.name}
+                    item={item}
+                    subtitle={sub}
+                    price={Math.min(...item.stores.map(s => s.price))}
+                    stock={nearest.stock}
+                    showCategory
+                    onClick={() => addToHistory(query.trim())}
+                  />
                 );
               })}
             </div>

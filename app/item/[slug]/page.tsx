@@ -3,6 +3,7 @@
 import { useParams, useRouter } from "next/navigation";
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { Map as MapIcon, List, Package } from "lucide-react";
 import {
   itemBySlug,
@@ -118,8 +119,12 @@ export default function ItemPage() {
       {viewMode === "list" ? (
         <div className="flex-1 overflow-y-auto pb-24">
           {/* Hero */}
-          <div className="mx-5 mb-6 h-52 rounded-2xl bg-surface border border-border flex items-center justify-center text-muted">
-            <Icon size={56} strokeWidth={1.2} />
+          <div className="mx-5 mb-6 h-52 rounded-2xl bg-surface border border-border flex items-center justify-center text-muted overflow-hidden">
+            {item.image ? (
+              <Image src={item.image} alt={item.name} width={320} height={208} className="w-full h-full object-contain" />
+            ) : (
+              <Icon size={56} strokeWidth={1.2} />
+            )}
           </div>
 
           {/* Item identity */}

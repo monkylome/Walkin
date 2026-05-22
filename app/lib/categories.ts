@@ -1,18 +1,18 @@
-import { Hammer, Zap, Wrench, Shirt, Package, type LucideIcon } from "lucide-react";
+import { Hammer, Zap, Wrench, Package, Pill, type LucideIcon } from "lucide-react";
 
 export const categoryIcon: Record<string, LucideIcon> = {
+  Medicine:    Pill,
   Tools:       Hammer,
   Electronics: Zap,
   Hardware:    Wrench,
-  Apparel:     Shirt,
   Other:       Package,
 };
 
 export const categoryAccent: Record<string, string> = {
+  Medicine:    "bg-emerald-100 text-emerald-700",
   Tools:       "bg-blue-100 text-blue-700",
   Electronics: "bg-sky-100 text-sky-700",
   Hardware:    "bg-slate-100 text-slate-600",
-  Apparel:     "bg-violet-100 text-violet-600",
   Other:       "bg-gray-100 text-gray-600",
 };
 
