@@ -4,9 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { allItems, storeMeta, toStoreSlug } from "@/app/lib/items";
 import { useTheme } from "@/app/components/theme-provider";
+import { useNeighborhood } from "@/app/lib/use-neighborhood";
 import StoreLogo from "@/app/components/store-logo";
 import { SearchIcon } from "@/app/components/icons";
-import { Pill, Wrench, Zap, Hammer, MoreHorizontal } from "lucide-react";
+import { Pill, Wrench, Zap, Hammer, MoreHorizontal, MapPin, MapPinOff } from "lucide-react";
 
 const categoryRow = [
   { label: "Medicine", icon: Pill, href: "/search?category=Medicine" },
@@ -47,6 +48,7 @@ const nearbyStores = Object.entries(storeMeta).map(([name, meta]) => {
 
 export default function HomePage() {
   const { togglePicker } = useTheme();
+  const { name: neighborhood, denied, retry } = useNeighborhood();
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
 
   useEffect(() => {
@@ -61,10 +63,17 @@ export default function HomePage() {
       <div className="px-5 pt-safe pb-8">
         {/* Location */}
         <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-border">
-            <span className="text-[13px]">📍</span>
-            <span className="text-[13px] text-foreground font-medium">Kolonaki</span>
-          </div>
+          {denied ? (
+            <button onClick={retry} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-50 border border-red-200 active:opacity-70 transition-opacity">
+              <MapPinOff size={14} className="text-red-500" />
+              <span className="text-[13px] text-red-600 font-medium">Enable location</span>
+            </button>
+          ) : (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-border">
+              <MapPin size={14} className="text-primary" />
+              <span className="text-[13px] text-foreground font-medium">{neighborhood}</span>
+            </div>
+          )}
           <div onClick={togglePicker} className="w-9 h-9 rounded-full bg-surface border border-border flex items-center justify-center text-[13px] font-semibold text-muted select-none cursor-pointer">
             A
           </div>

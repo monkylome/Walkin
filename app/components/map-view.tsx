@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { APIProvider, Map, AdvancedMarker, useMap } from "@vis.gl/react-google-maps";
-import { LocateFixed, LoaderCircle } from "lucide-react";
+import { LocateFixed, LocateOff, LoaderCircle } from "lucide-react";
 
 const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!;
 
@@ -147,11 +147,17 @@ function LocateButton({ onLocated }: { onLocated: (loc: UserLocation) => void })
       title={error ?? "Center map on your location"}
       disabled={!map || locating}
       onClick={centerOnUser}
-      className="absolute right-4 z-20 flex h-12 w-12 items-center justify-center rounded-full border border-border bg-surface text-primary shadow-lg transition hover:bg-background disabled:cursor-not-allowed disabled:opacity-60"
+      className={`absolute right-4 z-20 flex h-12 w-12 items-center justify-center rounded-full border shadow-lg transition disabled:cursor-not-allowed disabled:opacity-60 ${
+        error
+          ? "border-red-200 bg-red-50 text-red-500"
+          : "border-border bg-surface text-primary hover:bg-background"
+      }`}
       style={{ bottom: "calc(7.5rem + env(safe-area-inset-bottom, 0px))" }}
     >
       {locating ? (
         <LoaderCircle size={21} className="animate-spin" />
+      ) : error ? (
+        <LocateOff size={21} strokeWidth={2.1} />
       ) : (
         <LocateFixed size={21} strokeWidth={2.1} />
       )}
