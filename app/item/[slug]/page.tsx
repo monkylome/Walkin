@@ -51,7 +51,7 @@ export default function ItemPage() {
     ? item.stores.map((s) => ({
         kind: "price" as const,
         id: s.name,
-        position: storeLocations[s.name] ?? { lat: 37.9775, lng: 23.7400 },
+        position: storeLocations[s.name] ?? { lat: 38.0345, lng: 23.7530 },
         price: s.price,
         outOfStock: s.stock === 0,
         featured: storeMeta[s.name]?.featured ?? false,

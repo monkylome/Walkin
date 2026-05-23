@@ -11,13 +11,13 @@ export const storeMeta: Record<string, StoreMeta> = {
 };
 
 export const storeLocations: Record<string, { lat: number; lng: number }> = {
-  "Papageorgiou Hardware": { lat: 37.9792, lng: 23.7404 },
-  "TechStop Kolonaki":     { lat: 37.9768, lng: 23.7432 },
-  "ProBuild Supplies":     { lat: 37.9751, lng: 23.7368 },
-  "ElectroCity Syntagma":  { lat: 37.9755, lng: 23.7348 },
-  "CityBuild Center":      { lat: 37.9780, lng: 23.7385 },
-  "Farmakeio Kolonaki":    { lat: 37.9775, lng: 23.7415 },
-  "YgeiaCare Pharmacy":    { lat: 37.9762, lng: 23.7390 },
+  "Papageorgiou Hardware": { lat: 38.0352, lng: 23.7538 },
+  "TechStop Kolonaki":     { lat: 38.0338, lng: 23.7562 },
+  "ProBuild Supplies":     { lat: 38.0361, lng: 23.7505 },
+  "ElectroCity Syntagma":  { lat: 38.0330, lng: 23.7515 },
+  "CityBuild Center":      { lat: 38.0370, lng: 23.7548 },
+  "Farmakeio Kolonaki":    { lat: 38.0342, lng: 23.7525 },
+  "YgeiaCare Pharmacy":    { lat: 38.0355, lng: 23.7570 },
 };
 
 const PH = (stock: number, price: number) => ({ name: "Papageorgiou Hardware", distance: "0.3 km", distanceKm: 0.3, walkTime: "4 min",  stock, price });

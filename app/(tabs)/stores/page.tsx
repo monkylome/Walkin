@@ -76,7 +76,7 @@ export default function StoresPage() {
   const points: MapPoint[] = filteredStores.map((s) => ({
     kind: "store" as const,
     id: s.name,
-    position: storeLocations[s.name] ?? { lat: 37.9775, lng: 23.7400 },
+    position: storeLocations[s.name] ?? { lat: 38.0345, lng: 23.7530 },
     initials: s.initials,
     accentClass: s.accentClass,
     featured: storeMeta[s.name]?.featured ?? false,

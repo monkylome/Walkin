@@ -171,7 +171,7 @@ export default function MapView({
   selectedId,
   onSelect,
   onMapClick,
-  defaultCenter = { lat: 37.9775, lng: 23.7400 },
+  defaultCenter = { lat: 38.0345, lng: 23.7530 },
   defaultZoom = 15,
 }: Props) {
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
