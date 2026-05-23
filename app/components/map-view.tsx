@@ -1,8 +1,9 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { APIProvider, Map, AdvancedMarker, useMap } from "@vis.gl/react-google-maps";
+import { APIProvider, Map, AdvancedMarker, useMap, ColorScheme } from "@vis.gl/react-google-maps";
 import { LocateFixed, LocateOff, LoaderCircle } from "lucide-react";
+import { useMode } from "@/app/components/theme-provider";
 
 const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!;
 
@@ -174,6 +175,7 @@ export default function MapView({
   defaultZoom = 15,
 }: Props) {
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
+  const { effectiveMode } = useMode();
 
   return (
     <div className="h-full w-full relative">
@@ -182,6 +184,7 @@ export default function MapView({
           defaultCenter={defaultCenter}
           defaultZoom={defaultZoom}
           mapId="walkin-map"
+          colorScheme={effectiveMode === "dark" ? ColorScheme.DARK : ColorScheme.LIGHT}
           disableDefaultUI
           style={{ width: "100%", height: "100%" }}
           onClick={onMapClick}

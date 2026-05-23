@@ -6,7 +6,6 @@ import {
   storeMeta,
   directionsUrl,
 } from "@/app/lib/items";
-import { useTheme } from "@/app/components/theme-provider";
 import ItemCard from "@/app/components/item-card";
 import DistanceChips from "@/app/components/distance-chips";
 import { LiveBadge, FeaturedBadge, VerifiedTick } from "@/app/components/store-badges";
@@ -19,7 +18,6 @@ export default function StorePage() {
   const { slug } = useParams<{ slug: string }>();
   const router   = useRouter();
   const store    = storeBySlug(slug);
-  const { togglePicker } = useTheme();
 
   if (!store) {
     return (
@@ -64,7 +62,7 @@ export default function StorePage() {
           {meta.verified && <LiveBadge />}
         </div>
         <div className="mb-4 flex min-w-0 items-center gap-2">
-          <h1 onClick={togglePicker} className="text-[26px] font-bold tracking-tight text-foreground leading-tight select-none">
+          <h1 className="text-[26px] font-bold tracking-tight text-foreground leading-tight">
             {store.name}
           </h1>
           {meta.verified && <VerifiedTick />}

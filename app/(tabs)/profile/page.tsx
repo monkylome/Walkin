@@ -5,13 +5,12 @@ import { allItems, toSlug, toStoreSlug } from "@/app/lib/items";
 import { iconFor, accentFor } from "@/app/lib/categories";
 import { useSavedItems } from "@/app/lib/saved-items";
 import { useAuth } from "@/app/lib/auth";
-import { useTheme } from "@/app/components/theme-provider";
+import { useMode } from "@/app/components/theme-provider";
 import {
   SearchIcon,
   StoreBuildingIcon,
   BookmarkIcon,
   ChevronRightIcon,
-  MapPinSmallIcon,
 } from "@/app/components/icons";
 
 const activity = [
@@ -42,7 +41,7 @@ const settingsRows = [
 export default function ProfilePage() {
   const { saved, toggle } = useSavedItems();
   const { user, signOut } = useAuth();
-  const { togglePicker } = useTheme();
+  const { mode, setMode } = useMode();
 
   const initials = user?.name
     ? user.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
@@ -56,7 +55,7 @@ export default function ProfilePage() {
       {/* Header */}
       <div className="px-5 pt-safe pb-6">
         <div className="flex items-center justify-between mb-6">
-          <h1 onClick={togglePicker} className="text-[22px] font-semibold tracking-tight text-foreground select-none">Profile</h1>
+          <h1 className="text-[22px] font-semibold tracking-tight text-foreground">Profile</h1>
           <button className="text-[13px] font-medium text-primary">Edit</button>
         </div>
 
@@ -67,10 +66,6 @@ export default function ProfilePage() {
           <div>
             <p className="text-[18px] font-semibold text-foreground leading-tight">{user?.name ?? ""}</p>
             <p className="text-[12px] text-muted mt-0.5">{user?.email ?? user?.phone ?? ""}</p>
-            <div className="flex items-center gap-1.5 mt-1">
-              <MapPinSmallIcon className="text-muted" />
-              <span className="text-[13px] text-muted font-medium">Kolonaki, Athens</span>
-            </div>
           </div>
         </div>
       </div>
@@ -163,6 +158,22 @@ export default function ProfilePage() {
           <span className="text-[11px] font-semibold uppercase tracking-widest text-muted">Settings</span>
         </div>
         <div className="flex flex-col rounded-2xl border border-border bg-surface overflow-hidden divide-y divide-border">
+          <div className="flex items-center justify-between px-4 py-4">
+            <span className="text-[15px] font-medium text-foreground">Appearance</span>
+            <div className="flex rounded-full bg-background border border-border p-0.5">
+              {(["system", "light", "dark"] as const).map((opt) => (
+                <button
+                  key={opt}
+                  onClick={() => setMode(opt)}
+                  className={`px-3 py-1 rounded-full text-[12px] font-medium capitalize transition-colors ${
+                    mode === opt ? "bg-primary text-white" : "text-muted"
+                  }`}
+                >
+                  {opt === "system" ? "Auto" : opt}
+                </button>
+              ))}
+            </div>
+          </div>
           {settingsRows.map(({ label, danger }) => (
             <button
               key={label}

@@ -102,7 +102,7 @@ export default function StoresPage() {
   // empty padding of the floating overlay to the map below.
 
   const searchRow = (
-    <div className="flex items-center gap-2">
+    <div className="px-2 flex items-center gap-2">
       <div className="pointer-events-auto flex-1 flex items-center gap-2.5 px-3.5 py-2.5 rounded-2xl bg-surface border border-border shadow-sm">
         <SearchIcon className="text-muted shrink-0" />
         <input
@@ -110,27 +110,24 @@ export default function StoresPage() {
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           placeholder="Search stores or items…"
-          className="flex-1 bg-transparent text-[15px] text-foreground placeholder:text-muted outline-none min-w-0"
+          className="flex-1 bg-transparent text-[15px] text-foreground placeholder:text-muted outline-none min-w-0 [&::-webkit-search-cancel-button]:hidden"
         />
-        {query && (
-          <button
-            onClick={() => setQuery("")}
-            className="text-muted active:text-foreground transition-colors shrink-0"
-            aria-label="Clear search"
-          >
-            <XCircleIcon />
-          </button>
-        )}
+        <button
+          onClick={() => setQuery("")}
+          className={`text-muted active:text-foreground transition-opacity shrink-0 ${query ? "opacity-100" : "opacity-0 pointer-events-none"}`}
+          aria-label="Clear search"
+        >
+          <XCircleIcon />
+        </button>
       </div>
 
       <div className="flex gap-1.5 shrink-0 pointer-events-auto">
         <button
           onClick={() => setView("map")}
-          className={`w-10 h-10 flex items-center justify-center rounded-full border transition-colors shadow-sm ${
-            view === "map"
+          className={`w-10 h-10 flex items-center justify-center rounded-full border transition-colors shadow-sm ${view === "map"
               ? "bg-primary text-white border-primary"
               : "bg-background text-muted border-border"
-          }`}
+            }`}
           aria-label="Map view"
           aria-pressed={view === "map"}
         >
@@ -142,11 +139,10 @@ export default function StoresPage() {
         </button>
         <button
           onClick={() => setView("list")}
-          className={`w-10 h-10 flex items-center justify-center rounded-full border transition-colors shadow-sm ${
-            view === "list"
+          className={`w-10 h-10 flex items-center justify-center rounded-full border transition-colors shadow-sm ${view === "list"
               ? "bg-primary text-white border-primary"
               : "bg-background text-muted border-border"
-          }`}
+            }`}
           aria-label="List view"
           aria-pressed={view === "list"}
         >
@@ -167,11 +163,10 @@ export default function StoresPage() {
     <button
       key={cat}
       onClick={() => setActiveCategory(cat)}
-      className={`pointer-events-auto shrink-0 px-4 py-1.5 rounded-full text-[13px] font-medium whitespace-nowrap border transition-colors shadow-sm ${
-        activeCategory === cat
+      className={`pointer-events-auto shrink-0 px-4 py-1.5 rounded-full text-[13px] font-medium whitespace-nowrap border transition-colors shadow-sm ${activeCategory === cat
           ? "bg-primary text-white border-primary"
           : "bg-background text-foreground border-border"
-      }`}
+        }`}
     >
       {cat}
     </button>
@@ -191,7 +186,7 @@ export default function StoresPage() {
 
         {/* Floating header — no background, controls float as pills */}
         <div className="absolute inset-x-0 top-0 z-30 pt-safe pointer-events-none">
-          <div className="px-5 pb-3">{searchRow}</div>
+          <div className="pb-3">{searchRow}</div>
           <div
             className="flex gap-2 px-5 pb-3 overflow-x-auto"
             style={{ scrollbarWidth: "none" }}
@@ -213,7 +208,7 @@ export default function StoresPage() {
 
   return (
     <div className="flex flex-col h-dvh bg-background">
-      <div className="px-5 pt-safe pb-3 shrink-0">{searchRow}</div>
+      <div className="pt-safe pb-3 shrink-0">{searchRow}</div>
       <div
         className="flex gap-2 px-5 pb-3 overflow-x-auto shrink-0"
         style={{ scrollbarWidth: "none" }}

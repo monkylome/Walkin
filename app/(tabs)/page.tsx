@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { allItems, storeMeta, toStoreSlug } from "@/app/lib/items";
-import { useTheme } from "@/app/components/theme-provider";
+import { iconFor } from "@/app/lib/categories";
 import { useNeighborhood } from "@/app/lib/use-neighborhood";
 import StoreLogo from "@/app/components/store-logo";
 import { SearchIcon } from "@/app/components/icons";
@@ -27,27 +27,18 @@ const placeholders = [
 const nearbyStores = Object.entries(storeMeta).map(([name, meta]) => {
   const storeItems = allItems.filter(i => i.stores.some(s => s.name === name));
   const first = storeItems.flatMap(i => i.stores).find(s => s.name === name);
-  // Find the cheapest item at this store as a teaser
-  const teaser = storeItems.length > 0
-    ? storeItems.reduce((best, item) => {
-        const entry = item.stores.find(s => s.name === name)!;
-        const bestEntry = best.stores.find(s => s.name === name)!;
-        return entry.price < bestEntry.price ? item : best;
-      })
-    : null;
-  const teaserEntry = teaser?.stores.find(s => s.name === name);
+  const categories = [...new Set(storeItems.map(i => i.category))];
   return {
     name,
     category: meta.category,
     distance: first?.distance ?? "",
     walkTime: first?.walkTime ?? "",
     itemCount: storeItems.length,
-    teaser: teaser ? `${teaser.name} · €${teaserEntry!.price.toFixed(2)}` : "",
+    categories,
   };
 }).sort((a, b) => parseFloat(a.distance) - parseFloat(b.distance));
 
 export default function HomePage() {
-  const { togglePicker } = useTheme();
   const { name: neighborhood, denied, retry } = useNeighborhood();
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
 
@@ -74,9 +65,9 @@ export default function HomePage() {
               <span className="text-[13px] text-foreground font-medium">{neighborhood}</span>
             </div>
           )}
-          <div onClick={togglePicker} className="w-9 h-9 rounded-full bg-surface border border-border flex items-center justify-center text-[13px] font-semibold text-muted select-none cursor-pointer">
-            A
-          </div>
+          <Link href="/(tabs)/profile" className="w-9 h-9 rounded-full bg-surface border border-border flex items-center justify-center text-[13px] font-semibold text-muted select-none">
+            W
+          </Link>
         </div>
 
         {/* Headline */}
@@ -120,7 +111,16 @@ export default function HomePage() {
               <StoreLogo name={store.name} />
               <div className="flex-1 min-w-0">
                 <p className="text-[14px] font-semibold text-foreground truncate leading-tight">{store.name}</p>
-                <p className="text-[12px] text-muted mt-0.5 truncate">{store.teaser}</p>
+                <div className="flex items-center gap-1 mt-1 text-muted">
+                  {store.categories.map((cat) => {
+                    const Icon = iconFor(cat);
+                    return <Icon key={cat} size={12} strokeWidth={2} />;
+                  })}
+                  <span className="text-[11px]">·</span>
+                  <span className="text-[11px] truncate">{store.categories.join(", ")}</span>
+                  <span className="text-[11px]">·</span>
+                  <span className="text-[11px] shrink-0">{store.itemCount} items</span>
+                </div>
               </div>
               <div className="text-right shrink-0">
                 <p className="text-[13px] font-semibold text-foreground">{store.distance}</p>

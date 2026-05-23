@@ -11,50 +11,8 @@
   --font-mono: var(--font-geist-mono);
 }
 
-/* ── Theme B Light (default) ─────────────────────── */
+/* ── Light (default) ─────────────────────────────── */
 :root {
-  --app-bg:         #f0f9ff;
-  --app-surface:    #e0f2fe;
-  --app-primary:    #0369a1;
-  --app-foreground: #082f49;
-  --app-muted:      #4a7a96;
-  --app-border:     #bae6fd;
-  --nav-bg:         #082f49;
-  --nav-active-bg:  #0369a1;
-  --nav-active-color:   #ffffff;
-  --nav-inactive-color: #4a7a96;
-}
-
-/* ── Theme A — Midnight (deep indigo-blue) ───────── */
-[data-theme="a"] {
-  --app-bg:         #f8faff;
-  --app-surface:    #eef2ff;
-  --app-primary:    #1d4ed8;
-  --app-foreground: #0f172a;
-  --app-muted:      #64748b;
-  --app-border:     #c7d2fe;
-  --nav-bg:         #0f172a;
-  --nav-active-bg:  #1d4ed8;
-  --nav-active-color:   #ffffff;
-  --nav-inactive-color: #64748b;
-}
-
-/* ── Theme B — Ocean (royal blue) ────────────────── */
-[data-theme="b"] {
-  --app-bg:         #f0f9ff;
-  --app-surface:    #e0f2fe;
-  --app-primary:    #0369a1;
-  --app-foreground: #082f49;
-  --app-muted:      #4a7a96;
-  --app-border:     #bae6fd;
-  --nav-bg:         #082f49;
-  --nav-active-bg:  #0369a1;
-  --nav-active-color:   #ffffff;
-  --nav-inactive-color: #4a7a96;
-}
-
-/* ── Theme C — Sky (bright sky blue) ─────────────── */
-[data-theme="c"] {
   --app-bg:         #ffffff;
   --app-surface:    #f0f9ff;
   --app-primary:    #0ea5e9;
@@ -67,111 +25,18 @@
   --nav-inactive-color: #64748b;
 }
 
-/* ── Theme D — Cyan (vibrant aqua) ───────────────── */
-[data-theme="d"] {
-  --app-bg:         #ecfeff;
-  --app-surface:    #cffafe;
-  --app-primary:    #06b6d4;
-  --app-foreground: #083344;
-  --app-muted:      #0e7490;
-  --app-border:     #a5f3fc;
-  --nav-bg:         #083344;
-  --nav-active-bg:  #06b6d4;
-  --nav-active-color:   #ffffff;
-  --nav-inactive-color: #0e7490;
-}
-
-/* ── Theme E — Mint (green-tinted teal) ──────────── */
-[data-theme="e"] {
-  --app-bg:         #f0fdfa;
-  --app-surface:    #ccfbf1;
-  --app-primary:    #0d9488;
-  --app-foreground: #0d2420;
-  --app-muted:      #4d8c84;
-  --app-border:     #99f6e4;
-  --nav-bg:         #0d2420;
-  --nav-active-bg:  #0d9488;
-  --nav-active-color:   #ffffff;
-  --nav-inactive-color: #4d8c84;
-}
-
 /* ── Dark mode ───────────────────────────────────── */
 [data-mode="dark"] {
-  --app-bg:         #020d14;
-  --app-surface:    #0a1e2a;
-  --app-primary:    #38bdf8;
-  --app-foreground: #e0f2fe;
-  --app-muted:      #4a7a96;
-  --app-border:     #0e3044;
-  --nav-bg:         #020d14;
-  --nav-active-bg:  #0a1e2a;
-  --nav-active-color:   #e0f2fe;
-  --nav-inactive-color: #2a5570;
-}
-
-[data-theme="a"][data-mode="dark"] {
-  --app-bg:         #0a0e1a;
-  --app-surface:    #0f172a;
-  --app-primary:    #6366f1;
-  --app-foreground: #f1f5f9;
-  --app-muted:      #94a3b8;
-  --app-border:     #1e293b;
-  --nav-bg:         #020817;
-  --nav-active-bg:  #6366f1;
-  --nav-active-color:   #ffffff;
-  --nav-inactive-color: #475569;
-}
-
-[data-theme="b"][data-mode="dark"] {
-  --app-bg:         #020d14;
-  --app-surface:    #0a1e2a;
-  --app-primary:    #38bdf8;
-  --app-foreground: #e0f2fe;
-  --app-muted:      #4a7a96;
-  --app-border:     #0e3044;
-  --nav-bg:         #020d14;
-  --nav-active-bg:  #0a1e2a;
-  --nav-active-color:   #e0f2fe;
-  --nav-inactive-color: #2a5570;
-}
-
-[data-theme="c"][data-mode="dark"] {
-  --app-bg:         #0a0f14;
+  --app-bg:         #000000;
   --app-surface:    #0d1926;
   --app-primary:    #38bdf8;
   --app-foreground: #f0f9ff;
   --app-muted:      #64748b;
   --app-border:     #1e3a5c;
-  --nav-bg:         #0a0f14;
+  --nav-bg:         #000000;
   --nav-active-bg:  #0d1926;
   --nav-active-color:   #f0f9ff;
   --nav-inactive-color: #475569;
-}
-
-[data-theme="d"][data-mode="dark"] {
-  --app-bg:         #021014;
-  --app-surface:    #071e26;
-  --app-primary:    #22d3ee;
-  --app-foreground: #ecfeff;
-  --app-muted:      #0e7490;
-  --app-border:     #0a3040;
-  --nav-bg:         #021014;
-  --nav-active-bg:  #071e26;
-  --nav-active-color:   #ecfeff;
-  --nav-inactive-color: #155e75;
-}
-
-[data-theme="e"][data-mode="dark"] {
-  --app-bg:         #011a17;
-  --app-surface:    #052e26;
-  --app-primary:    #2dd4bf;
-  --app-foreground: #f0fdfa;
-  --app-muted:      #4d8c84;
-  --app-border:     #0a4038;
-  --nav-bg:         #011a17;
-  --nav-active-bg:  #052e26;
-  --nav-active-color:   #f0fdfa;
-  --nav-inactive-color: #1e5c55;
 }
 
 body {
@@ -181,8 +46,6 @@ body {
   -webkit-tap-highlight-color: transparent;
 }
 
-/* Top padding for the topmost element on a screen.
-   24px in normal browser tabs; auto-expands by env(safe-area-inset-top) on PWAs with a notch. */
 .pt-safe {
   padding-top: calc(1.5rem + env(safe-area-inset-top, 0px));
 }
@@ -210,9 +73,3 @@ body {
   to   { transform: translateY(0); }
 }
 .bottom-sheet-enter { animation: bottomSheetEnter 0.32s cubic-bezier(0.32, 0.72, 0, 1); }
-
-@keyframes themePickerPop {
-  from { transform: translateY(-6px) scale(0.96); opacity: 0; }
-  to   { transform: translateY(0)    scale(1);    opacity: 1; }
-}
-.theme-picker-pop { animation: themePickerPop 0.18s cubic-bezier(0.32, 0.72, 0, 1); transform-origin: top right; }

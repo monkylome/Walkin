@@ -20,7 +20,6 @@ import { categoryIcon, accentFor } from "@/app/lib/categories";
 import { useSavedItems } from "@/app/lib/saved-items";
 import MapView, { type MapPoint } from "@/app/components/map-view";
 import BottomSheet, { type SheetStore } from "@/app/components/bottom-sheet";
-import { useTheme } from "@/app/components/theme-provider";
 import StoreLogo from "@/app/components/store-logo";
 import { VerifiedTick } from "@/app/components/store-badges";
 import {
@@ -38,7 +37,6 @@ export default function ItemPage() {
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
   const { toggle, isSaved } = useSavedItems();
-  const { togglePicker } = useTheme();
   const item     = itemBySlug(slug);
   const Icon     = item ? (categoryIcon[item.category] ?? Package) : Package;
   const saved    = item ? isSaved(toSlug(item.name)) : false;
@@ -132,7 +130,7 @@ export default function ItemPage() {
             <span className={`inline-block text-[11px] font-semibold px-2.5 py-1 rounded-full mb-3 ${accentFor(item.category)}`}>
               {item.category}
             </span>
-            <h1 onClick={togglePicker} className="text-[26px] font-bold tracking-tight text-foreground leading-tight mb-1 select-none">
+            <h1 className="text-[26px] font-bold tracking-tight text-foreground leading-tight mb-1">
               {item.name}
             </h1>
             <p className="text-[14px] text-muted">

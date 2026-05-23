@@ -2,7 +2,6 @@ import type { Metadata } from "next";
 import { Geist } from "next/font/google";
 import "./globals.css";
 import ThemeProvider from "./components/theme-provider";
-import ThemeSwitcher from "./components/theme-switcher";
 import { SavedItemsProvider } from "./lib/saved-items";
 import { AuthProvider } from "./lib/auth";
 
@@ -27,7 +26,6 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <SavedItemsProvider>
-              <ThemeSwitcher />
               {children}
             </SavedItemsProvider>
           </AuthProvider>
