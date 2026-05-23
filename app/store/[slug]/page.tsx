@@ -1,5 +1,7 @@
 "use client";
 
+import Image from "next/image";
+
 import { useParams, useRouter } from "next/navigation";
 import {
   storeBySlug,
@@ -46,10 +48,14 @@ export default function StorePage() {
       </div>
 
       {/* Hero */}
-      <div className="mx-5 mb-6 h-40 rounded-2xl bg-surface border border-border flex items-center justify-center">
-        <div className={`w-20 h-20 rounded-2xl ${meta.color} flex items-center justify-center`}>
-          <span className="text-[22px] font-bold text-white tracking-wide">{meta.initials}</span>
-        </div>
+      <div className="mx-5 mb-6 h-40 rounded-2xl bg-surface border border-border flex items-center justify-center overflow-hidden relative">
+        {meta.image ? (
+          <Image src={meta.image} alt={store.name} fill className="object-cover" />
+        ) : (
+          <div className={`w-20 h-20 rounded-2xl ${meta.color} flex items-center justify-center`}>
+            <span className="text-[22px] font-bold text-white tracking-wide">{meta.initials}</span>
+          </div>
+        )}
       </div>
 
       {/* Store identity */}

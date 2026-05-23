@@ -15,7 +15,7 @@ import {
 
 const activity = [
   { icon: "search",   label: 'Searched for "cordless drill"', time: "2h ago"    },
-  { icon: "store",    label: "Visited TechStop Kolonaki",     time: "Yesterday"  },
+  { icon: "store",    label: "Visited TechStop",             time: "Yesterday"  },
   { icon: "bookmark", label: 'Saved "HDMI Cable 2m"',         time: "2 days ago" },
 ];
 

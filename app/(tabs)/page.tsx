@@ -5,6 +5,7 @@ import Link from "next/link";
 import { allItems, storeMeta, toStoreSlug } from "@/app/lib/items";
 import { iconFor } from "@/app/lib/categories";
 import { useNeighborhood } from "@/app/lib/use-neighborhood";
+import { useAuth } from "@/app/lib/auth";
 import StoreLogo from "@/app/components/store-logo";
 import { SearchIcon } from "@/app/components/icons";
 import { Pill, Wrench, Zap, Hammer, MoreHorizontal, MapPin, MapPinOff } from "lucide-react";
@@ -40,6 +41,10 @@ const nearbyStores = Object.entries(storeMeta).map(([name, meta]) => {
 
 export default function HomePage() {
   const { name: neighborhood, denied, retry } = useNeighborhood();
+  const { user } = useAuth();
+  const initials = user?.name
+    ? user.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
+    : "?";
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
 
   useEffect(() => {
@@ -55,9 +60,9 @@ export default function HomePage() {
         {/* Location */}
         <div className="flex items-center justify-between mb-8">
           {denied ? (
-            <button onClick={retry} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-50 border border-red-200 active:opacity-70 transition-opacity">
-              <MapPinOff size={14} className="text-red-500" />
-              <span className="text-[13px] text-red-600 font-medium">Enable location</span>
+            <button onClick={retry} className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-red-500/10 border border-red-500/20 active:opacity-70 transition-opacity">
+              <MapPinOff size={14} className="text-red-400" />
+              <span className="text-[13px] text-red-400 font-medium">Enable location</span>
             </button>
           ) : (
             <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-surface border border-border">
@@ -65,8 +70,8 @@ export default function HomePage() {
               <span className="text-[13px] text-foreground font-medium">{neighborhood}</span>
             </div>
           )}
-          <Link href="/(tabs)/profile" className="w-9 h-9 rounded-full bg-surface border border-border flex items-center justify-center text-[13px] font-semibold text-muted select-none">
-            W
+          <Link href="/(tabs)/profile" className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-[12px] font-bold text-white select-none">
+            {initials}
           </Link>
         </div>
 
@@ -79,7 +84,7 @@ export default function HomePage() {
         <Link href="/search" className="block">
           <div className="flex items-center gap-3 px-4 py-4 rounded-2xl bg-surface border border-border shadow-sm">
             <SearchIcon className="text-muted shrink-0" />
-            <span className="text-[16px] text-muted flex-1 transition-opacity">{placeholders[placeholderIdx]}</span>
+            <span key={placeholderIdx} className="text-[16px] text-muted flex-1 placeholder-fade">{placeholders[placeholderIdx]}</span>
           </div>
         </Link>
 
@@ -114,7 +119,7 @@ export default function HomePage() {
                 <div className="flex items-center gap-1 mt-1 text-muted">
                   {store.categories.map((cat) => {
                     const Icon = iconFor(cat);
-                    return <Icon key={cat} size={12} strokeWidth={2} />;
+                    return <Icon key={cat} size={12} strokeWidth={2} className="text-foreground" />;
                   })}
                   <span className="text-[11px]">·</span>
                   <span className="text-[11px] truncate">{store.categories.join(", ")}</span>

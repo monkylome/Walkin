@@ -38,7 +38,7 @@ export default function IdentifierStage({
   return (
     <>
       {/* Branding */}
-      <div className="flex flex-col items-center text-center px-8 pt-safe pb-10">
+      <div className="flex flex-col items-center text-center px-8 pt-safe pb-14">
         <div className="w-16 h-16 rounded-2xl bg-primary flex items-center justify-center mb-5 shadow-md">
           <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />

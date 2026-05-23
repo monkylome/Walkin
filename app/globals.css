@@ -73,3 +73,11 @@ body {
   to   { transform: translateY(0); }
 }
 .bottom-sheet-enter { animation: bottomSheetEnter 0.32s cubic-bezier(0.32, 0.72, 0, 1); }
+
+@keyframes placeholderFade {
+  0%   { opacity: 0; transform: translateY(6px); }
+  10%  { opacity: 1; transform: translateY(0); }
+  90%  { opacity: 1; transform: translateY(0); }
+  100% { opacity: 0; transform: translateY(-6px); }
+}
+.placeholder-fade { animation: placeholderFade 3s ease-in-out; }

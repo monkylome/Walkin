@@ -54,7 +54,7 @@ export default function DashboardPage() {
             </div>
             <div>
               <p className="text-sm font-semibold leading-tight">WalkIn Store</p>
-              <p className="text-xs text-muted">TechStop Kolonaki</p>
+              <p className="text-xs text-muted">TechStop</p>
             </div>
           </div>
 

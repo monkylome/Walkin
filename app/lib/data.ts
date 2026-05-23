@@ -1,31 +1,31 @@
 import type { Item, StoreMeta } from "./types";
 
 export const storeMeta: Record<string, StoreMeta> = {
-  "Papageorgiou Hardware": { initials: "PH", color: "bg-slate-600",  category: "Hardware",         verified: true,  featured: false },
-  "TechStop Kolonaki":     { initials: "TS", color: "bg-sky-600",    category: "Electronics",      verified: true,  featured: true  },
+  "Papageorgiou Group":    { initials: "PG", color: "bg-slate-600",  category: "Hardware",         verified: true,  featured: false, image: "/images/papageorgiou.webp", logo: "/images/papagroup-logo.webp" },
+  "TechStop":              { initials: "TS", color: "bg-sky-600",    category: "Electronics",      verified: true,  featured: true  },
   "ProBuild Supplies":     { initials: "PS", color: "bg-blue-700",   category: "Tools",            verified: false, featured: false },
-  "ElectroCity Syntagma":  { initials: "EC", color: "bg-cyan-600",   category: "Electronics",      verified: true,  featured: false },
+  "ElectroCity":           { initials: "EC", color: "bg-cyan-600",   category: "Electronics",      verified: true,  featured: false },
   "CityBuild Center":      { initials: "CB", color: "bg-indigo-600", category: "Hardware",       verified: false, featured: false },
-  "Farmakeio Kolonaki":    { initials: "FK", color: "bg-emerald-600", category: "Medicine",        verified: true,  featured: true  },
+  "MediCare Plus":          { initials: "MC", color: "bg-emerald-600", category: "Medicine",        verified: true,  featured: true  },
   "YgeiaCare Pharmacy":    { initials: "YC", color: "bg-teal-600",   category: "Medicine",         verified: true,  featured: false },
 };
 
 export const storeLocations: Record<string, { lat: number; lng: number }> = {
-  "Papageorgiou Hardware": { lat: 38.0352, lng: 23.7538 },
-  "TechStop Kolonaki":     { lat: 38.0338, lng: 23.7562 },
+  "Papageorgiou Group":    { lat: 38.0352, lng: 23.7538 },
+  "TechStop":              { lat: 38.0338, lng: 23.7562 },
   "ProBuild Supplies":     { lat: 38.0361, lng: 23.7505 },
-  "ElectroCity Syntagma":  { lat: 38.0330, lng: 23.7515 },
+  "ElectroCity":           { lat: 38.0330, lng: 23.7515 },
   "CityBuild Center":      { lat: 38.0370, lng: 23.7548 },
-  "Farmakeio Kolonaki":    { lat: 38.0342, lng: 23.7525 },
+  "MediCare Plus":             { lat: 38.0342, lng: 23.7525 },
   "YgeiaCare Pharmacy":    { lat: 38.0355, lng: 23.7570 },
 };
 
-const PH = (stock: number, price: number) => ({ name: "Papageorgiou Hardware", distance: "0.3 km", distanceKm: 0.3, walkTime: "4 min",  stock, price });
-const TS = (stock: number, price: number) => ({ name: "TechStop Kolonaki",     distance: "0.7 km", distanceKm: 0.7, walkTime: "9 min",  stock, price });
-const EC = (stock: number, price: number) => ({ name: "ElectroCity Syntagma",  distance: "0.5 km", distanceKm: 0.5, walkTime: "6 min",  stock, price });
+const PH = (stock: number, price: number) => ({ name: "Papageorgiou Group",   distance: "0.3 km", distanceKm: 0.3, walkTime: "4 min",  stock, price });
+const TS = (stock: number, price: number) => ({ name: "TechStop",              distance: "0.7 km", distanceKm: 0.7, walkTime: "9 min",  stock, price });
+const EC = (stock: number, price: number) => ({ name: "ElectroCity",           distance: "0.5 km", distanceKm: 0.5, walkTime: "6 min",  stock, price });
 const CB = (stock: number, price: number) => ({ name: "CityBuild Center",      distance: "0.9 km", distanceKm: 0.9, walkTime: "11 min", stock, price });
 const PS = (stock: number, price: number) => ({ name: "ProBuild Supplies",     distance: "1.2 km", distanceKm: 1.2, walkTime: "15 min", stock, price });
-const FK = (stock: number, price: number) => ({ name: "Farmakeio Kolonaki",    distance: "0.4 km", distanceKm: 0.4, walkTime: "5 min",  stock, price });
+const FK = (stock: number, price: number) => ({ name: "MediCare Plus",             distance: "0.4 km", distanceKm: 0.4, walkTime: "5 min",  stock, price });
 const YC = (stock: number, price: number) => ({ name: "YgeiaCare Pharmacy",    distance: "0.6 km", distanceKm: 0.6, walkTime: "7 min",  stock, price });
 
 export const allItems: Item[] = [

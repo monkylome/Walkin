@@ -2,10 +2,10 @@ import { Check, Star } from "lucide-react";
 
 export function LiveBadge() {
   return (
-    <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200">
+    <span className="inline-flex items-center gap-1.5 px-0 py-0 text-[11px] font-semibold text-emerald-600">
       <span className="relative flex h-2 w-2">
         <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75" />
-        <span className="relative inline-flex h-2 w-2 rounded-full bg-emerald-500" />
+        <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-emerald-500 m-auto" />
       </span>
       Live inventory
     </span>
