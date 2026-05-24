@@ -79,6 +79,7 @@ export default function StoresPage() {
     position: storeLocations[s.name] ?? { lat: 38.0345, lng: 23.7530 },
     initials: s.initials,
     accentClass: s.accentClass,
+    category: s.category,
     featured: storeMeta[s.name]?.featured ?? false,
   }));
 

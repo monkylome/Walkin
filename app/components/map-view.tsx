@@ -5,6 +5,9 @@ import { APIProvider, Map, AdvancedMarker, useMap, ColorScheme } from "@vis.gl/r
 import { LocateFixed, LocateOff, LoaderCircle } from "lucide-react";
 import { useMode } from "@/app/components/theme-provider";
 
+import { categoryIcon, pinColorFor } from "@/app/lib/categories";
+import { Package } from "lucide-react";
+
 const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!;
 
 export type MapPoint = {
@@ -13,7 +16,7 @@ export type MapPoint = {
   featured?: boolean;
 } & (
   | { kind: "price"; price: number; outOfStock?: boolean }
-  | { kind: "store"; initials: string; accentClass: string }
+  | { kind: "store"; initials: string; accentClass: string; category: string }
 );
 
 const FEATURED_HALO = "0 0 0 2px #f59e0b";
@@ -61,30 +64,43 @@ function PricePin({
 }
 
 function StorePin({
-  initials,
-  accentClass,
+  name,
+  category,
   selected,
   featured,
 }: {
-  initials: string;
-  accentClass: string;
+  name: string;
+  category: string;
   selected: boolean;
   featured: boolean;
 }) {
   const baseShadow = "0 4px 10px rgb(0 0 0 / 0.25)";
+  const Icon = categoryIcon[category] ?? Package;
+  const color = pinColorFor(category);
+  const size = selected ? 36 : 28;
 
   return (
-    <div
-      className={`flex items-center justify-center rounded-full border-2 border-white text-white font-bold ${accentClass}`}
-      style={{
-        width: selected ? 44 : 36,
-        height: selected ? 44 : 36,
-        fontSize: selected ? 13 : 11,
-        boxShadow: featured ? `${FEATURED_HALO}, ${baseShadow}` : baseShadow,
-        transition: "all 0.15s ease",
-      }}
-    >
-      {initials}
+    <div className="flex items-center gap-1.5" style={{ transition: "all 0.15s ease", transform: `translateY(-${size / 2 + 4}px)` }}>
+      <div className="flex flex-col items-center">
+        <div
+          className={`flex items-center justify-center rounded-full border-2 border-white ${color}`}
+          style={{
+            width: size,
+            height: size,
+            boxShadow: featured ? `${FEATURED_HALO}, ${baseShadow}` : baseShadow,
+          }}
+        >
+          <Icon size={selected ? 16 : 13} strokeWidth={2.2} className="text-white" />
+        </div>
+        <div
+          className={`w-2 h-2 rotate-45 -mt-1.25 border-b-2 border-r-2 border-white ${color}`}
+          style={{ boxShadow: "2px 2px 4px rgb(0 0 0 / 0.15)" }}
+        />
+      </div>
+      <div className="flex flex-col ml-0.5" style={{ WebkitTextStroke: "2px var(--app-bg)", paintOrder: "stroke fill" }}>
+        <span className="text-[11px] font-bold text-foreground leading-tight whitespace-nowrap">{name}</span>
+        <span className="text-[10px] text-foreground leading-tight whitespace-nowrap">{category}</span>
+      </div>
     </div>
   );
 }
@@ -183,7 +199,7 @@ export default function MapView({
         <Map
           defaultCenter={defaultCenter}
           defaultZoom={defaultZoom}
-          mapId="walkin-map"
+          mapId="f88c6801e8382e068890f459"
           colorScheme={effectiveMode === "dark" ? ColorScheme.DARK : ColorScheme.LIGHT}
           disableDefaultUI
           style={{ width: "100%", height: "100%" }}
@@ -209,7 +225,7 @@ export default function MapView({
                 {p.kind === "price" ? (
                   <PricePin price={p.price} selected={selected} dimmed={dimmed} featured={Boolean(p.featured)} />
                 ) : (
-                  <StorePin initials={p.initials} accentClass={p.accentClass} selected={selected} featured={Boolean(p.featured)} />
+                  <StorePin name={p.id} category={p.category} selected={selected} featured={Boolean(p.featured)} />
                 )}
               </AdvancedMarker>
             );

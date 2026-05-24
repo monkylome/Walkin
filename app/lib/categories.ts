@@ -35,3 +35,15 @@ const categoryIconColor: Record<string, string> = {
 export function iconColorFor(category: string): string {
   return categoryIconColor[category] ?? categoryIconColor.Other;
 }
+
+export const categoryPinColor: Record<string, string> = {
+  Medicine:    "bg-emerald-600",
+  Tools:       "bg-blue-600",
+  Electronics: "bg-sky-600",
+  Hardware:    "bg-slate-600",
+  Other:       "bg-gray-600",
+};
+
+export function pinColorFor(category: string): string {
+  return categoryPinColor[category] ?? categoryPinColor.Other;
+}

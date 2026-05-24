@@ -18,8 +18,10 @@ import {
 } from "@/app/lib/items";
 import { categoryIcon, accentFor } from "@/app/lib/categories";
 import { useSavedItems } from "@/app/lib/saved-items";
+import { useReservations } from "@/app/lib/reservations";
 import MapView, { type MapPoint } from "@/app/components/map-view";
 import BottomSheet, { type SheetStore } from "@/app/components/bottom-sheet";
+import ReserveSheet from "@/app/components/reserve-sheet";
 import StoreLogo from "@/app/components/store-logo";
 import { VerifiedTick } from "@/app/components/store-badges";
 import {
@@ -32,30 +34,32 @@ type ViewMode = "list" | "map";
 
 export default function ItemPage() {
   const { slug } = useParams<{ slug: string }>();
-  const router   = useRouter();
+  const router = useRouter();
   const [sortBy, setSortBy] = useState<"distance" | "price">("distance");
   const [viewMode, setViewMode] = useState<ViewMode>("list");
   const [selectedStoreId, setSelectedStoreId] = useState<string | null>(null);
+  const [reserveStore, setReserveStore] = useState<{ name: string; price: number } | null>(null);
   const { toggle, isSaved } = useSavedItems();
-  const item     = itemBySlug(slug);
-  const Icon     = item ? (categoryIcon[item.category] ?? Package) : Package;
-  const saved    = item ? isSaved(toSlug(item.name)) : false;
+  const { reserve, active } = useReservations();
+  const item = itemBySlug(slug);
+  const Icon = item ? (categoryIcon[item.category] ?? Package) : Package;
+  const saved = item ? isSaved(toSlug(item.name)) : false;
 
   const sortedStores = item
     ? [...item.stores].sort((a, b) =>
-        sortBy === "price" ? a.price - b.price : a.distanceKm - b.distanceKm
-      )
+      sortBy === "price" ? a.price - b.price : a.distanceKm - b.distanceKm
+    )
     : [];
 
   const mapPoints: MapPoint[] = item
     ? item.stores.map((s) => ({
-        kind: "price" as const,
-        id: s.name,
-        position: storeLocations[s.name] ?? { lat: 38.0345, lng: 23.7530 },
-        price: s.price,
-        outOfStock: s.stock === 0,
-        featured: storeMeta[s.name]?.featured ?? false,
-      }))
+      kind: "price" as const,
+      id: s.name,
+      position: storeLocations[s.name] ?? { lat: 38.0345, lng: 23.7530 },
+      price: s.price,
+      outOfStock: s.stock === 0,
+      featured: storeMeta[s.name]?.featured ?? false,
+    }))
     : [];
 
   let selectedSheet: SheetStore | null = null;
@@ -175,15 +179,27 @@ export default function ItemPage() {
                         <div className={`w-2 h-2 rounded-full ${stockDot[status]}`} />
                         <span className="text-[12px] text-muted">{stockLabel[status]}</span>
                       </div>
-                      <a
-                        href={directionsUrl(store.name)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-primary text-white text-[13px] font-semibold active:opacity-80 transition-opacity shrink-0"
-                      >
-                        <MapPinFilledIcon />
-                        Directions
-                      </a>
+                      <div className="flex items-center gap-2">
+                        <a
+                          href={directionsUrl(store.name)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-1.5 px-3 py-1 rounded-full text-muted text-[13px] font-semibold active:opacity-80 transition-opacity shrink-0"
+                        >
+                          <MapPinFilledIcon />
+                          Directions
+                        </a>
+                        {active.some(r => r.itemName === item.name && r.storeName === store.name) ? (
+                          <span className="px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-600 text-[13px] font-semibold">Reserved</span>
+                        ) : status !== "out_of_stock" && (
+                          <button
+                            onClick={() => setReserveStore({ name: store.name, price: store.price })}
+                            className="px-3 py-1.5 rounded-full bg-primary text-white text-[13px] font-semibold active:opacity-80 transition-opacity"
+                          >
+                            Reserve
+                          </button>
+                        )}
+                      </div>
                     </div>
                   </div>
                 );
@@ -243,6 +259,22 @@ export default function ItemPage() {
             </>
           )}
         </button>
+      )}
+
+      {/* Reserve sheet */}
+      {item && reserveStore && (
+        <ReserveSheet
+          open={!!reserveStore}
+          itemName={item.name}
+          storeName={reserveStore.name}
+          price={reserveStore.price}
+          onClose={() => setReserveStore(null)}
+          onConfirm={(method) => {
+            reserve(item.name, reserveStore.name, reserveStore.price, method);
+            setReserveStore(null);
+            router.push("/order");
+          }}
+        />
       )}
 
     </div>

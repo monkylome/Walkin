@@ -6,6 +6,7 @@ import { allItems, storeMeta, toStoreSlug } from "@/app/lib/items";
 import { iconFor } from "@/app/lib/categories";
 import { useNeighborhood } from "@/app/lib/use-neighborhood";
 import { useAuth } from "@/app/lib/auth";
+import { useReservations } from "@/app/lib/reservations";
 import StoreLogo from "@/app/components/store-logo";
 import { SearchIcon } from "@/app/components/icons";
 import { Pill, Wrench, Zap, Hammer, MoreHorizontal, MapPin, MapPinOff } from "lucide-react";
@@ -42,6 +43,7 @@ const nearbyStores = Object.entries(storeMeta).map(([name, meta]) => {
 export default function HomePage() {
   const { name: neighborhood, denied, retry } = useNeighborhood();
   const { user } = useAuth();
+  const { active } = useReservations();
   const initials = user?.name
     ? user.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
     : "?";
@@ -103,6 +105,27 @@ export default function HomePage() {
 
       {/* Divider */}
       <div className="h-px bg-border mx-5" />
+
+      {/* Active reservations */}
+      {active.length > 0 && (
+        <div className="px-5 pt-6 pb-4">
+          <span className="text-[13px] font-semibold text-foreground mb-3 block">Active reservations</span>
+          <div className="flex flex-col gap-2.5">
+            {active.map((r) => (
+              <div key={r.id} className="flex items-center gap-3 p-3.5 rounded-2xl bg-emerald-500/5 border border-emerald-500/20">
+                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 flex items-center justify-center shrink-0">
+                  <span className="text-[11px] font-bold text-emerald-600">{r.code.slice(0, 3)}</span>
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-[14px] font-semibold text-foreground truncate">{r.itemName}</p>
+                  <p className="text-[12px] text-muted mt-0.5">{r.storeName} · {r.method === "pay_now" ? "Paid" : "Pay at store"}</p>
+                </div>
+                <span className="text-[13px] font-semibold text-emerald-600 shrink-0">€{r.price.toFixed(2)}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Near you */}
       <div className="px-5 pt-6 pb-10">

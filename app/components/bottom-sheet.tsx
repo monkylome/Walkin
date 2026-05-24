@@ -9,6 +9,7 @@ import {
 import { useRouter } from "next/navigation";
 import { toStoreSlug, directionsUrl } from "@/app/lib/items";
 import DistanceChips from "@/app/components/distance-chips";
+import StoreLogo from "@/app/components/store-logo";
 import { XIcon } from "@/app/components/icons";
 import { VerifiedTick } from "@/app/components/store-badges";
 
@@ -237,16 +238,19 @@ export default function BottomSheet({ store, onClose }: Props) {
       <div className="px-5 pb-8">
         {/* Store header */}
         <div className="flex items-start justify-between gap-3 mb-4">
-          <div>
-            <div className="flex min-w-0 items-center gap-1.5">
-              <h2 className="text-[20px] font-bold text-foreground leading-tight">{current.name}</h2>
-              {current.verified && <VerifiedTick />}
-            </div>
-            <div className="flex items-center gap-2 mt-1.5">
-              <span className="text-[12px] font-medium px-2.5 py-0.5 rounded-full bg-surface border border-border text-muted">
-                {current.category}
-              </span>
-              <span className="text-[12px] text-muted">{current.caption}</span>
+          <div className="flex items-center gap-3">
+            <StoreLogo name={current.name} size="md" />
+            <div>
+              <div className="flex min-w-0 items-center gap-1.5">
+                <h2 className="text-[20px] font-bold text-foreground leading-tight">{current.name}</h2>
+                {current.verified && <VerifiedTick />}
+              </div>
+              <div className="flex items-center gap-2 mt-1.5">
+                <span className="text-[12px] font-medium px-2.5 py-0.5 rounded-full bg-surface border border-border text-muted">
+                  {current.category}
+                </span>
+                <span className="text-[12px] text-muted">{current.caption}</span>
+              </div>
             </div>
           </div>
           <button

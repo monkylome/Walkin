@@ -4,6 +4,7 @@ import "./globals.css";
 import ThemeProvider from "./components/theme-provider";
 import { SavedItemsProvider } from "./lib/saved-items";
 import { AuthProvider } from "./lib/auth";
+import { ReservationProvider } from "./lib/reservations";
 
 const geist = Geist({
   variable: "--font-geist-sans",
@@ -26,7 +27,9 @@ export default function RootLayout({
         <ThemeProvider>
           <AuthProvider>
             <SavedItemsProvider>
-              {children}
+              <ReservationProvider>
+                {children}
+              </ReservationProvider>
             </SavedItemsProvider>
           </AuthProvider>
         </ThemeProvider>
