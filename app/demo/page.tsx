@@ -49,6 +49,7 @@ function matchStore(t: string): string | null {
 function DemoContent() {
   const searchParams = useSearchParams();
   const isDemoMode = searchParams.get("demo") === "1";
+  const qParam     = searchParams.get("q");
 
   const [step, setStep]               = useState<DemoStep>("idle");
   const [selectedStore, setSelectedStore] = useState<string | null>(null);
@@ -66,6 +67,15 @@ function DemoContent() {
   reserveRef.current     = reserve;
   stepRef.current        = step;
   storeRef.current       = selectedStore;
+
+  // Auto-advance to results when opened via Siri Shortcut with ?q= param
+  const autoStartedRef = useRef(false);
+  useEffect(() => {
+    if (!qParam || autoStartedRef.current) return;
+    autoStartedRef.current = true;
+    const t = setTimeout(() => setStep("results"), 1500);
+    return () => clearTimeout(t);
+  }, [qParam]);
 
   const points: MapPoint[] = DEMO_STORES
     .filter((name) => storeLocations[name])
