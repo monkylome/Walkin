@@ -20,7 +20,7 @@ export default function StoreLogo({ name, size = "sm" }: Props) {
   if (meta.logo) {
     return (
       <div className={`${s.box} overflow-hidden shrink-0 border border-border relative`}>
-        <Image src={meta.logo} alt={name} fill className="object-cover" />
+        <Image src={meta.logo} alt={name} fill sizes="44px" className="object-cover" />
       </div>
     );
   }

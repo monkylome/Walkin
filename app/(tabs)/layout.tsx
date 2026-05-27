@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import BottomNav from "@/app/components/bottom-nav";
 import { useAuth } from "@/app/lib/auth";
@@ -9,12 +9,15 @@ export default function TabsLayout({ children }: { children: React.ReactNode }) 
   const pathname    = usePathname();
   const router      = useRouter();
   const { user, loading } = useAuth();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     if (!loading && !user) router.replace("/login");
   }, [loading, user, router]);
 
-  if (loading || !user) {
+  if (!mounted || loading || !user) {
     return <div className="h-dvh bg-background" />;
   }
 

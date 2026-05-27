@@ -1,7 +1,8 @@
+/// <reference types="google.maps" />
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { APIProvider, Map, AdvancedMarker, useMap, ColorScheme } from "@vis.gl/react-google-maps";
+import { APIProvider, Map, AdvancedMarker, useMap, ColorScheme, useMapsLibrary } from "@vis.gl/react-google-maps";
 import { LocateFixed, LocateOff, LoaderCircle } from "lucide-react";
 import { useMode } from "@/app/components/theme-provider";
 
@@ -21,6 +22,44 @@ export type MapPoint = {
 
 const FEATURED_HALO = "0 0 0 2px #f59e0b";
 
+export type RouteConfig = {
+  origin: string;
+  destination: string;
+  waypoint?: string;
+};
+
+function RouteLayer({ config }: { config: RouteConfig }) {
+  const map = useMap();
+  const routesLib = useMapsLibrary("routes");
+  const rendererRef = useRef<google.maps.DirectionsRenderer | null>(null);
+
+  useEffect(() => {
+    if (!routesLib || !map) return;
+    const renderer = new routesLib.DirectionsRenderer({ suppressMarkers: true });
+    renderer.setMap(map);
+    rendererRef.current = renderer;
+    return () => { renderer.setMap(null); rendererRef.current = null; };
+  }, [routesLib, map]);
+
+  useEffect(() => {
+    if (!routesLib || !rendererRef.current) return;
+    const service = new routesLib.DirectionsService();
+    service.route(
+      {
+        origin: config.origin,
+        destination: config.destination,
+        waypoints: config.waypoint ? [{ location: config.waypoint, stopover: true }] : [],
+        travelMode: routesLib.TravelMode.DRIVING,
+      },
+      (result, status) => {
+        if (status === "OK" && result) rendererRef.current?.setDirections(result);
+      }
+    );
+  }, [routesLib, config.origin, config.destination, config.waypoint]);
+
+  return null;
+}
+
 type UserLocation = { lat: number; lng: number };
 
 type Props = {
@@ -30,6 +69,7 @@ type Props = {
   onMapClick?: () => void;
   defaultCenter?: { lat: number; lng: number };
   defaultZoom?: number;
+  routeConfig?: RouteConfig;
 };
 
 function PricePin({
@@ -189,6 +229,7 @@ export default function MapView({
   onMapClick,
   defaultCenter = { lat: 38.0345, lng: 23.7530 },
   defaultZoom = 15,
+  routeConfig,
 }: Props) {
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const { effectiveMode } = useMode();
@@ -211,6 +252,7 @@ export default function MapView({
             </AdvancedMarker>
           )}
           <PanToSelected selectedId={selectedId ?? null} points={points} />
+          {routeConfig && <RouteLayer config={routeConfig} />}
           {points.map((p) => {
             const selected = selectedId === p.id;
             const outOfStock = p.kind === "price" && Boolean(p.outOfStock);
