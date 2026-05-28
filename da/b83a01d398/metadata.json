@@ -1,0 +1,27 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "dab83a01d398",
+  "strategy": "manual-commit",
+  "branch": "main",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "app/(tabs)/page.tsx",
+    "app/components/ask-button.tsx",
+    "app/components/ask-sheet.tsx"
+  ],
+  "sessions": [
+    {
+      "metadata": "/da/b83a01d398/0/metadata.json",
+      "transcript": "/da/b83a01d398/0/full.jsonl",
+      "content_hash": "/da/b83a01d398/0/content_hash.txt",
+      "prompt": ""
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 15,
+    "cache_creation_tokens": 18843,
+    "cache_read_tokens": 1479998,
+    "output_tokens": 10949,
+    "api_call_count": 15
+  }
+}
