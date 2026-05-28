@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { Sparkles, Send, X, MapPin, ExternalLink } from "lucide-react";
+import { Sparkles, Send, X, MapPin, ExternalLink, Mic, MicOff } from "lucide-react";
 import StoreLogo from "@/app/components/store-logo";
 import { buildMapsUrl } from "@/app/lib/maps-link";
 import type { SearchResult } from "@/app/lib/search";
@@ -105,7 +105,60 @@ export default function AskSheet({
   const [error, setError] = useState<string | null>(null);
   const [userLat, setUserLat] = useState(37.9755);
   const [userLng, setUserLng] = useState(23.7348);
+  const [recording, setRecording] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const recognitionRef = useRef<any>(null);
+
+  const voiceSupported =
+    typeof window !== "undefined" &&
+    ("SpeechRecognition" in window || "webkitSpeechRecognition" in window);
+
+  useEffect(() => {
+    return () => {
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      recognitionRef.current?.abort();
+    };
+  }, []);
+
+  function toggleVoice() {
+    if (recording) {
+      recognitionRef.current?.abort();
+      setRecording(false);
+      return;
+    }
+
+    // Web Speech API — not in TS DOM lib yet, use runtime cast
+    const w = window as unknown as Record<string, unknown>;
+    const SR = (w["SpeechRecognition"] ?? w["webkitSpeechRecognition"]) as new () => {
+      lang: string;
+      continuous: boolean;
+      interimResults: boolean;
+      start(): void;
+      abort(): void;
+      onstart: (() => void) | null;
+      onend: (() => void) | null;
+      onerror: (() => void) | null;
+      onresult: ((e: { results: { 0: { 0: { transcript: string } } } }) => void) | null;
+    };
+
+    const rec = new SR();
+    rec.lang = "en-US";
+    rec.continuous = false;
+    rec.interimResults = false;
+
+    rec.onstart = () => setRecording(true);
+    rec.onend = () => setRecording(false);
+    rec.onerror = () => setRecording(false);
+    rec.onresult = (e) => {
+      const transcript = e.results[0][0].transcript;
+      setInput(transcript);
+      handleSubmit(transcript);
+    };
+
+    recognitionRef.current = rec;
+    rec.start();
+  }
 
   const sortedResults = response
     ? [...response.results].sort((a, b) => {
@@ -280,6 +333,18 @@ export default function AskSheet({
               placeholder="Ask anything…"
               className="flex-1 text-[15px] bg-transparent text-foreground placeholder:text-muted outline-none"
             />
+            {voiceSupported && (
+              <button
+                onClick={toggleVoice}
+                className={`w-8 h-8 rounded-full flex items-center justify-center shrink-0 transition-colors ${
+                  recording
+                    ? "bg-red-500 text-white animate-pulse"
+                    : "bg-surface border border-border text-muted"
+                }`}
+              >
+                {recording ? <MicOff size={14} /> : <Mic size={14} />}
+              </button>
+            )}
             <button
               onClick={() => handleSubmit()}
               disabled={!input.trim() || loading}
