@@ -5,38 +5,205 @@ import { useRouter } from "next/navigation";
 import { Sparkles, Send, X, MapPin, ExternalLink, Mic, MicOff } from "lucide-react";
 import StoreLogo from "@/app/components/store-logo";
 import { buildMapsUrl } from "@/app/lib/maps-link";
+import { APIProvider, Map, AdvancedMarker, useMap, ColorScheme } from "@vis.gl/react-google-maps";
+import { useMode } from "@/app/components/theme-provider";
 import type { SearchResult } from "@/app/lib/search";
 
-type SortBy = "detour" | "price" | "stock";
+type SortBy = "detour" | "price";
+
+type RouteMap = { destLat: number; destLng: number; destName: string };
 
 type AiResponse = {
   reply: string;
   results: SearchResult[];
   sortBy: SortBy;
+  routeMap?: RouteMap | null;
 };
 
 const SORT_LABELS: Record<SortBy, string> = {
-  detour: "Least Detour",
+  detour: "Closest",
   price: "Cheapest",
-  stock: "Most Stock",
 };
+
+const API_KEY = process.env.NEXT_PUBLIC_GOOGLE_MAPS_KEY!;
+
+function DirectionsRoute({
+  origin,
+  waypoint,
+  destination,
+}: {
+  origin: { lat: number; lng: number };
+  waypoint: { lat: number; lng: number };
+  destination: { lat: number; lng: number };
+}) {
+  const map = useMap();
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const rendererRef = useRef<any>(null);
+
+  useEffect(() => {
+    if (!map) return;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const g = (window as any).google;
+    if (!g) return;
+
+    const service = new g.maps.DirectionsService();
+    const renderer = new g.maps.DirectionsRenderer({
+      map,
+      suppressMarkers: true,
+      polylineOptions: { strokeColor: "#6366f1", strokeWeight: 4, strokeOpacity: 0.8 },
+    });
+    rendererRef.current = renderer;
+
+    service.route(
+      {
+        origin,
+        destination,
+        waypoints: [{ location: waypoint, stopover: true }],
+        travelMode: g.maps.TravelMode.DRIVING,
+      },
+      (result: unknown, status: string) => {
+        if (status === "OK") {
+          renderer.setDirections(result);
+          // Fit to route bounds
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const bounds = (result as any).routes?.[0]?.bounds;
+          if (bounds) map.fitBounds(bounds, 48);
+        }
+      },
+    );
+
+    return () => {
+      renderer.setMap(null);
+    };
+  }, [map, origin, waypoint, destination]);
+
+  return null;
+}
+
+function RouteMapView({
+  userLat,
+  userLng,
+  routeMap,
+  stores,
+}: {
+  userLat: number;
+  userLng: number;
+  routeMap: RouteMap;
+  stores: SearchResult[];
+}) {
+  const { effectiveMode } = useMode();
+  const origin = { lat: userLat, lng: userLng };
+  const dest = { lat: routeMap.destLat, lng: routeMap.destLng };
+  const topStore = stores[0];
+
+  return (
+    <div className="h-44 rounded-2xl overflow-hidden border border-border">
+      <APIProvider apiKey={API_KEY}>
+        <Map
+          defaultCenter={dest}
+          defaultZoom={13}
+          mapId="f88c6801e8382e068890f459"
+          colorScheme={effectiveMode === "dark" ? ColorScheme.DARK : ColorScheme.LIGHT}
+          disableDefaultUI
+          style={{ width: "100%", height: "100%" }}
+        >
+          {topStore && (
+            <DirectionsRoute
+              origin={origin}
+              waypoint={{ lat: topStore.storeLat, lng: topStore.storeLng }}
+              destination={dest}
+            />
+          )}
+          {/* Origin */}
+          <AdvancedMarker position={origin}>
+            <div className="h-4 w-4 rounded-full border-2 border-white bg-primary shadow-md" />
+          </AdvancedMarker>
+          {/* Destination */}
+          <AdvancedMarker position={dest}>
+            <div className="flex flex-col items-center">
+              <div className="px-2 py-0.5 rounded-full bg-foreground text-background text-[10px] font-semibold shadow-md whitespace-nowrap">
+                {routeMap.destName}
+              </div>
+              <div className="w-2 h-2 rotate-45 -mt-1 bg-foreground" />
+            </div>
+          </AdvancedMarker>
+          {/* Store waypoint */}
+          {topStore && (
+            <AdvancedMarker position={{ lat: topStore.storeLat, lng: topStore.storeLng }}>
+              <div className="px-2 py-0.5 rounded-full bg-primary text-white text-[10px] font-semibold shadow-md whitespace-nowrap">
+                €{topStore.price.toFixed(2)}
+              </div>
+            </AdvancedMarker>
+          )}
+        </Map>
+      </APIProvider>
+    </div>
+  );
+}
+
+function NearbyMapView({
+  userLat,
+  userLng,
+  stores,
+}: {
+  userLat: number;
+  userLng: number;
+  stores: SearchResult[];
+}) {
+  const { effectiveMode } = useMode();
+  const center = { lat: userLat, lng: userLng };
+
+  return (
+    <div className="h-44 rounded-2xl overflow-hidden border border-border">
+      <APIProvider apiKey={API_KEY}>
+        <Map
+          defaultCenter={center}
+          defaultZoom={15}
+          mapId="f88c6801e8382e068890f459"
+          colorScheme={effectiveMode === "dark" ? ColorScheme.DARK : ColorScheme.LIGHT}
+          disableDefaultUI
+          style={{ width: "100%", height: "100%" }}
+        >
+          <AdvancedMarker position={center}>
+            <div className="h-4 w-4 rounded-full border-2 border-white bg-primary shadow-md" />
+          </AdvancedMarker>
+          {stores.slice(0, 5).map((s, i) => (
+            <AdvancedMarker key={i} position={{ lat: s.storeLat, lng: s.storeLng }}>
+              <div className="px-2 py-0.5 rounded-full bg-primary text-white text-[10px] font-semibold shadow-md whitespace-nowrap">
+                €{s.price.toFixed(2)}
+              </div>
+            </AdvancedMarker>
+          ))}
+        </Map>
+      </APIProvider>
+    </div>
+  );
+}
 
 function ResultCard({
   result,
   userLat,
   userLng,
-  onView,
+  destLat,
+  destLng,
+  onReserve,
+  onStoreTap,
 }: {
   result: SearchResult;
   userLat: number;
   userLng: number;
-  onView: () => void;
+  destLat?: number;
+  destLng?: number;
+  onReserve: () => void;
+  onStoreTap: () => void;
 }) {
   const mapsUrl = buildMapsUrl({
     originLat: userLat,
     originLng: userLng,
     waypointLat: result.storeLat,
     waypointLng: result.storeLng,
+    destLat,
+    destLng,
   });
 
   return (
@@ -44,9 +211,9 @@ function ResultCard({
       <div className="flex items-start gap-3 mb-3">
         <StoreLogo name={result.store} size="sm" />
         <div className="flex-1 min-w-0">
-          <p className="text-[14px] font-semibold text-foreground leading-tight truncate">
+          <button onClick={onStoreTap} className="text-[14px] font-semibold text-foreground leading-tight truncate block text-left active:opacity-60">
             {result.store}
-          </p>
+          </button>
           <p className="text-[12px] text-muted mt-0.5 truncate">{result.item}</p>
         </div>
         <span className="text-[16px] font-bold text-foreground shrink-0">
@@ -71,10 +238,10 @@ function ResultCard({
 
       <div className="flex gap-2">
         <button
-          onClick={onView}
+          onClick={onReserve}
           className="flex-1 py-2.5 rounded-xl border border-border bg-background text-foreground text-[13px] font-semibold active:opacity-70 transition-opacity"
         >
-          View store
+          Reserve
         </button>
         <a
           href={mapsUrl}
@@ -83,7 +250,7 @@ function ResultCard({
           className="flex-1 py-2.5 rounded-xl bg-primary text-white text-[13px] font-semibold text-center flex items-center justify-center gap-1.5 active:opacity-80 transition-opacity"
         >
           <ExternalLink size={13} />
-          Open in Maps
+          Directions
         </a>
       </div>
     </div>
@@ -103,8 +270,9 @@ export default function AskSheet({
   const [response, setResponse] = useState<AiResponse | null>(null);
   const [sortBy, setSortBy] = useState<SortBy>("detour");
   const [error, setError] = useState<string | null>(null);
-  const [userLat, setUserLat] = useState(37.9755);
-  const [userLng, setUserLng] = useState(23.7348);
+  const [userLat, setUserLat] = useState<number | null>(null);
+  const [userLng, setUserLng] = useState<number | null>(null);
+  const [locating, setLocating] = useState(false);
   const [recording, setRecording] = useState(false);
   const inputRef = useRef<HTMLInputElement>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -163,8 +331,7 @@ export default function AskSheet({
   const sortedResults = response
     ? [...response.results].sort((a, b) => {
         if (sortBy === "price") return a.price - b.price;
-        if (sortBy === "stock") return b.stock - a.stock;
-        return a.detourMinutes - b.detourMinutes;
+        return a.distanceM - b.distanceM;
       })
     : [];
 
@@ -173,22 +340,29 @@ export default function AskSheet({
     if (!q || loading) return;
 
     setLoading(true);
+    setLocating(true);
     setError(null);
     setResponse(null);
 
-    let lat = 37.9755;
-    let lng = 23.7348;
-    try {
-      const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
-        navigator.geolocation.getCurrentPosition(resolve, reject, { timeout: 3000 })
-      );
-      lat = pos.coords.latitude;
-      lng = pos.coords.longitude;
-      setUserLat(lat);
-      setUserLng(lng);
-    } catch {
-      // fall through to Athens default
+    let lat = userLat;
+    let lng = userLng;
+    if (lat == null || lng == null) {
+      try {
+        const pos = await new Promise<GeolocationPosition>((resolve, reject) =>
+          navigator.geolocation.getCurrentPosition(resolve, reject, { enableHighAccuracy: true, timeout: 8000 })
+        );
+        lat = pos.coords.latitude;
+        lng = pos.coords.longitude;
+        setUserLat(lat);
+        setUserLng(lng);
+      } catch {
+        setError("Location is required. Please enable location access.");
+        setLoading(false);
+        setLocating(false);
+        return;
+      }
     }
+    setLocating(false);
 
     try {
       const res = await fetch("/api/ai-search", {
@@ -249,15 +423,17 @@ export default function AskSheet({
           {/* Idle placeholder */}
           {!loading && !response && !error && (
             <p className="text-[14px] text-muted py-1 leading-relaxed">
-              Try: <span className="text-foreground">"Going to Nea Ionia by metro, I want Depon on the way"</span>
+              What do you need?
             </p>
           )}
 
           {/* Loading shimmer */}
           {loading && (
             <div className="space-y-3 pt-1">
-              <div className="h-12 rounded-2xl bg-surface animate-pulse" />
-              <div className="h-28 rounded-2xl bg-surface animate-pulse" />
+              {locating && (
+                <p className="text-[13px] text-muted animate-pulse">📍 Getting your location…</p>
+              )}
+              <div className="h-44 rounded-2xl bg-surface animate-pulse" />
               <div className="h-28 rounded-2xl bg-surface animate-pulse" />
             </div>
           )}
@@ -277,10 +453,28 @@ export default function AskSheet({
                 </div>
               ) : null}
 
+              {/* Map — always shown */}
+              {sortedResults.length > 0 && userLat != null && userLng != null && (
+                response.routeMap ? (
+                  <RouteMapView
+                    userLat={userLat}
+                    userLng={userLng}
+                    routeMap={response.routeMap}
+                    stores={sortedResults}
+                  />
+                ) : (
+                  <NearbyMapView
+                    userLat={userLat}
+                    userLng={userLng}
+                    stores={sortedResults}
+                  />
+                )
+              )}
+
               {/* Sort chips */}
               {sortedResults.length > 0 && (
                 <div className="flex gap-2">
-                  {(["detour", "price", "stock"] as SortBy[]).map((s) => (
+                  {(["detour", "price"] as SortBy[]).map((s) => (
                     <button
                       key={s}
                       onClick={() => setSortBy(s)}
@@ -302,9 +496,15 @@ export default function AskSheet({
                   <ResultCard
                     key={i}
                     result={r}
-                    userLat={userLat}
-                    userLng={userLng}
-                    onView={() => {
+                    userLat={userLat ?? 0}
+                    userLng={userLng ?? 0}
+                    destLat={response.routeMap?.destLat}
+                    destLng={response.routeMap?.destLng}
+                    onReserve={() => {
+                      onClose();
+                      router.push(`/item/${r.itemSlug}`);
+                    }}
+                    onStoreTap={() => {
                       onClose();
                       router.push(`/store/${r.storeSlug}`);
                     }}

@@ -10,16 +10,21 @@ const VALID_NEIGHBORHOODS = [
 ] as const;
 
 const SYSTEM_PROMPT = `You are Walkin's local commerce assistant for Athens, Greece.
-Your job: parse what the user wants, figure out which neighborhoods are on their route, call search_walkin, then reply briefly.
+Your job: parse what the user wants, call search_walkin immediately, then reply briefly.
+The user's GPS coordinates are already provided to the tool automatically — you do NOT need to ask for their location or neighborhood. Always call the tool right away.
 
 ## Your tool
-search_walkin(query, near?, sortBy?)
-  - near: array of neighborhood names from this exact list ONLY:
+search_walkin(query, near?, destination?, sortBy?)
+  - query: the product name or category
+  - near: (optional) array of neighborhood names to filter by, ONLY when the user mentions a route. Use from this list:
     ${VALID_NEIGHBORHOODS.join(", ")}
+  - destination: (optional) the user's final destination neighborhood (from the same list). Set this when the user says where they're going.
   - sortBy: "detour" (default) | "price" | "stock"
 
+If the user just says "I need X" without mentioning a route, call search_walkin with just the query. The tool will find the closest stores using their GPS.
+
 ## Route reasoning
-When the user mentions a route, infer which neighborhoods they'll pass through:
+ONLY when the user mentions a route/destination, infer which neighborhoods they'll pass through:
 
 METRO lines in Athens:
   M1 (Green line): Kifisia ↔ Piraeus — passes through: Kifisia, Galatsi, Patision, Omonia, Monastiraki, Piraeus
@@ -39,10 +44,12 @@ If transit mode is not mentioned, assume driving.
 
 ## Reply rules
 - 1-2 sentences maximum
-- Mention store name, price, and detour time
-- Example: "Farmakeio Athinon in Monastiraki has Depon for €2.90 — just 1 min off your route."
-- If no results: "No stores in your area have that in stock right now."
-- Never invent stores, prices, or stock. Only use what the tool returns.`;
+- Mention store name, price, and distance/detour time
+- Example (route): "Farmakeio Athinon in Monastiraki has Depon for €2.90 — just 1 min off your route."
+- Example (nearby): "MediCare Plus has Depon for €3.20, 4 min away."
+- If no results: "No stores nearby have that in stock right now."
+- Never invent stores, prices, or stock. Only use what the tool returns.
+- NEVER ask the user for their location — you already have it.`;
 
 export async function POST(req: NextRequest) {
   const body = await req.json();
@@ -62,6 +69,7 @@ export async function POST(req: NextRequest) {
 
   let toolResults: ReturnType<typeof searchInventory> = [];
   let appliedSortBy: "detour" | "price" | "stock" = "detour";
+  let routeMap: { destLat: number; destLng: number; destName: string } | null = null;
 
   const { text } = await generateText({
     model: google("gemini-2.5-flash"),
@@ -76,19 +84,36 @@ export async function POST(req: NextRequest) {
             .array(z.enum(VALID_NEIGHBORHOODS))
             .optional()
             .describe("Neighborhood names on the user's route"),
+          destination: z
+            .enum(VALID_NEIGHBORHOODS)
+            .optional()
+            .describe("The user's final destination neighborhood, if mentioned"),
           sortBy: z
             .enum(["detour", "price", "stock"])
             .optional()
             .describe("How to rank results"),
         }),
-        execute: async ({ query, near = [], sortBy = "detour" }: {
+        execute: async ({ query, near = [], destination, sortBy = "detour" }: {
           query: string;
           near?: string[];
+          destination?: string;
           sortBy?: "detour" | "price" | "stock";
         }) => {
           appliedSortBy = sortBy;
           const nearPoints = resolveNeighborhoodNames(near);
-          const results = searchInventory({ q: query, lat, lng, nearPoints, sortBy });
+
+          let destLat: number | undefined;
+          let destLng: number | undefined;
+          if (destination) {
+            const resolved = resolveNeighborhoodNames([destination]);
+            if (resolved.length > 0) {
+              destLat = resolved[0].lat;
+              destLng = resolved[0].lng;
+              routeMap = { destLat, destLng, destName: destination };
+            }
+          }
+
+          const results = searchInventory({ q: query, lat, lng, destLat, destLng, nearPoints, sortBy });
           toolResults = results;
           return results;
         },
@@ -101,5 +126,6 @@ export async function POST(req: NextRequest) {
     reply: text,
     results: toolResults,
     sortBy: appliedSortBy,
+    routeMap,
   });
 }
