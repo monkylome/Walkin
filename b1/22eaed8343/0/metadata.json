@@ -1,0 +1,39 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "b122eaed8343",
+  "session_id": "43ad9f7a-c0e9-446c-95d2-f6a71d3cb56a",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-28T09:29:55.416412Z",
+  "branch": "main",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "app/lib/maps-link.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-4-7[1m]",
+  "turn_id": "023aa77cc949",
+  "checkpoint_transcript_start": 144,
+  "transcript_lines_at_start": 144,
+  "token_usage": {
+    "input_tokens": 1,
+    "cache_creation_tokens": 381,
+    "cache_read_tokens": 59600,
+    "output_tokens": 170,
+    "api_call_count": 1
+  },
+  "session_metrics": {
+    "turn_count": 6
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-28T09:29:55.410272Z",
+    "agent_lines": 33,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 33,
+    "total_lines_changed": 33,
+    "agent_percentage": 100,
+    "metric_version": 2
+  }
+}
