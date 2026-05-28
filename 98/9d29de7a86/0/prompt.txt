@@ -1,0 +1,17 @@
+can you write down a full plan for this before i do it?
+
+---
+
+write it in an md in the root
+
+---
+
+ok gimme a commit message please.
+
+---
+
+write it in a commit.txt in root
+
+---
+
+add it in gitignore

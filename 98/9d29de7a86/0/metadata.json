@@ -1,0 +1,79 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "989d29de7a86",
+  "session_id": "64c26eb0-d041-47cf-a165-ede8454b00a2",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-28T08:57:30.83602Z",
+  "branch": "ai-search",
+  "checkpoints_count": 4,
+  "files_touched": [
+    ".gitignore",
+    "AI_SEARCH_PLAN.md",
+    "app/lib/data.ts",
+    "app/lib/items.ts"
+  ],
+  "agent": "Claude Code",
+  "model": "",
+  "turn_id": "6f1180df4c8a",
+  "token_usage": {
+    "input_tokens": 216,
+    "cache_creation_tokens": 241940,
+    "cache_read_tokens": 12067575,
+    "output_tokens": 133283,
+    "api_call_count": 87
+  },
+  "session_metrics": {
+    "turn_count": 4
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-28T08:57:30.820139Z",
+    "agent_lines": 300,
+    "agent_removed": 0,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 6,
+    "total_committed": 300,
+    "total_lines_changed": 306,
+    "agent_percentage": 98.0392156862745,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 176,
+      "user_lines_removed": 6,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "app/api/search/route.ts": 145,
+        "app/lib/data.ts": 30,
+        "app/lib/items.ts": 1
+      },
+      "user_removed_per_file": {
+        "app/lib/data.ts": 5,
+        "app/lib/items.ts": 1
+      }
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 479,
+      "agent_lines_removed": 6
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 479,
+      "agent_lines_removed": 6
+    },
+    {
+      "checkpoint_number": 4,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 487,
+      "agent_lines_removed": 6
+    }
+  ]
+}

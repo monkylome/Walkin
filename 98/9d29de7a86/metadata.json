@@ -1,0 +1,28 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "989d29de7a86",
+  "strategy": "manual-commit",
+  "branch": "ai-search",
+  "checkpoints_count": 4,
+  "files_touched": [
+    ".gitignore",
+    "AI_SEARCH_PLAN.md",
+    "app/lib/data.ts",
+    "app/lib/items.ts"
+  ],
+  "sessions": [
+    {
+      "metadata": "/98/9d29de7a86/0/metadata.json",
+      "transcript": "/98/9d29de7a86/0/full.jsonl",
+      "content_hash": "/98/9d29de7a86/0/content_hash.txt",
+      "prompt": "/98/9d29de7a86/0/prompt.txt"
+    }
+  ],
+  "token_usage": {
+    "input_tokens": 216,
+    "cache_creation_tokens": 241940,
+    "cache_read_tokens": 12067575,
+    "output_tokens": 133283,
+    "api_call_count": 87
+  }
+}
