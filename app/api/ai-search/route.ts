@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { generateText, tool } from "ai";
+import { generateText, tool, stepCountIs } from "ai";
 import { z } from "zod";
 import { searchInventory, resolveNeighborhoodNames } from "@/app/lib/search";
 
@@ -70,7 +70,7 @@ export async function POST(req: NextRequest) {
     tools: {
       search_walkin: tool({
         description: "Search Walkin's real-time inventory for a product near the user's route",
-        parameters: z.object({
+        inputSchema: z.object({
           query: z.string().describe("Product name or category to search for"),
           near: z
             .array(z.enum(VALID_NEIGHBORHOODS))
@@ -81,7 +81,11 @@ export async function POST(req: NextRequest) {
             .optional()
             .describe("How to rank results"),
         }),
-        execute: async ({ query, near = [], sortBy = "detour" }) => {
+        execute: async ({ query, near = [], sortBy = "detour" }: {
+          query: string;
+          near?: string[];
+          sortBy?: "detour" | "price" | "stock";
+        }) => {
           appliedSortBy = sortBy;
           const nearPoints = resolveNeighborhoodNames(near);
           const results = searchInventory({ q: query, lat, lng, nearPoints, sortBy });
@@ -90,7 +94,7 @@ export async function POST(req: NextRequest) {
         },
       }),
     },
-    maxSteps: 3,
+    stopWhen: stepCountIs(3),
   });
 
   return NextResponse.json({
