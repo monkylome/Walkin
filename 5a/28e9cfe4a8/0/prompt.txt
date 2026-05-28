@@ -1,0 +1,35 @@
+by the way maybe i dont need the google ai studio api. i have google cloud console access with a trial.
+
+---
+
+i have already started with cloud console man. i use it for the google maps api
+
+---
+
+what var name do i put for my two keys?
+
+---
+
+what is this browser] Google Maps JavaScript API error: ApiProjectMapError
+https://developers.google.com/maps/documentation/javascript/error-messages#api-project-map-error 
+    at _.Lm (https://maps.googleapis.com/maps-api-v3/api/js/65/1c/main.js:181:350)
+    at wBa (https://maps.googleapis.com/maps-api-v3/api/js/65/1c/map.js:44:335)
+    at tBa (https://maps.googleapis.com/maps-api-v3/api/js/65/1c/map.js:43:42)
+    at uBa (https://maps.googleapis.com/maps-api-v3/api/js/65/1c/map.js:41:297) (https://maps.googleapis.com/maps-api-v3/api/js/65/1c/main.js:181:350)
+[browser] Google Maps JavaScript API warning: NoApiKeys https://developers.google.com/maps/documentation/javascript/error-messages#no-api-keys (https://maps.googleapis.com/maps-api-v3/api/js/65/1c/util.js:29:65)
+ GET /profile 200 in 168ms (next.js: 158ms, application-code: 10ms)
+ GET /stores 200 in 22ms (next.js: 5ms, application-code: 18ms)
+[browser] Google Maps JavaScript API error: ApiProjectMapError
+https://developers.google.com/maps/documentation/javascript/error-messages#api-project-map-error 
+    at _.Lm (https://maps.googleapis.com/maps-api-v3/api/js/65/1c/main.js:181:350)
+    at wBa (https://maps.googleapis.com/maps-api-v3/api/js/65/1c/map.js:44:335)
+    at tBa (https://maps.googleapis.com/maps-api-v3/api/js/65/1c/map.js:43:42)
+    at uBa (https://maps.googleapis.com/maps-api-v3/api/js/65/1c/map.js:41:297) (https://maps.googleapis.com/maps-api-v3/api/js/65/1c/main.js:181:350)
+
+---
+
+it's enabled and i've been using it just fine so far
+
+---
+
+there we go. are we sure the other one is GOOGLE_GENERATIVE_AI_API_KEY? cant test it either way so its ok
