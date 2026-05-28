@@ -1,0 +1,53 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "50d51404553d",
+  "session_id": "f95e2fcc-dfeb-43e7-9078-920cf26821f3",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-28T08:44:50.418244Z",
+  "branch": "monky-real-data",
+  "checkpoints_count": 0,
+  "files_touched": [
+    "app/api/search/route.ts",
+    "app/components/map-view.tsx",
+    "app/demo/page.tsx"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-4-7[1m]",
+  "turn_id": "08725040834a",
+  "checkpoint_transcript_start": 69,
+  "transcript_lines_at_start": 69,
+  "token_usage": {
+    "input_tokens": 6,
+    "cache_creation_tokens": 30,
+    "cache_read_tokens": 41250,
+    "output_tokens": 228,
+    "api_call_count": 1
+  },
+  "session_metrics": {
+    "turn_count": 1
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-28T08:44:50.414191Z",
+    "agent_lines": 751,
+    "agent_removed": 3,
+    "human_added": 0,
+    "human_modified": 0,
+    "human_removed": 0,
+    "total_committed": 751,
+    "total_lines_changed": 754,
+    "agent_percentage": 100,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 12,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        ".claude/settings.local.json": 12
+      }
+    }
+  ]
+}
