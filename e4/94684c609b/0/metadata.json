@@ -1,0 +1,75 @@
+{
+  "cli_version": "0.6.3",
+  "checkpoint_id": "e494684c609b",
+  "session_id": "43ad9f7a-c0e9-446c-95d2-f6a71d3cb56a",
+  "strategy": "manual-commit",
+  "created_at": "2026-05-28T09:29:38.333905Z",
+  "branch": "main",
+  "checkpoints_count": 2,
+  "files_touched": [
+    "PLAN.md"
+  ],
+  "agent": "Claude Code",
+  "model": "claude-opus-4-7[1m]",
+  "turn_id": "023aa77cc949",
+  "checkpoint_transcript_start": 31,
+  "transcript_lines_at_start": 31,
+  "token_usage": {
+    "input_tokens": 33,
+    "cache_creation_tokens": 33913,
+    "cache_read_tokens": 805534,
+    "output_tokens": 23453,
+    "api_call_count": 19
+  },
+  "session_metrics": {
+    "turn_count": 6
+  },
+  "initial_attribution": {
+    "calculated_at": "2026-05-28T09:29:38.308888Z",
+    "agent_lines": 183,
+    "agent_removed": 0,
+    "human_added": 256,
+    "human_modified": 114,
+    "human_removed": 0,
+    "total_committed": 553,
+    "total_lines_changed": 667,
+    "agent_percentage": 27.436281859070466,
+    "metric_version": 2
+  },
+  "prompt_attributions": [
+    {
+      "checkpoint_number": 1,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 0,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 2,
+      "user_lines_added": 0,
+      "user_lines_removed": 0,
+      "agent_lines_added": 293,
+      "agent_lines_removed": 0
+    },
+    {
+      "checkpoint_number": 3,
+      "user_lines_added": 403,
+      "user_lines_removed": 114,
+      "agent_lines_added": 297,
+      "agent_lines_removed": 0,
+      "user_added_per_file": {
+        "app/api/ai-search/route.ts": 101,
+        "app/api/search/route.ts": 18,
+        "app/lib/maps-link.ts": 33,
+        "app/lib/search.ts": 147,
+        "package.json": 4,
+        "pnpm-lock.yaml": 100
+      },
+      "user_removed_per_file": {
+        "app/api/search/route.ts": 111,
+        "package.json": 1,
+        "pnpm-lock.yaml": 2
+      }
+    }
+  ]
+}

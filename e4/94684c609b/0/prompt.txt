@@ -1,0 +1,21 @@
+alright. check our plan and gimme ur thoughts '/Users/macbro/Desktop/projects/walkin/AI_SEARCH_PLAN.md'
+
+---
+
+forget about the branches. we're exclusively on main now. dont worry about safari, this is a hackathon demo. what i want right now is some ai function within the app, that you can say "im going to nea ionia from korydallo, passing by from monastiraki, using metro, show me the most optimal way to get depon" for example. something more generalized. we need more functionalities, this is just the most complicated one I can think. Maybe i shouldnt have mentioned monastiraki, it should think of that by itself, knowing im going with metro. thoughts? and it should also support driving too. like im going to X, *pulls up the expected directions* and tells me to take the smallest detour to get my item. and we should give options too. the smallest detour? lowest price? lowest time etc so they should decide, maybe even put default selections. thoughts? plan this out? which is easy to do, where do we start, etc
+
+---
+
+sure
+
+---
+
+i needyou to think of the optimal plan for this hackathon. I have like 6 hours left. what wold be impressive, what would be feasible etc etc. draft a plan on an md in the root.
+
+---
+
+how do i get GOOGLE_GENERATIVE_AI_API_KEY
+
+---
+
+ok done. btw i want you to add voice, maybe we can use the browser built in stuff. in any case, we need a plan with phases.
