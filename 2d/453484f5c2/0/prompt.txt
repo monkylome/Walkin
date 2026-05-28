@@ -1,0 +1,207 @@
+formance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+[browser] Image with src "/logos/papagroup-logo.webp" has "fill" but is missing "sizes" prop. Please add it to improve page performance. Read more: https://nextjs.org/docs/api-reference/next/image#sizes
+⨯ Error [AI_RetryError]: Failed after 3 attempts. Last error: Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. 
+    at async POST (app/api/ai-search/route.ts:66:20)
+  64 |   let appliedSortBy: "detour" | "price" | "stock" = "detour";
+  65 |
+> 66 |   const { text } = await generateText({
+     |                    ^
+  67 |     model: google("gemini-2.5-flash"),
+  68 |     system: SYSTEM_PROMPT,
+  69 |     prompt, {
+  cause: undefined,
+  reason: 'maxRetriesExceeded',
+  errors: [
+    Error [AI_APICallError]: Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. 
+        at async POST (app/api/ai-search/route.ts:66:20)
+      64 |   let appliedSortBy: "detour" | "price" | "stock" = "detour";
+      65 |
+    > 66 |   const { text } = await generateText({
+         |                    ^
+      67 |     model: google("gemini-2.5-flash"),
+      68 |     system: SYSTEM_PROMPT,
+      69 |     prompt, {
+      cause: undefined,
+      url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
+      requestBodyValues: [Object],
+      statusCode: 429,
+      responseHeaders: [Object],
+      responseBody: '{\n' +
+        '  "error": {\n' +
+        '    "code": 429,\n' +
+        '    "message": "Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. ",\n' +
+        '    "status": "RESOURCE_EXHAUSTED"\n' +
+        '  }\n' +
+        '}\n',
+      isRetryable: true,
+      data: [Object]
+    },
+    Error [AI_APICallError]: Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. 
+        at async POST (app/api/ai-search/route.ts:66:20)
+      64 |   let appliedSortBy: "detour" | "price" | "stock" = "detour";
+      65 |
+    > 66 |   const { text } = await generateText({
+         |                    ^
+      67 |     model: google("gemini-2.5-flash"),
+      68 |     system: SYSTEM_PROMPT,
+      69 |     prompt, {
+      cause: undefined,
+      url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
+      requestBodyValues: [Object],
+      statusCode: 429,
+      responseHeaders: [Object],
+      responseBody: '{\n' +
+        '  "error": {\n' +
+        '    "code": 429,\n' +
+        '    "message": "Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. ",\n' +
+        '    "status": "RESOURCE_EXHAUSTED"\n' +
+        '  }\n' +
+        '}\n',
+      isRetryable: true,
+      data: [Object]
+    },
+    Error [AI_APICallError]: Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. 
+        at async POST (app/api/ai-search/route.ts:66:20)
+      64 |   let appliedSortBy: "detour" | "price" | "stock" = "detour";
+      65 |
+    > 66 |   const { text } = await generateText({
+         |                    ^
+      67 |     model: google("gemini-2.5-flash"),
+      68 |     system: SYSTEM_PROMPT,
+      69 |     prompt, {
+      cause: undefined,
+      url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
+      requestBodyValues: [Object],
+      statusCode: 429,
+      responseHeaders: [Object],
+      responseBody: '{\n' +
+        '  "error": {\n' +
+        '    "code": 429,\n' +
+        '    "message": "Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. ",\n' +
+        '    "status": "RESOURCE_EXHAUSTED"\n' +
+        '  }\n' +
+        '}\n',
+      isRetryable: true,
+      data: [Object]
+    }
+  ],
+  lastError: Error [AI_APICallError]: Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. 
+      at async POST (app/api/ai-search/route.ts:66:20)
+    64 |   let appliedSortBy: "detour" | "price" | "stock" = "detour";
+    65 |
+  > 66 |   const { text } = await generateText({
+       |                    ^
+    67 |     model: google("gemini-2.5-flash"),
+    68 |     system: SYSTEM_PROMPT,
+    69 |     prompt, {
+    cause: undefined,
+    url: 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent',
+    requestBodyValues: {
+      generationConfig: [Object],
+      contents: [Array],
+      systemInstruction: [Object],
+      safetySettings: undefined,
+      tools: [Array],
+      toolConfig: [Object],
+      cachedContent: undefined,
+      labels: undefined,
+      serviceTier: undefined
+    },
+    statusCode: 429,
+    responseHeaders: {
+      'alt-svc': 'h3=":443"; ma=2592000,h3-29=":443"; ma=2592000',
+      'content-encoding': 'gzip',
+      'content-type': 'application/json; charset=UTF-8',
+      date: 'Thu, 28 May 2026 09:46:14 GMT',
+      server: 'scaffolding on HTTPServer2',
+      'server-timing': 'gfet4t7; dur=224',
+      'transfer-encoding': 'chunked',
+      vary: 'Origin, X-Origin, Referer',
+      'x-content-type-options': 'nosniff',
+      'x-frame-options': 'SAMEORIGIN',
+      'x-gemini-service-tier': 'standard',
+      'x-xss-protection': '0'
+    },
+    responseBody: '{\n' +
+      '  "error": {\n' +
+      '    "code": 429,\n' +
+      '    "message": "Your prepayment credits are depleted. Please go to AI Studio at https://ai.studio/projects to manage your project and billing. Learn more at https://ai.google.dev/gemini-api/docs/billing#prepay. ",\n' +
+      '    "status": "RESOURCE_EXHAUSTED"\n' +
+      '  }\n' +
+      '}\n',
+    isRetryable: true,
+    data: { error: [Object] }
+  }
+}
+ POST /api/ai-search 500 in 8.0s (next.js: 527ms, application-code: 7.5s)
+
+---
+
+i got the gemini api key from cloud console. it's not that?
+
+---
+
+man it's connected  
+Free trial status: €256.52 credit and 69 days remaining. Activate your full account to get unlimited access to all of Google Cloud—use any remaining credits, then pay only for what you use.
+Console Logo
+Search (/) for resources, docs, products, and more
+
+APIs & Services
+Credentials
+Create credentials to access your enabled APIs. Learn more 
+
+Remember to configure the OAuth consent screen with information about your application.
+API Keys
+Name
+Bound account 
+Creation date
+Restrictions
+Actions
+walking key    —    May 28, 2026    Gemini API     
+Maps Platform API Key    —    May 6, 2026    HTTP referrers, 33 APIs     
+OAuth 2.0 Client IDs
+Name
+Creation date
+Type
+Client ID
+Actions
+No OAuth clients to display
+Service Accounts
+Manage service accounts
+Email
+Name
+Actions
+No service accounts to display
+
+55 results showing.
+
+---
+
+I don't think so. web search and confirm it
+
+---
+
+can i do vertex ai with my trial?
+
+---
+
+man this is complicated and it sucks. other alternative to just test the mcp?
+
+---
+
+it has dev mode mcp connection testing? like gpt plus does?
+
+---
+
+i already have that. im using it. the api key in google ai studio and google console gemini is the same apparently. exactly the same.  not sure wtf is going on
+
+---
+
+Key    Project    
+Created
+Billing Tier    
+...ow-A
+walking key
+walkin-495515
+May 28, 2026    
+Free tier · Prepay
