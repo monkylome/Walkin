@@ -9,6 +9,8 @@ import { useAuth } from "@/app/lib/auth";
 import { useReservations } from "@/app/lib/reservations";
 import StoreLogo from "@/app/components/store-logo";
 import { SearchIcon } from "@/app/components/icons";
+import AskButton from "@/app/components/ask-button";
+import AskSheet from "@/app/components/ask-sheet";
 import { Pill, Wrench, Zap, Hammer, MoreHorizontal, MapPin, MapPinOff } from "lucide-react";
 
 const categoryRow = [
@@ -48,6 +50,7 @@ export default function HomePage() {
     ? user.name.split(" ").map((w) => w[0]).join("").slice(0, 2).toUpperCase()
     : "?";
   const [placeholderIdx, setPlaceholderIdx] = useState(0);
+  const [askOpen, setAskOpen] = useState(false);
 
   useEffect(() => {
     const id = setInterval(() => setPlaceholderIdx(i => (i + 1) % placeholders.length), 3000);
@@ -55,6 +58,7 @@ export default function HomePage() {
   }, []);
 
   return (
+    <>
     <div className="flex flex-col min-h-full bg-background pb-28">
 
       {/* Hero section */}
@@ -160,5 +164,9 @@ export default function HomePage() {
       </div>
 
     </div>
+
+      <AskButton onClick={() => setAskOpen(true)} />
+      <AskSheet open={askOpen} onClose={() => setAskOpen(false)} />
+    </>
   );
 }
