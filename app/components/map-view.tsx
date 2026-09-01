@@ -227,10 +227,15 @@ export default function MapView({
   selectedId,
   onSelect,
   onMapClick,
-  defaultCenter = { lat: 38.0345, lng: 23.7530 },
+  defaultCenter,
   defaultZoom = 15,
   routeConfig,
 }: Props) {
+  const initialCenter =
+    defaultCenter ??
+    points.find((p) => p.id === selectedId)?.position ??
+    points[0]?.position ??
+    { lat: 38.0345, lng: 23.7530 };
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const { effectiveMode } = useMode();
 
@@ -251,7 +256,7 @@ export default function MapView({
     <div className="h-full w-full relative">
       <APIProvider apiKey={API_KEY}>
         <Map
-          defaultCenter={defaultCenter}
+          defaultCenter={initialCenter}
           defaultZoom={defaultZoom}
           mapId="f88c6801e8382e068890f459"
           colorScheme={effectiveMode === "dark" ? ColorScheme.DARK : ColorScheme.LIGHT}
