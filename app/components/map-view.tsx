@@ -234,6 +234,19 @@ export default function MapView({
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
   const { effectiveMode } = useMode();
 
+  useEffect(() => {
+    if (!navigator.geolocation) return;
+    navigator.permissions?.query({ name: "geolocation" }).then((result) => {
+      if (result.state === "granted") {
+        navigator.geolocation.getCurrentPosition(
+          ({ coords }) => setUserLocation({ lat: coords.latitude, lng: coords.longitude }),
+          () => {},
+          { maximumAge: 60000 }
+        );
+      }
+    }).catch(() => {});
+  }, []);
+
   return (
     <div className="h-full w-full relative">
       <APIProvider apiKey={API_KEY}>

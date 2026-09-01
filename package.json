@@ -2,6 +2,7 @@
   "name": "walkin",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.33.3",
   "scripts": {
     "dev": "next dev",
     "build": "next build",
@@ -9,11 +10,14 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@ai-sdk/google": "^3.0.80",
     "@vis.gl/react-google-maps": "^1.8.3",
+    "ai": "^6.0.191",
     "lucide-react": "^1.14.0",
     "next": "16.2.4",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

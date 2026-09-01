@@ -1,61 +1,52 @@
 import { NextRequest, NextResponse } from "next/server";
-import { allItems, storeLocations } from "@/app/lib/data";
+import { neighborhoods } from "@/app/lib/data";
+import { haversineMeters, searchInventory, type SearchResult } from "@/app/lib/search";
 
-export type SearchResult = {
-  store: string;
-  item: string;
-  price: number;
-  stock: number;
-  distanceM: number;
-  detourMinutes: number;
-};
+export type { SearchResult };
 
-function haversineMeters(lat1: number, lng1: number, lat2: number, lng2: number): number {
-  const R = 6371000;
-  const toRad = (deg: number) => (deg * Math.PI) / 180;
-  const dLat = toRad(lat2 - lat1);
-  const dLng = toRad(lng2 - lng1);
-  const a =
-    Math.sin(dLat / 2) ** 2 +
-    Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
-  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+const NEIGHBORHOOD_RADIUS_M = 1500;
+
+type NearPoint = { lat: number; lng: number };
+
+function parseNear(raw: string | null): NearPoint[] {
+  if (!raw) return [];
+  return raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean)
+    .flatMap((token): NearPoint[] => {
+      const coord = token.match(/^(-?\d+\.?\d*):(-?\d+\.?\d*)$/);
+      if (coord) return [{ lat: parseFloat(coord[1]), lng: parseFloat(coord[2]) }];
+      const match = Object.entries(neighborhoods).find(
+        ([n]) => n.toLowerCase() === token.toLowerCase()
+      );
+      if (match) return [{ lat: match[1].lat, lng: match[1].lng }];
+      return [];
+    });
 }
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
-  const q = searchParams.get("q")?.toLowerCase().trim() ?? "";
+  const q = searchParams.get("q") ?? "";
   const lat = parseFloat(searchParams.get("lat") ?? "37.9755");
   const lng = parseFloat(searchParams.get("lng") ?? "23.7348");
+  const destLatRaw = searchParams.get("destLat");
+  const destLngRaw = searchParams.get("destLng");
+  const destLat = destLatRaw != null ? parseFloat(destLatRaw) : undefined;
+  const destLng = destLngRaw != null ? parseFloat(destLngRaw) : undefined;
+  const sortBy = (searchParams.get("sortBy") ?? "detour") as "detour" | "price" | "stock";
+
+  const nearPoints = parseNear(searchParams.get("near"));
+
+  // Drop near points that are too far from any known neighborhood (stale coord pairs)
+  const filteredNear = nearPoints.filter((p) =>
+    Object.values(neighborhoods).some(
+      (n) => haversineMeters(p.lat, p.lng, n.lat, n.lng) < NEIGHBORHOOD_RADIUS_M * 2
+    )
+  );
 
   if (!q) return NextResponse.json([]);
 
-  const results: SearchResult[] = allItems
-    .filter(
-      (item) =>
-        item.name.toLowerCase().includes(q) ||
-        item.category.toLowerCase().includes(q)
-    )
-    .flatMap((item) =>
-      item.stores
-        .filter((s) => s.stock > 0)
-        .map((s) => {
-          const loc = storeLocations[s.name];
-          const distanceM = loc
-            ? Math.round(haversineMeters(lat, lng, loc.lat, loc.lng))
-            : 99999;
-          const detourMinutes = Math.max(1, Math.round(distanceM / 250));
-          return {
-            store: s.name,
-            item: item.name,
-            price: s.price,
-            stock: s.stock,
-            distanceM,
-            detourMinutes,
-          };
-        })
-    )
-    .sort((a, b) => a.distanceM - b.distanceM)
-    .slice(0, 3);
-
+  const results = searchInventory({ q, lat, lng, destLat, destLng, nearPoints: filteredNear, sortBy });
   return NextResponse.json(results);
 }

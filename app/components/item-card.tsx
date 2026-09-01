@@ -28,7 +28,7 @@ export default function ItemCard({ item, subtitle, price, stock, showCategory, o
       onClick={onClick}
       className="flex items-center gap-3 p-4 rounded-2xl border border-border bg-surface active:opacity-70 transition-opacity"
     >
-      <div className="w-11 h-11 rounded-xl bg-background border border-border flex items-center justify-center shrink-0 text-muted overflow-hidden">
+      <div className="w-11 h-11 rounded-xl bg-white border border-border flex items-center justify-center shrink-0 text-muted overflow-hidden">
         {item.image ? (
           <Image src={item.image} alt={item.name} width={44} height={44} className="w-full h-full object-contain" />
         ) : (
