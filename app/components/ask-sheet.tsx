@@ -195,8 +195,12 @@ export default function AskSheet({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: q, lat, lng }),
       });
-      if (!res.ok) throw new Error("Request failed");
-      const data: AiResponse = await res.json();
+      const data: AiResponse & { error?: string } = await res.json();
+      if (!res.ok) {
+        // The route explains itself (missing key, upstream failure) — say which.
+        setError(data.error ?? "Something went wrong. Try again.");
+        return;
+      }
       setResponse(data);
       setSortBy(data.sortBy ?? "detour");
     } catch {
