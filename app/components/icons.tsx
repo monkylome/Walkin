@@ -104,11 +104,3 @@ export function BookmarkIcon({ size = 16, strokeWidth = 2, className, filled = f
     </svg>
   );
 }
-
-export function MapPinSmallIcon({ size = 11, className }: IconProps = {}) {
-  return (
-    <svg width={size} height={(size * 13) / 11} viewBox="0 0 11 13" fill="none" className={className}>
-      <path d="M5.5 0C2.46 0 0 2.46 0 5.5c0 3.85 5.5 7.5 5.5 7.5S11 9.35 11 5.5C11 2.46 8.54 0 5.5 0zm0 7.5a2 2 0 1 1 0-4 2 2 0 0 1 0 4z" fill="currentColor" />
-    </svg>
-  );
-}

@@ -24,18 +24,6 @@ export function accentFor(category: string): string {
   return categoryAccent[category] ?? categoryAccent.Other;
 }
 
-const categoryIconColor: Record<string, string> = {
-  Medicine:    "text-emerald-600",
-  Tools:       "text-blue-600",
-  Electronics: "text-sky-600",
-  Hardware:    "text-slate-500",
-  Other:       "text-gray-500",
-};
-
-export function iconColorFor(category: string): string {
-  return categoryIconColor[category] ?? categoryIconColor.Other;
-}
-
 export const categoryPinColor: Record<string, string> = {
   Medicine:    "bg-emerald-600",
   Tools:       "bg-blue-600",
