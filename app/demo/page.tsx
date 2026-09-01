@@ -2,6 +2,7 @@
 
 import { Suspense, useState, useEffect, useRef } from "react";
 import { useSearchParams } from "next/navigation";
+import Image from "next/image";
 import MapView, { type MapPoint } from "@/app/components/map-view";
 import ReservationConfirm from "@/app/components/reservation-confirm";
 import StoreLogo from "@/app/components/store-logo";
@@ -51,11 +52,21 @@ function DemoContent() {
   const isDemoMode = searchParams.get("demo") === "1";
   const qParam     = searchParams.get("q");
 
+  const [splash, setSplash]           = useState(true);
   const [step, setStep]               = useState<DemoStep>("idle");
   const [selectedStore, setSelectedStore] = useState<string | null>(null);
   const [reservation, setReservation] = useState<Reservation | null>(null);
-  const [transcript, setTranscript]   = useState("");
   const [speaking, setSpeaking]       = useState("");
+
+  // Tag the transcript with the step it was heard in, so it falls away on its
+  // own when the step advances rather than needing an effect to clear it.
+  const [heard, setHeard] = useState<{ step: DemoStep; text: string }>({ step: "idle", text: "" });
+  const transcript = heard.step === step ? heard.text : "";
+
+  useEffect(() => {
+    const t = setTimeout(() => setSplash(false), 2000);
+    return () => clearTimeout(t);
+  }, []);
 
   // Stable refs so async callbacks always see current values
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -64,9 +75,16 @@ function DemoContent() {
   const storeRef         = useRef<string | null>(null);
   const { reserve }      = useReservations();
   const reserveRef       = useRef(reserve);
-  reserveRef.current     = reserve;
-  stepRef.current        = step;
-  storeRef.current       = selectedStore;
+
+  // Declared before the step-driver effect below so the refs are already fresh
+  // when it runs.
+  useEffect(() => {
+    reserveRef.current = reserve;
+    stepRef.current    = step;
+    storeRef.current   = selectedStore;
+  });
+
+  const setTranscript = (text: string) => setHeard({ step: stepRef.current, text });
 
   // Auto-advance to results when opened via Siri Shortcut with ?q= param
   const autoStartedRef = useRef(false);
@@ -151,7 +169,6 @@ function DemoContent() {
   // Drive TTS + STT for steps that follow voice recognition (audio already unlocked)
   useEffect(() => {
     if (step === "listening") return; // handled by beginListening()
-    setTranscript("");
     stopRec();
     window.speechSynthesis.cancel();
 
@@ -219,6 +236,14 @@ function DemoContent() {
     ? `${storeLocations[selectedStore!].lat},${storeLocations[selectedStore!].lng}`
     : undefined;
 
+  if (splash) {
+    return (
+      <div className="h-dvh bg-primary flex items-center justify-center">
+        <Image src="/WalkIn-logo.png" alt="Walkin" width={200} height={112} priority />
+      </div>
+    );
+  }
+
   return (
     <div className="relative h-dvh overflow-hidden bg-black">
 
@@ -239,10 +264,8 @@ function DemoContent() {
       {/* Top navigation chrome */}
       <div className="absolute top-0 inset-x-0 z-20 pt-safe pointer-events-none">
         <div className="mx-3 mt-3 px-4 py-3 rounded-2xl bg-background/95 backdrop-blur border border-border shadow-lg flex items-center gap-3">
-          <div className="w-8 h-8 rounded-full bg-primary flex items-center justify-center shrink-0">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="white">
-              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-            </svg>
+          <div className="w-8 h-8 rounded-full overflow-hidden shrink-0">
+            <Image src="/WalkIn-logo.png" alt="Walkin" width={32} height={32} className="object-cover w-full h-full" />
           </div>
           <div className="flex-1 min-w-0">
             <p className="text-[13px] font-semibold text-foreground">Heading to Nea Ionia</p>
@@ -288,7 +311,7 @@ function DemoContent() {
           className="absolute right-4 z-30 w-14 h-14 rounded-full bg-primary shadow-xl flex items-center justify-center active:scale-95 transition-transform"
           style={{ bottom: "calc(5.5rem + env(safe-area-inset-bottom, 0px))" }}
         >
-          <span className="text-white text-[22px] font-bold">W</span>
+          <Image src="/WalkIn-logo.png" alt="Walkin" width={36} height={20} className="object-contain" />
         </button>
       )}
 
@@ -326,7 +349,7 @@ function DemoContent() {
                   </div>
                   <p className="text-[17px] font-semibold text-foreground">Listening…</p>
                   {transcript ? (
-                    <p className="text-[14px] text-primary font-medium">"{transcript}"</p>
+                    <p className="text-[14px] text-primary font-medium">&ldquo;{transcript}&rdquo;</p>
                   ) : (
                     <p className="text-[13px] text-muted">Say what you need along your route</p>
                   )}
@@ -376,11 +399,11 @@ function DemoContent() {
                     <p className="text-[13px] text-muted mt-1">Bosch Screwdriver Set 42pc · €{DEMO_RESULTS.find((r) => r.store === selectedStore)?.price.toFixed(2)}</p>
                   </div>
                   {transcript ? (
-                    <p className="text-[14px] text-primary font-medium">"{transcript}"</p>
+                    <p className="text-[14px] text-primary font-medium">&ldquo;{transcript}&rdquo;</p>
                   ) : (
                     <div className="flex items-center gap-2">
                       <div className="w-1.5 h-1.5 rounded-full bg-primary animate-pulse" />
-                      <p className="text-[13px] text-muted">Say "reserve" or "directions"</p>
+                      <p className="text-[13px] text-muted">Say &ldquo;reserve&rdquo; or &ldquo;directions&rdquo;</p>
                     </div>
                   )}
                   <div className="flex gap-3 w-full">
