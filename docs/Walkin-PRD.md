@@ -4,11 +4,6 @@
 **Team:** George Tzimokas & Arsenis Tsn  
 **Status:** Draft
 
-> Reconciled against the prototype. Sections marked **Shipped** describe behaviour
-> that exists in the app today; everything else is still intent. Where a decision
-> below was reversed in the build, the reversal is recorded rather than the
-> original decision quietly deleted.
-
 ---
 
 ## Overview
