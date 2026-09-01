@@ -1,17 +1,22 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useSyncExternalStore } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import BottomNav from "@/app/components/bottom-nav";
 import { useAuth } from "@/app/lib/auth";
+
+// AuthProvider seeds `user` from localStorage, so the server and the hydration
+// pass disagree. Gate on this until hydration finishes instead of rendering
+// server-side markup we know is wrong.
+const noopSubscribe = () => () => {};
+const useHydrated = () =>
+  useSyncExternalStore(noopSubscribe, () => true, () => false);
 
 export default function TabsLayout({ children }: { children: React.ReactNode }) {
   const pathname    = usePathname();
   const router      = useRouter();
   const { user, loading } = useAuth();
-  const [mounted, setMounted] = useState(false);
-
-  useEffect(() => { setMounted(true); }, []);
+  const mounted     = useHydrated();
 
   useEffect(() => {
     if (!loading && !user) router.replace("/login");

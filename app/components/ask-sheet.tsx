@@ -116,7 +116,6 @@ export default function AskSheet({
 
   useEffect(() => {
     return () => {
-      // eslint-disable-next-line react-hooks/exhaustive-deps
       recognitionRef.current?.abort();
     };
   }, []);
@@ -249,7 +248,7 @@ export default function AskSheet({
           {/* Idle placeholder */}
           {!loading && !response && !error && (
             <p className="text-[14px] text-muted py-1 leading-relaxed">
-              Try: <span className="text-foreground">"Going to Nea Ionia by metro, I want Depon on the way"</span>
+              Try: <span className="text-foreground">&ldquo;Going to Nea Ionia by metro, I want Depon on the way&rdquo;</span>
             </p>
           )}
 
