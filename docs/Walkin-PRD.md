@@ -1,8 +1,13 @@
 # WalkIn — Product Requirements Document
 
-**Version:** 0.1  
+**Version:** 0.2  
 **Team:** George Tzimokas & Arsenis Tsn  
 **Status:** Draft
+
+> Reconciled against the prototype. Sections marked **Shipped** describe behaviour
+> that exists in the app today; everything else is still intent. Where a decision
+> below was reversed in the build, the reversal is recorded rather than the
+> original decision quietly deleted.
 
 ---
 
@@ -10,15 +15,19 @@
 
 WalkIn is a product discovery platform that connects people who need a physical item today with local stores that have it in stock right now.
 
-It is not a marketplace. It does not handle payments or delivery. It is a real-time local availability layer that sits between the user's intent and the physical store — answering one question fast and reliably:
+It is not a marketplace and it does not handle delivery. It is a real-time local availability layer that sits between the user's intent and the physical store — answering one question fast and reliably:
 
 > "Where can I find this near me, right now?"
+
+The prototype extended that question with a second one that turned out to matter just as much:
+
+> "…and is it on my way?"
 
 ---
 
 ## Problem
 
-When someone needs a specific non-consumable product today, their options are poor:
+When someone needs a specific product today, their options are poor:
 
 - Google Maps shows stores, not products
 - E-commerce shows products, but not local availability
@@ -44,12 +53,10 @@ Local stores have the opposite problem: they carry specific inventory that peopl
 
 The following are explicitly out of scope, both now and in the near term:
 
-- **No payments** — WalkIn does not process transactions. What happens in the store (cash, card, whatever) is not our concern.
+- **No payment processing** — WalkIn does not charge cards or move money. The reservation sheet offers a "Pay now & pick up" option, but nothing is processed; it exists to test whether users want it. What happens in the store (cash, card, whatever) stays outside the platform.
 - **No delivery** — We are a discovery tool, not a logistics platform.
-- **No reservations** — See design decisions below.
 - **No marketplace dynamics** — Stores are not competing on price through WalkIn.
 - **No social features** — No reviews, no follows, no feeds.
-- **No consumables** — Groceries, medicine, fuel are out of scope. Focus is on durable goods: tools, electronics, hardware, apparel, etc.
 
 ---
 
@@ -84,14 +91,15 @@ Local physical stores that carry durable goods and want to be discoverable for t
 
 ## Core User Flows
 
-### Consumer Flow
+### Consumer Flow — Shipped
 
-1. Opens WalkIn (web or mobile)
-2. Types or speaks a natural language query (e.g. "Allen key M6", "HDMI cable 2m", "work gloves size L")
-3. WalkIn returns a list of nearby stores carrying the item, sorted by distance
-4. Each result shows: store name, distance, travel time, item price, and current quantity in stock
-5. User taps a result to get directions via Google Maps
-6. User walks in and buys
+1. Opens WalkIn and signs in (see *Accounts* below)
+2. Types or speaks a natural language query — either a plain one ("I need Depon right now") or one that names a route ("Going to Piraeus, I need a phone charger on the way")
+3. WalkIn returns nearby stores carrying the item, ranked by detour by default, with price and stock as alternative sorts
+4. Each result shows: store name, item, price, quantity in stock, minutes of detour, and the neighbourhood the store sits in
+5. A map draws the actual route — user → store → destination — when a destination was named, or price pins around the user when it wasn't
+6. User either taps Directions, which opens Google Maps with the store pre-inserted as a waypoint, or reserves the item first
+7. User walks in and buys
 
 ### Store Onboarding Flow
 
@@ -113,14 +121,26 @@ Local physical stores that carry durable goods and want to be discoverable for t
 
 ### Consumer App (Web + Mobile)
 
-- Natural language search with AI-powered query parsing
-- Results list sorted by distance, showing: store name, item name, qty available, price, distance, estimated travel time
-- Map view alongside list view
-- "Get directions" button that hands off to Google Maps
+**Shipped:**
+- Natural language search with AI-powered query parsing, by text or voice (Web Speech API)
+- Route-aware search — the AI infers which neighbourhoods a stated journey passes through and ranks stores by detour off that route
+- Results showing: store name, item name, qty available, price, detour minutes, neighbourhood; sortable by detour, price, or stock
+- Map view alongside list view, including a drawn route with the store as a waypoint
+- "Get directions" button that hands off to Google Maps with the store pre-inserted as a stop
+- Reservation with a pickup code (see *Reservations* below)
 - Location-based — requires user location permission
-- No account required to search
+- **Account required.** The home, stores, order and profile tabs redirect to sign-in without one. This reverses the original "no account required to search" requirement; reservations need an identity to attach a hold to, and the OTP flow was cheap enough that gating the whole app was simpler than gating half of it.
+
+**Not yet built:**
+- Item staleness surfaced to consumers ("last updated X days ago")
+- Inaccuracy reporting flow
 
 ### Store Dashboard (Web + Mobile)
+
+> **Prototype status:** the dashboard exists as a static mock only. Figures on it
+> (items listed, walk-ins, revenue) and its inventory table are hardcoded, and the
+> Inventory, Orders and Analytics nav entries are dead links. Nothing below is
+> wired to real store data yet.
 
 - Store registration and profile (name, address, category)
 - Item catalog management: add/edit/remove items (up to plan limit)
@@ -133,20 +153,49 @@ Local physical stores that carry durable goods and want to be discoverable for t
 
 ### AI Layer
 
-- Parses free-text and voice queries into structured product searches
-- Handles synonyms, descriptions, and imprecise language (e.g. "that hex screwdriver thing" → Allen key)
-- Suggests the closest available match when no exact result exists
-- Explains relevance when showing a near-match ("Closest match: Allen key set, includes M6")
+**Shipped:**
+- Parses free-text and voice queries into structured product searches, then calls a single `search_walkin` tool against live inventory
+- **Route reasoning** — given "metro from Korydallos to Nea Ionia", the model infers the line and the neighbourhoods it passes through, and filters stores to that corridor. The user never names the intermediate stops; the model supplies the geography. This is the feature the product is pitched on and it was not in v0.1 of this document.
+- Infers sort intent from phrasing ("cheapest" → price, "on the way" → detour)
+- Answers in one or two sentences naming store, price and detour, and is constrained to only report what the tool returned
+
+**Not yet built:**
+- Synonym and description handling for imprecise language ("that hex screwdriver thing" → Allen key)
+- Closest-available-match suggestion when no exact result exists, with an explanation of the near-match
 
 ---
 
 ## Design Decisions
 
-### No reservations
+### Reservations — reversed in the prototype
 
-**Decision:** WalkIn shows available quantity only. Users cannot reserve items.
+**Original decision (v0.1):** WalkIn shows available quantity only. Users cannot reserve items. The reasoning was that reservations add real complexity on both sides — stores physically pulling and holding stock, no-shows, expired holds — while "is it there, should I go?" is already answered by a live quantity.
 
-**Why:** Reservations introduce significant complexity on both sides. Stores would need to physically pull and hold items, manage no-shows, and handle expired holds. Users would need accounts and commitment. The core value of WalkIn — "is it there, should I go?" — is fully served by showing live quantity. If there are 3 units in stock, the user has enough information to make the trip. Reservations are a v2 consideration if demand validates it.
+**What shipped:** reservations exist. A user reserves from the result card and gets a three-digit pickup code with a short expiry (three minutes in the prototype, a demo-length figure and not a product decision). Active reservations surface on the home screen and in a dedicated order tab. The sheet also offers "Pay now & pick up" alongside "Pay at store", though as noted in Non-Goals no payment is processed.
+
+**Why it changed:** the reservation is what converts "I might go" into "I am going", and it is the moment that makes the store's side of the exchange concrete. The original objection stands and is unresolved — nobody has yet decided what a store does when a hold expires, or what happens on a no-show. Treat the current implementation as a demo of the interaction, not as a settled design.
+
+**Open before this is real:** hold duration, what the store sees, no-show handling, and whether "pay now" becomes an actual transaction (which would contradict the payments non-goal, and so needs a deliberate decision rather than drift).
+
+---
+
+### Consumables are in scope after all
+
+**Original decision (v0.1):** groceries, medicine and fuel out of scope; focus on durable goods.
+
+**What shipped:** pharmacies are the densest category in the prototype — six of eleven stores, and five of twenty catalogue items are medicines. The canonical demo query is for Depon.
+
+**Why it changed:** over-the-counter pharmacy stock turned out to be the sharpest illustration of the problem. It is urgent by nature, genuinely stocked unevenly across nearby stores, and nobody waits two days for a delivery of paracetamol. Prescription medicine remains out of scope, and that boundary should be stated explicitly before any real pharmacy is onboarded.
+
+---
+
+### Accounts — reversed in the prototype
+
+**Original decision (v0.1):** no account required to search.
+
+**What shipped:** the app gates behind a sign-in. Home, stores, order and profile all redirect to an OTP flow when there is no user. Auth is currently mocked — the code is generated client-side and the user is persisted in `localStorage` — so it is a shape, not a security boundary.
+
+**Why it changed:** a reservation needs an identity to attach the hold to, and splitting the app into a public half and a private half cost more than gating all of it. The original instinct was right about friction, though: search is the thing that proves the product's value, and putting a sign-in in front of it before the user has seen a single result is the wrong order. Worth revisiting so that search is public and only reservation requires an account.
 
 ---
 
@@ -191,10 +240,12 @@ Stores subscribe based on how many items they want to list and how much visibili
 | Tier | Items | Visibility | Price |
 |---|---|---|---|
 | **Free** | 10 | Standard, within proximity | €0 |
-| **Starter** | Up to 50 | Standard + category boosting | TBD |
-| **Growth** | Unlimited | Priority placement in results | TBD |
+| **Starter** | Up to 50 | Standard + category boosting | €39 (indicative) |
+| **Growth** | Unlimited | Priority placement in results | €79 (indicative) |
 
-Pricing TBD based on pilot feedback. The free tier is permanent — it funds supply-side growth.
+The prototype's pricing screen shows €0 / €39 / €79. Those numbers were chosen to
+make the screen concrete, not from pilot data — treat them as placeholders until
+the pilot says otherwise. The free tier is permanent; it funds supply-side growth.
 
 Subscription pricing affects result ranking and item count. It does not fabricate availability — a store with a Growth subscription does not appear if they don't have the item in stock.
 
