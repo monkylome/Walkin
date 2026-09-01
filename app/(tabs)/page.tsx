@@ -76,7 +76,7 @@ export default function HomePage() {
                 <span className="text-[13px] text-foreground font-medium">{neighborhood}</span>
               </div>
             )}
-            <Link href="/(tabs)/profile" className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-[12px] font-bold text-white select-none">
+            <Link href="/profile" className="w-9 h-9 rounded-full bg-primary flex items-center justify-center text-[12px] font-bold text-white select-none">
               {initials}
             </Link>
           </div>
