@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { neighborhoods } from "@/app/lib/data";
+import { DEFAULT_ORIGIN, neighborhoods } from "@/app/lib/data";
 import { haversineMeters, searchInventory, type SearchResult } from "@/app/lib/search";
 
 export type { SearchResult };
@@ -28,8 +28,8 @@ function parseNear(raw: string | null): NearPoint[] {
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const q = searchParams.get("q") ?? "";
-  const lat = parseFloat(searchParams.get("lat") ?? "37.9755");
-  const lng = parseFloat(searchParams.get("lng") ?? "23.7348");
+  const lat = parseFloat(searchParams.get("lat") ?? String(DEFAULT_ORIGIN.lat));
+  const lng = parseFloat(searchParams.get("lng") ?? String(DEFAULT_ORIGIN.lng));
   const destLatRaw = searchParams.get("destLat");
   const destLngRaw = searchParams.get("destLng");
   const destLat = destLatRaw != null ? parseFloat(destLatRaw) : undefined;

@@ -47,6 +47,12 @@ export const neighborhoods: Record<string, { lat: number; lng: number }> = {
   "Piraeus":       { lat: 37.9420, lng: 23.6464 },
 };
 
+// The mock `distance` / `walkTime` strings on each store entry below are measured
+// from here. Anything that computes distance instead of reading those strings must
+// default to the same origin, or the two contradict each other — Papageorgiou reads
+// "0.3 km" statically but ~7.3 km if you measure from Syntagma.
+export const DEFAULT_ORIGIN = neighborhoods["Nea Ionia"];
+
 const PH = (stock: number, price: number) => ({ name: "Papageorgiou Group",   distance: "0.3 km", distanceKm: 0.3, walkTime: "4 min",  stock, price });
 const TS = (stock: number, price: number) => ({ name: "TechStop",              distance: "0.7 km", distanceKm: 0.7, walkTime: "9 min",  stock, price });
 const EC = (stock: number, price: number) => ({ name: "ElectroCity",           distance: "0.5 km", distanceKm: 0.5, walkTime: "6 min",  stock, price });
